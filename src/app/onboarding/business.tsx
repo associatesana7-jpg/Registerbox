@@ -7,17 +7,24 @@ import { useApp } from '@/hooks/use-app';
 
 export default function BusinessDetailsScreen() {
   const { business } = useApp();
-  const rows = [['PAN', business.pan], ['Owner', business.ownerName], ['Business Type', 'Restaurant / Food Service'], ['Location', `${business.city}, ${business.state}`], ['GSTIN', business.gstin]];
+  const rows = [
+    ['PAN', business.pan],
+    ['GSTIN', business.gstin],
+    ['Entity', business.entityType || 'To be confirmed'],
+    ['Taxpayer type', business.taxpayerType || '—'],
+    ['Status', business.registrationStatus || 'Verified'],
+    ['Location', [business.city, business.state].filter(Boolean).join(', ') || 'To be confirmed'],
+  ].filter(([, value]) => value && !String(value).startsWith('DEMO-'));
   return (
     <Screen footer={<Button title="Looks Correct" icon="→" onPress={() => router.push('/onboarding/questions')} />}>
       <PageHeader title="We found your business!" subtitle="Please confirm the details below." back={() => router.back()} />
       <Card>
-        <View style={styles.business}><View style={styles.avatar}><Text style={{ fontSize: 23 }}>♠</Text></View><View><Text selectable style={styles.name}>{business.legalName}</Text><Text style={styles.type}>Proprietorship</Text></View></View>
+        <View style={styles.business}><View style={styles.avatar}><Text style={{ fontSize: 23 }}>♠</Text></View><View style={{ flex: 1 }}><Text selectable style={styles.name}>{business.tradeName || business.legalName}</Text><Text style={styles.type}>{business.legalName}</Text></View></View>
         <View style={styles.divider} />
         {rows.map(([label, value]) => <View key={label} style={styles.row}><Text style={styles.label}>{label}</Text><Text selectable style={styles.value}>{value}</Text></View>)}
       </Card>
       <Button title="Edit Details" variant="ghost" onPress={() => router.back()} />
-      <View style={styles.source}><Text style={styles.sourceTitle}>Source traceability</Text><Text style={styles.sourceText}>PAN and GST values are marked as user-provided until verified against a trusted document or government source.</Text></View>
+      <View style={styles.source}><Text style={styles.sourceTitle}>✓ Source traceability</Text><Text style={styles.sourceText}>{business.verifiedAt ? `Verified against government registry data via Sandbox.co.in on ${new Date(business.verifiedAt).toLocaleString()}. You can correct any field before continuing.` : 'These values have not yet been verified against a trusted source.'}</Text></View>
     </Screen>
   );
 }

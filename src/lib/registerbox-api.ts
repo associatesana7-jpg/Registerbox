@@ -28,9 +28,49 @@ export async function verifyEmailOtp(email: string, token: string) {
   return data;
 }
 
+export type BusinessIdentityResult = {
+  verificationId: string;
+  identifierType: 'PAN' | 'GSTIN';
+  identifier: string;
+  valid: boolean;
+  provider: 'sandbox';
+  verifiedAt: string;
+  cached: boolean;
+  legalName: string | null;
+  tradeName?: string | null;
+  entityType: string | null;
+  taxpayerType?: string | null;
+  registrationStatus: string | null;
+  registrationDate?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  pincode?: string | null;
+  natureOfBusinessActivities?: string[];
+  lastUpdatedAt?: string | null;
+};
+
+export async function verifyBusinessIdentity(identifierType: 'PAN' | 'GSTIN', identifier: string, name?: string, dateOfBirth?: string) {
+  const { data, error } = await supabase.functions.invoke<BusinessIdentityResult>('verify-business-identity', {
+    body: { identifierType, identifier, name, dateOfBirth, consent: true },
+  });
+  if (error) {
+    const context = error.context as Response | undefined;
+    if (context) {
+      const details = await context.clone().json().catch(() => null) as { error?: string } | null;
+      if (details?.error) throw new Error(details.error);
+    }
+    throw error;
+  }
+  if (!data) throw new Error('The verification service returned no data.');
+  return data;
+}
+
 type BusinessInput = {
   legalName: string; ownerName: string; pan: string; gstin: string; city: string; state: string;
   dineIn: boolean; alcohol: boolean; employees: number; turnover: number;
+  entityType?: string; tradeName?: string; address?: string; pincode?: string;
+  verificationId?: string; verificationType?: 'PAN' | 'GSTIN'; verifiedAt?: string;
 };
 
 export async function saveBusiness(input: BusinessInput) {
@@ -38,7 +78,7 @@ export async function saveBusiness(input: BusinessInput) {
   if (!userData.user) throw new Error('Please sign in again to save your business.');
   const { data: business, error } = await supabase.from('business_profiles').insert({
     user_id: userData.user.id, created_by: userData.user.id, legal_name: input.legalName,
-    trade_name: input.legalName, entity_type: 'Proprietorship', constitution: 'Proprietorship',
+    trade_name: input.tradeName || input.legalName, entity_type: input.entityType || 'Proprietorship', constitution: input.entityType || 'Proprietorship',
     pan: input.pan || null, gstin: input.gstin || null, business_category: 'Restaurant',
     business_subcategory: 'Food Service', annual_turnover: input.turnover, employee_count: input.employees,
     email: userData.user.email ?? null,
@@ -46,16 +86,23 @@ export async function saveBusiness(input: BusinessInput) {
     status: 'active',
   }).select('id').single();
   if (error) throw error;
-  const { error: addressError } = await supabase.from('business_addresses').insert({
-    business_id: business.id, type: 'principal', address_line_1: 'Marathahalli', city: input.city,
-    state: input.state, pincode: '560037', ownership_type: 'rented',
-  });
-  if (addressError) throw addressError;
+  if (input.city && input.state && /^[1-9]\d{5}$/.test(input.pincode ?? '')) {
+    const { error: addressError } = await supabase.from('business_addresses').insert({
+      business_id: business.id, type: 'principal', address_line_1: input.address || input.city, city: input.city,
+      state: input.state, pincode: input.pincode!, ownership_type: 'rented', verified: input.verificationType === 'GSTIN',
+    });
+    if (addressError) throw addressError;
+  }
+  const verifiedField = input.verificationType?.toLowerCase();
   const { error: evidenceError } = await supabase.from('business_field_evidence').insert([
-    { business_id: business.id, field_name: 'pan', field_value: input.pan, source: 'USER_INPUT', confidence: 1, verification_status: 'user_confirmed' },
-    { business_id: business.id, field_name: 'gstin', field_value: input.gstin, source: 'USER_INPUT', confidence: 1, verification_status: 'user_confirmed' },
+    ...(input.pan ? [{ business_id: business.id, field_name: 'pan', field_value: input.pan, source: verifiedField === 'pan' ? 'GOVERNMENT_API' : 'USER_INPUT', confidence: verifiedField === 'pan' ? 0.99 : 1, verification_status: verifiedField === 'pan' ? 'verified' : 'user_confirmed', last_verified_at: verifiedField === 'pan' ? input.verifiedAt : null }] : []),
+    ...(input.gstin ? [{ business_id: business.id, field_name: 'gstin', field_value: input.gstin, source: verifiedField === 'gstin' ? 'GOVERNMENT_API' : 'USER_INPUT', confidence: verifiedField === 'gstin' ? 0.99 : 1, verification_status: verifiedField === 'gstin' ? 'verified' : 'user_confirmed', last_verified_at: verifiedField === 'gstin' ? input.verifiedAt : null }] : []),
   ]);
   if (evidenceError) throw evidenceError;
+  if (input.verificationId) {
+    const { error: verificationError } = await supabase.from('kyc_verifications').update({ business_id: business.id }).eq('id', input.verificationId);
+    if (verificationError) throw verificationError;
+  }
   return business.id;
 }
 

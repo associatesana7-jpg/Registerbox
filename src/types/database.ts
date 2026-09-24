@@ -443,6 +443,62 @@ export type Database = {
           },
         ]
       }
+      kyc_verifications: {
+        Row: {
+          business_id: string | null
+          consent_purpose: string
+          created_at: string
+          id: string
+          identifier_hash: string
+          identifier_last_four: string
+          identifier_type: string
+          normalized_data: Json
+          provider: string
+          provider_reference_id: string | null
+          status: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          business_id?: string | null
+          consent_purpose: string
+          created_at?: string
+          id?: string
+          identifier_hash: string
+          identifier_last_four: string
+          identifier_type: string
+          normalized_data?: Json
+          provider?: string
+          provider_reference_id?: string | null
+          status: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          business_id?: string | null
+          consent_purpose?: string
+          created_at?: string
+          id?: string
+          identifier_hash?: string
+          identifier_last_four?: string
+          identifier_type?: string
+          normalized_data?: Json
+          provider?: string
+          provider_reference_id?: string | null
+          status?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_verifications_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_people: {
         Row: {
           address: Json

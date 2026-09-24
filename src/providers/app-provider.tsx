@@ -16,6 +16,16 @@ type BusinessDraft = {
   alcohol: boolean;
   employees: number;
   turnover: number;
+  entityType?: string;
+  tradeName?: string;
+  address?: string;
+  pincode?: string;
+  verificationId?: string;
+  verificationType?: 'PAN' | 'GSTIN';
+  verifiedAt?: string;
+  registrationStatus?: string;
+  taxpayerType?: string;
+  natureOfBusinessActivities?: string[];
 };
 
 type AppContextValue = {
