@@ -87,6 +87,56 @@ export type Database = {
           },
         ]
       }
+      ai_runs: {
+        Row: {
+          created_at: string
+          error_code: string | null
+          id: string
+          input_hash: string | null
+          intent_id: string | null
+          latency_ms: number | null
+          model: string
+          operation: string
+          output_json: Json | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_code?: string | null
+          id?: string
+          input_hash?: string | null
+          intent_id?: string | null
+          latency_ms?: number | null
+          model: string
+          operation: string
+          output_json?: Json | null
+          status: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_code?: string | null
+          id?: string
+          input_hash?: string | null
+          intent_id?: string | null
+          latency_ms?: number | null
+          model?: string
+          operation?: string
+          output_json?: Json | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_runs_intent_id_fkey"
+            columns: ["intent_id"]
+            isOneToOne: false
+            referencedRelation: "business_intents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       application_events: {
         Row: {
           actor_id: string | null
@@ -443,55 +493,115 @@ export type Database = {
           },
         ]
       }
-      kyc_verifications: {
+      business_intents: {
         Row: {
-          business_id: string | null
-          consent_purpose: string
+          activities: Json
+          ai_confidence: number | null
+          classification_source: string
           created_at: string
+          entity_preference: string | null
+          existing_business_id: string | null
+          existing_establishment_id: string | null
           id: string
-          identifier_hash: string
-          identifier_last_four: string
-          identifier_type: string
-          normalized_data: Json
-          provider: string
-          provider_reference_id: string | null
+          industry: string | null
+          intent_type: string
+          location_city: string | null
+          location_state: string | null
+          missing_critical_facts: Json
+          raw_user_input: string
           status: string
+          subindustry: string | null
+          updated_at: string
           user_id: string
-          verified_at: string | null
         }
         Insert: {
-          business_id?: string | null
-          consent_purpose: string
+          activities?: Json
+          ai_confidence?: number | null
+          classification_source?: string
           created_at?: string
+          entity_preference?: string | null
+          existing_business_id?: string | null
+          existing_establishment_id?: string | null
           id?: string
-          identifier_hash: string
-          identifier_last_four: string
-          identifier_type: string
-          normalized_data?: Json
-          provider?: string
-          provider_reference_id?: string | null
-          status: string
+          industry?: string | null
+          intent_type: string
+          location_city?: string | null
+          location_state?: string | null
+          missing_critical_facts?: Json
+          raw_user_input: string
+          status?: string
+          subindustry?: string | null
+          updated_at?: string
           user_id: string
-          verified_at?: string | null
         }
         Update: {
-          business_id?: string | null
-          consent_purpose?: string
+          activities?: Json
+          ai_confidence?: number | null
+          classification_source?: string
           created_at?: string
+          entity_preference?: string | null
+          existing_business_id?: string | null
+          existing_establishment_id?: string | null
           id?: string
-          identifier_hash?: string
-          identifier_last_four?: string
-          identifier_type?: string
-          normalized_data?: Json
-          provider?: string
-          provider_reference_id?: string | null
+          industry?: string | null
+          intent_type?: string
+          location_city?: string | null
+          location_state?: string | null
+          missing_critical_facts?: Json
+          raw_user_input?: string
           status?: string
+          subindustry?: string | null
+          updated_at?: string
           user_id?: string
-          verified_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "kyc_verifications_business_id_fkey"
+            foreignKeyName: "business_intents_existing_business_id_fkey"
+            columns: ["existing_business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_intents_existing_establishment_id_fkey"
+            columns: ["existing_establishment_id"]
+            isOneToOne: false
+            referencedRelation: "business_addresses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_members: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          ownership_percentage: number | null
+          role: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          ownership_percentage?: number | null
+          role: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          ownership_percentage?: number | null
+          role?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_members_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "business_profiles"
@@ -641,6 +751,86 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      business_registrations: {
+        Row: {
+          business_id: string
+          certificate_document_id: string | null
+          created_at: string
+          establishment_id: string | null
+          expiry_date: string | null
+          id: string
+          issue_date: string | null
+          registration_catalog_id: string
+          registration_number: string | null
+          source: string
+          status: string
+          updated_at: string
+          verification_source: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          business_id: string
+          certificate_document_id?: string | null
+          created_at?: string
+          establishment_id?: string | null
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          registration_catalog_id: string
+          registration_number?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          verification_source?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          certificate_document_id?: string | null
+          created_at?: string
+          establishment_id?: string | null
+          expiry_date?: string | null
+          id?: string
+          issue_date?: string | null
+          registration_catalog_id?: string
+          registration_number?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          verification_source?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_registrations_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_registrations_certificate_document_id_fkey"
+            columns: ["certificate_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_registrations_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "business_addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_registrations_registration_catalog_id_fkey"
+            columns: ["registration_catalog_id"]
+            isOneToOne: false
+            referencedRelation: "registration_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       compliance_results: {
         Row: {
@@ -958,6 +1148,60 @@ export type Database = {
           },
         ]
       }
+      data_conflicts: {
+        Row: {
+          business_id: string | null
+          created_at: string
+          field_key: string
+          id: string
+          intent_id: string | null
+          resolution: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          values_json: Json
+        }
+        Insert: {
+          business_id?: string | null
+          created_at?: string
+          field_key: string
+          id?: string
+          intent_id?: string | null
+          resolution?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          values_json: Json
+        }
+        Update: {
+          business_id?: string | null
+          created_at?: string
+          field_key?: string
+          id?: string
+          intent_id?: string | null
+          resolution?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          values_json?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_conflicts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "data_conflicts_intent_id_fkey"
+            columns: ["intent_id"]
+            isOneToOne: false
+            referencedRelation: "business_intents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           business_id: string
@@ -1036,6 +1280,131 @@ export type Database = {
           },
         ]
       }
+      domain_events: {
+        Row: {
+          business_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          intent_id: string | null
+          payload: Json
+          user_id: string | null
+        }
+        Insert: {
+          business_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          intent_id?: string | null
+          payload?: Json
+          user_id?: string | null
+        }
+        Update: {
+          business_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          intent_id?: string | null
+          payload?: Json
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "domain_events_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "domain_events_intent_id_fkey"
+            columns: ["intent_id"]
+            isOneToOne: false
+            referencedRelation: "business_intents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      field_facts: {
+        Row: {
+          business_id: string | null
+          confidence: number
+          created_at: string
+          establishment_id: string | null
+          field_key: string
+          id: string
+          identity_verification_id: string | null
+          intent_id: string | null
+          source_reference: string | null
+          source_type: string
+          updated_at: string
+          value_json: Json
+          verification_status: string
+          verified_at: string | null
+        }
+        Insert: {
+          business_id?: string | null
+          confidence?: number
+          created_at?: string
+          establishment_id?: string | null
+          field_key: string
+          id?: string
+          identity_verification_id?: string | null
+          intent_id?: string | null
+          source_reference?: string | null
+          source_type: string
+          updated_at?: string
+          value_json: Json
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Update: {
+          business_id?: string | null
+          confidence?: number
+          created_at?: string
+          establishment_id?: string | null
+          field_key?: string
+          id?: string
+          identity_verification_id?: string | null
+          intent_id?: string | null
+          source_reference?: string | null
+          source_type?: string
+          updated_at?: string
+          value_json?: Json
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "field_facts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "field_facts_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "business_addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "field_facts_identity_verification_id_fkey"
+            columns: ["identity_verification_id"]
+            isOneToOne: false
+            referencedRelation: "kyc_verifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "field_facts_intent_id_fkey"
+            columns: ["intent_id"]
+            isOneToOne: false
+            referencedRelation: "business_intents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       government_queries: {
         Row: {
           ai_analysis: Json
@@ -1091,6 +1460,98 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      intent_workflow_packs: {
+        Row: {
+          created_at: string
+          intent_id: string
+          pack_id: string
+          source: string
+        }
+        Insert: {
+          created_at?: string
+          intent_id: string
+          pack_id: string
+          source?: string
+        }
+        Update: {
+          created_at?: string
+          intent_id?: string
+          pack_id?: string
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intent_workflow_packs_intent_id_fkey"
+            columns: ["intent_id"]
+            isOneToOne: false
+            referencedRelation: "business_intents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "intent_workflow_packs_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kyc_verifications: {
+        Row: {
+          business_id: string | null
+          consent_purpose: string
+          created_at: string
+          id: string
+          identifier_hash: string
+          identifier_last_four: string
+          identifier_type: string
+          normalized_data: Json
+          provider: string
+          provider_reference_id: string | null
+          status: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          business_id?: string | null
+          consent_purpose: string
+          created_at?: string
+          id?: string
+          identifier_hash: string
+          identifier_last_four: string
+          identifier_type: string
+          normalized_data?: Json
+          provider?: string
+          provider_reference_id?: string | null
+          status: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          business_id?: string | null
+          consent_purpose?: string
+          created_at?: string
+          id?: string
+          identifier_hash?: string
+          identifier_last_four?: string
+          identifier_type?: string
+          normalized_data?: Json
+          provider?: string
+          provider_reference_id?: string | null
+          status?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_verifications_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1168,6 +1629,88 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_answers: {
+        Row: {
+          answer_json: Json
+          created_at: string
+          id: string
+          question_key: string
+          session_id: string
+          source: string
+        }
+        Insert: {
+          answer_json: Json
+          created_at?: string
+          id?: string
+          question_key: string
+          session_id: string
+          source?: string
+        }
+        Update: {
+          answer_json?: Json
+          created_at?: string
+          id?: string
+          question_key?: string
+          session_id?: string
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_answers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "onboarding_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      onboarding_sessions: {
+        Row: {
+          completed_at: string | null
+          completion_percentage: number
+          current_question_key: string | null
+          current_stage: string
+          id: string
+          intent_id: string
+          last_activity_at: string
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completion_percentage?: number
+          current_question_key?: string | null
+          current_stage?: string
+          id?: string
+          intent_id: string
+          last_activity_at?: string
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completion_percentage?: number
+          current_question_key?: string | null
+          current_stage?: string
+          id?: string
+          intent_id?: string
+          last_activity_at?: string
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "onboarding_sessions_intent_id_fkey"
+            columns: ["intent_id"]
+            isOneToOne: true
+            referencedRelation: "business_intents"
             referencedColumns: ["id"]
           },
         ]
@@ -1331,6 +1874,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          onboarding_status: string
           phone: string | null
           role: string
           updated_at: string
@@ -1341,6 +1885,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          onboarding_status?: string
           phone?: string | null
           role?: string
           updated_at?: string
@@ -1351,9 +1896,52 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          onboarding_status?: string
           phone?: string | null
           role?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      registration_catalog: {
+        Row: {
+          active: boolean
+          authority: string
+          category: string
+          city: string | null
+          code: string
+          country: string
+          created_at: string
+          id: string
+          level: string
+          name: string
+          state: string | null
+        }
+        Insert: {
+          active?: boolean
+          authority: string
+          category: string
+          city?: string | null
+          code: string
+          country?: string
+          created_at?: string
+          id?: string
+          level: string
+          name: string
+          state?: string | null
+        }
+        Update: {
+          active?: boolean
+          authority?: string
+          category?: string
+          city?: string | null
+          code?: string
+          country?: string
+          created_at?: string
+          id?: string
+          level?: string
+          name?: string
+          state?: string | null
         }
         Relationships: []
       }
@@ -1511,6 +2099,92 @@ export type Database = {
           },
         ]
       }
+      workflow_pack_requirements: {
+        Row: {
+          condition_json: Json
+          created_at: string
+          expected_answer_type: string
+          field_key: string
+          help_text: string | null
+          id: string
+          options_json: Json
+          pack_id: string
+          preferred_source: string
+          priority: number
+          question_text: string
+          requirement_type: string
+        }
+        Insert: {
+          condition_json?: Json
+          created_at?: string
+          expected_answer_type?: string
+          field_key: string
+          help_text?: string | null
+          id?: string
+          options_json?: Json
+          pack_id: string
+          preferred_source?: string
+          priority?: number
+          question_text: string
+          requirement_type: string
+        }
+        Update: {
+          condition_json?: Json
+          created_at?: string
+          expected_answer_type?: string
+          field_key?: string
+          help_text?: string | null
+          id?: string
+          options_json?: Json
+          pack_id?: string
+          preferred_source?: string
+          priority?: number
+          question_text?: string
+          requirement_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_pack_requirements_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_packs: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          description: string
+          id: string
+          name: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          description: string
+          id?: string
+          name: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       workflow_tasks: {
         Row: {
           application_id: string
@@ -1584,6 +2258,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_next_onboarding_requirement: {
+        Args: { target_session_id: string }
+        Returns: {
+          completion_percentage: number
+          expected_answer_type: string
+          field_key: string
+          help_text: string
+          options_json: Json
+          preferred_source: string
+          question_text: string
+        }[]
+      }
       run_compliance_scan: {
         Args: { target_business_id: string }
         Returns: {

@@ -2,6 +2,7 @@ import type { Session } from '@supabase/supabase-js';
 import { createContext, type PropsWithChildren, useEffect, useMemo, useState } from 'react';
 
 import { demoCompliances, type ComplianceItem } from '@/data/demo';
+import type { IntentResult } from '@/lib/registerbox-api';
 import { supabase } from '@/lib/supabase';
 
 type BusinessDraft = {
@@ -39,6 +40,8 @@ type AppContextValue = {
   updateBusiness: (patch: Partial<BusinessDraft>) => void;
   compliances: ComplianceItem[];
   setCompliances: (items: ComplianceItem[]) => void;
+  onboarding: IntentResult | null;
+  setOnboarding: (value: IntentResult | null) => void;
 };
 
 const initialBusiness: BusinessDraft = {
@@ -55,6 +58,7 @@ export function AppProvider({ children }: PropsWithChildren) {
   const [email, setEmail] = useState('');
   const [business, setBusiness] = useState(initialBusiness);
   const [compliances, setCompliances] = useState<ComplianceItem[]>(demoCompliances);
+  const [onboarding, setOnboarding] = useState<IntentResult | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -68,8 +72,8 @@ export function AppProvider({ children }: PropsWithChildren) {
   const value = useMemo(() => ({
     session, loadingSession, demoMode, setDemoMode, email, setEmail, business,
     updateBusiness: (patch: Partial<BusinessDraft>) => setBusiness((current) => ({ ...current, ...patch })),
-    compliances, setCompliances,
-  }), [session, loadingSession, demoMode, email, business, compliances]);
+    compliances, setCompliances, onboarding, setOnboarding,
+  }), [session, loadingSession, demoMode, email, business, compliances, onboarding]);
 
   return <AppContext value={value}>{children}</AppContext>;
 }

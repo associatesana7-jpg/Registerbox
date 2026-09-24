@@ -135,6 +135,76 @@ export async function chooseAndUploadDocument(businessId: string, type: string) 
   return data;
 }
 
+export type OnboardingQuestion = {
+  field_key: string;
+  question_text: string;
+  help_text: string | null;
+  expected_answer_type: 'text' | 'boolean' | 'number' | 'choice' | 'document' | 'registration';
+  options_json: string[];
+  preferred_source: 'KNOWN' | 'CONNECTOR' | 'DOCUMENT' | 'USER';
+  completion_percentage: number;
+};
+
+export type IntentResult = {
+  intentId: string;
+  sessionId: string;
+  classification: {
+    intentType: string;
+    industry: string | null;
+    subindustry: string | null;
+    activities: string[];
+    locationState: string | null;
+    locationCity: string | null;
+    entityPreference: string | null;
+    existingBusinessLikely: boolean;
+    missingCriticalFacts: string[];
+    workflowPackCodes: string[];
+    summary: string;
+    confidence: number;
+  };
+  workflowPacks: { id: string; code: string; name: string }[];
+  businesses: { id: string; legal_name: string | null; trade_name: string | null; entity_type: string | null; pan: string | null; gstin: string | null }[];
+  selectedBusinessId: string | null;
+  nextQuestion: OnboardingQuestion | null;
+  source: 'ai' | 'fallback';
+};
+
+async function invokeOrThrow<T>(name: string, body: Record<string, unknown>) {
+  const { data, error } = await supabase.functions.invoke<T>(name, { body });
+  if (error) {
+    const response = error.context as Response | undefined;
+    const detail = response ? await response.clone().json().catch(() => null) as { error?: string } | null : null;
+    throw new Error(detail?.error ?? error.message);
+  }
+  if (!data) throw new Error('The service returned no data.');
+  return data;
+}
+
+export function classifyBusinessIntent(message: string, existingBusinessId?: string) {
+  return invokeOrThrow<IntentResult>('ai-intent-router', { message, existingBusinessId });
+}
+
+export function saveOnboardingAnswer(sessionId: string, fieldKey: string, value: unknown, source: 'USER' | 'KNOWN' | 'CONNECTOR' | 'DOCUMENT' = 'USER', sourceReference?: string) {
+  return invokeOrThrow<{ complete: boolean; nextQuestion: OnboardingQuestion | null; businessId: string | null }>('onboarding-engine', { action: 'answer', sessionId, fieldKey, value, source, sourceReference });
+}
+
+export function getNextOnboardingQuestion(sessionId: string) {
+  return invokeOrThrow<{ complete: boolean; nextQuestion: OnboardingQuestion | null; businessId: string | null }>('onboarding-engine', { action: 'next', sessionId });
+}
+
+export async function ensureDraftBusiness(intentId: string, suggestedName?: string) {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error('Please sign in again.');
+  const { data: intent, error: intentError } = await supabase.from('business_intents').select('existing_business_id').eq('id', intentId).single();
+  if (intentError) throw intentError;
+  if (intent?.existing_business_id) return intent.existing_business_id;
+  const { data: business, error } = await supabase.from('business_profiles').insert({ user_id: auth.user.id, created_by: auth.user.id, legal_name: suggestedName?.trim() || 'New business', trade_name: suggestedName?.trim() || 'New business', status: 'draft' }).select('id').single();
+  if (error) throw error;
+  const { error: updateError } = await supabase.from('business_intents').update({ existing_business_id: business.id }).eq('id', intentId);
+  if (updateError) throw updateError;
+  return business.id;
+}
+
 export async function createCheckout(businessId: string, slugs: string[]) {
   const { data: services, error: servicesError } = await supabase.from('services').select('id, slug, service_fee').in('slug', slugs);
   if (servicesError) throw servicesError;

@@ -284,6 +284,18 @@ max_frequency = "5s"
 # enabled = true
 # uri = "pg-functions://<database>/<schema>/<hook_name>"
 
+# Supabase Auth calls this endpoint as a signed Standard Webhook. It does not
+# send a user bearer token, so the platform JWT gate must be disabled. The
+# function itself still authenticates every request with SEND_EMAIL_HOOK_SECRET.
+[functions.send-auth-email]
+verify_jwt = false
+
+[functions.ai-intent-router]
+verify_jwt = true
+
+[functions.onboarding-engine]
+verify_jwt = true
+
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
 [auth.sms.twilio]
 enabled = false

@@ -25,6 +25,7 @@ export default function DashboardScreen() {
         <View style={styles.metrics}><Metric value="0" label="Expiring Soon" tone="amber" /><Metric value="2" label="In Progress" /></View>
         <SectionTitle action="View all">Action required</SectionTitle>
         <Card><View style={styles.actionRow}><View style={styles.actionIcon}><Text>!</Text></View><View style={{ flex: 1 }}><Text selectable style={styles.actionTitle}>FSSAI needs one more document</Text><Text selectable style={styles.actionCopy}>Upload a clearer address proof for the premises.</Text></View></View><Button title="Resolve now" variant="secondary" onPress={() => router.push('/query')} /></Card>
+        <Button title="＋  Start something new" variant="secondary" onPress={() => router.push('/onboarding/intent' as never)} />
         <Button title="✦  Ask RegisterBox AI" onPress={() => router.push('/(tabs)/ai')} />
       </View>
     </Screen>
