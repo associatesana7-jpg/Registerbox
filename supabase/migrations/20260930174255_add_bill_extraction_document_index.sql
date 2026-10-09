@@ -1,0 +1,1 @@
+create index gst_bill_extractions_document_idx on public.gst_bill_extractions(document_id);

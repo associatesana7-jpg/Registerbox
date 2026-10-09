@@ -1,32 +1,29 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect } from 'react';
+import { Text, View } from 'react-native';
 
-import { Brand, Button, Screen } from '@/components/registerbox-ui';
 import { TownIllustration } from '@/components/illustrations';
+import { Brand, Button, Screen } from '@/components/registerbox-ui';
 import { palette } from '@/constants/design';
+import { useApp } from '@/hooks/use-app';
 
 export default function SplashScreen() {
-  return (
-    <LinearGradient colors={['#06143B', '#0B2460', '#0E3375']} style={{ flex: 1 }}>
-      <Screen dark footer={<Button title="Get Started" icon="→" onPress={() => router.push('/auth')} />}>
-        <View style={styles.top}><Brand light /></View>
-        <View style={styles.copy}>
-          <Text selectable style={styles.hero}>Start.{`\n`}Run.{`\n`}Stay Compliant.</Text>
-          <Text selectable style={styles.sub}>Your AI-powered partner for all business registrations and licences.</Text>
-        </View>
-        <TownIllustration />
-        <View style={styles.trust}><Text style={styles.trustText}>◉  Trusted by 10,000+ Businesses</Text></View>
-      </Screen>
-    </LinearGradient>
-  );
+  const { session, loadingSession } = useApp();
+  useEffect(() => {
+    if (loadingSession || !session) return;
+    router.replace('/(tabs)');
+  }, [loadingSession, session]);
+  return <LinearGradient colors={['#FFFFFF', '#F0F8FF', '#E6F4FF']} style={{ flex: 1 }}>
+    <Screen footer={<Button title={loadingSession ? 'Loading your account…' : 'Get Started'} icon="→" disabled={loadingSession} onPress={() => router.push('/auth')} />}>
+      <View style={{ alignItems: 'center', paddingTop: 32 }}><Brand /></View>
+      <View style={{ alignItems: 'center', paddingTop: 72, gap: 16 }}>
+        <View style={{ width: 86, height: 86, backgroundColor: '#E0EFFF', borderRadius: 26, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: palette.blue, fontSize: 55, fontWeight: '900' }}>◇</Text></View>
+        <Text selectable style={{ color: palette.ink, fontSize: 33, fontWeight: '900', letterSpacing: -1.4 }}>Register<Text style={{ color: palette.blue }}>Box</Text></Text>
+        <Text selectable style={{ color: palette.muted, fontSize: 15 }}>Start. Run. Stay Compliant.</Text>
+      </View>
+      <View style={{ flex: 1, minHeight: 270, justifyContent: 'flex-end', paddingTop: 26 }}><TownIllustration /></View>
+      <Text selectable style={{ color: palette.muted, textAlign: 'center', fontSize: 11, paddingTop: 14 }}>Registrations · Licences · Compliance, in one place</Text>
+    </Screen>
+  </LinearGradient>;
 }
-
-const styles = StyleSheet.create({
-  top: { paddingTop: 6 },
-  copy: { flex: 1, justifyContent: 'center', paddingVertical: 44 },
-  hero: { color: palette.white, fontSize: 42, lineHeight: 48, letterSpacing: -1.2, fontWeight: '900' },
-  sub: { color: '#E1E9FF', fontSize: 16, lineHeight: 23, maxWidth: 320, paddingTop: 18 },
-  trust: { alignItems: 'center', paddingTop: 18 },
-  trustText: { color: '#C6D5FB', fontSize: 11, fontWeight: '700' },
-});

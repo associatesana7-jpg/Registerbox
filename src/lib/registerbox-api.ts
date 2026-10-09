@@ -1,4 +1,5 @@
 import * as DocumentPicker from 'expo-document-picker';
+import { File } from 'expo-file-system';
 
 import type { ComplianceItem } from '@/data/demo';
 import { supabase } from '@/lib/supabase';
@@ -50,9 +51,9 @@ export type BusinessIdentityResult = {
   lastUpdatedAt?: string | null;
 };
 
-export async function verifyBusinessIdentity(identifierType: 'PAN' | 'GSTIN', identifier: string, name?: string, dateOfBirth?: string) {
+export async function verifyBusinessIdentity(identifierType: 'PAN' | 'GSTIN', identifier: string, name?: string, dateOfBirth?: string, businessId?: string) {
   const { data, error } = await supabase.functions.invoke<BusinessIdentityResult>('verify-business-identity', {
-    body: { identifierType, identifier, name, dateOfBirth, consent: true },
+    body: { identifierType, identifier, name, dateOfBirth, businessId, consent: true },
   });
   if (error) {
     const context = error.context as Response | undefined;
@@ -78,11 +79,11 @@ export async function saveBusiness(input: BusinessInput) {
   if (!userData.user) throw new Error('Please sign in again to save your business.');
   const { data: business, error } = await supabase.from('business_profiles').insert({
     user_id: userData.user.id, created_by: userData.user.id, legal_name: input.legalName,
-    trade_name: input.tradeName || input.legalName, entity_type: input.entityType || 'Proprietorship', constitution: input.entityType || 'Proprietorship',
-    pan: input.pan || null, gstin: input.gstin || null, business_category: 'Restaurant',
-    business_subcategory: 'Food Service', annual_turnover: input.turnover, employee_count: input.employees,
+    trade_name: input.tradeName || input.legalName, entity_type: input.entityType || null, constitution: input.entityType || null,
+    pan: input.pan || null, gstin: input.gstin || null,
+    annual_turnover: input.turnover, employee_count: input.employees,
     email: userData.user.email ?? null,
-    questionnaire: { dine_in: input.dineIn, alcohol: input.alcohol, online_delivery: true, premises: 'rented' },
+    questionnaire: { dine_in: input.dineIn, alcohol: input.alcohol },
     status: 'active',
   }).select('id').single();
   if (error) throw error;
@@ -122,17 +123,88 @@ export async function chooseAndUploadDocument(businessId: string, type: string) 
   const asset = picked.assets[0];
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) throw new Error('Please sign in again to upload documents.');
-  const bytes = await (await fetch(asset.uri)).arrayBuffer();
+  if (asset.size && asset.size > 10 * 1024 * 1024) throw new Error('Choose a PDF or image smaller than 10 MB.');
+  const bytes = process.env.EXPO_OS === 'web' && asset.file
+    ? await asset.file.arrayBuffer()
+    : await new File(asset.uri).arrayBuffer();
+  if (!bytes.byteLength || bytes.byteLength > 10 * 1024 * 1024) throw new Error('The document must be between 1 byte and 10 MB.');
   const safeName = asset.name.replace(/[^a-zA-Z0-9._-]/g, '-');
   const path = `${userData.user.id}/${businessId}/${Date.now()}-${safeName}`;
   const { error: uploadError } = await supabase.storage.from('business-documents').upload(path, bytes, { contentType: asset.mimeType ?? 'application/octet-stream' });
-  if (uploadError) throw uploadError;
+  if (uploadError) throw new Error(uploadError.message);
   const { data, error } = await supabase.from('documents').insert({
     business_id: businessId, type, storage_path: path, original_filename: asset.name,
     mime_type: asset.mimeType ?? 'application/octet-stream', uploaded_by: userData.user.id,
   }).select('id, original_filename').single();
-  if (error) throw error;
+  if (error) {
+    await supabase.storage.from('business-documents').remove([path]);
+    throw new Error(error.message);
+  }
   return data;
+}
+
+export type BillExtraction = {
+  extractionId: string;
+  documentId: string;
+  filename: string;
+  model: string;
+  confidence: number;
+  warnings: string[];
+  status: 'extracted' | 'reviewed' | 'added_to_books';
+  extracted: {
+    supplierName: string | null;
+    supplierGstin: string | null;
+    buyerGstin: string | null;
+    invoiceNumber: string | null;
+    invoiceDate: string | null;
+    documentKind: 'INV' | 'C' | 'D';
+    taxableValue: number | null;
+    igst: number | null;
+    cgst: number | null;
+    sgst: number | null;
+    cess: number | null;
+    invoiceTotal: number | null;
+    confidence: number;
+    warnings: string[];
+  };
+};
+
+export async function chooseAndExtractGstBill(businessId: string) {
+  const picked = await DocumentPicker.getDocumentAsync({ type: ['image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true });
+  if (picked.canceled) return null;
+  const asset = picked.assets[0];
+  const { data: userData } = await supabase.auth.getUser();
+  if (!userData.user) throw new Error('Please sign in again to upload a bill.');
+  if (asset.size && asset.size > 10 * 1024 * 1024) throw new Error('Choose a JPG, PNG, or WEBP bill image smaller than 10 MB.');
+  const bytes = process.env.EXPO_OS === 'web' && asset.file ? await asset.file.arrayBuffer() : await new File(asset.uri).arrayBuffer();
+  if (!bytes.byteLength || bytes.byteLength > 10 * 1024 * 1024) throw new Error('The bill image must be between 1 byte and 10 MB.');
+  const mimeType = asset.mimeType || (asset.name.toLowerCase().endsWith('.png') ? 'image/png' : asset.name.toLowerCase().endsWith('.webp') ? 'image/webp' : 'image/jpeg');
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(mimeType)) throw new Error('Bill AI currently supports JPG, PNG, and WEBP images.');
+  const safeName = asset.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+  const path = `${userData.user.id}/${businessId}/${Date.now()}-${safeName}`;
+  const { error: uploadError } = await supabase.storage.from('business-documents').upload(path, bytes, { contentType: mimeType });
+  if (uploadError) throw new Error(uploadError.message);
+  const { data: document, error: documentError } = await supabase.from('documents').insert({
+    business_id: businessId, type: 'GST_PURCHASE_BILL', storage_path: path, original_filename: asset.name,
+    mime_type: mimeType, uploaded_by: userData.user.id, source: 'USER_INPUT', ocr_status: 'pending',
+  }).select('id').single();
+  if (documentError) {
+    await supabase.storage.from('business-documents').remove([path]);
+    throw new Error(documentError.message);
+  }
+  return invokeOrThrow<BillExtraction>('bill-extractor', { action: 'extract', businessId, documentId: document.id });
+}
+
+export type ReviewedBillPurchase = {
+  supplier: string; number: string; date: string; kind: 'INV' | 'C' | 'D';
+  taxable: number; igst: number; cgst: number; sgst: number; cess: number;
+};
+
+export function addExtractedBillToBooks(businessId: string, extractionId: string, year: number, month: number, purchase: ReviewedBillPurchase) {
+  return invokeOrThrow<{ extractionId: string; purchase: { books: ReviewedBillPurchase[]; revision: number } }>('bill-extractor', {
+    action: 'add_to_books', businessId, extractionId, year, month, purchase, consent: true,
+    approvalText: 'I reviewed this bill and approve adding it to GST purchase books.',
+  });
 }
 
 export type OnboardingQuestion = {
@@ -190,6 +262,18 @@ export function saveOnboardingAnswer(sessionId: string, fieldKey: string, value:
 
 export function getNextOnboardingQuestion(sessionId: string) {
   return invokeOrThrow<{ complete: boolean; nextQuestion: OnboardingQuestion | null; businessId: string | null }>('onboarding-engine', { action: 'next', sessionId });
+}
+
+export function askRegisterBoxAi(question: string, providerConsent: boolean, businessId?: string) {
+  return invokeOrThrow<{ answer: string; confidence: number; missingFacts: string[]; suggestedAction: string | null; actions: import('../../supabase/functions/_shared/gst-assistant-knowledge').GstAiAction[]; knowledgeVersion: string; source: 'qwen'|'workflow_guide' }>('registerbox-ai', { question, providerConsent, businessId });
+}
+
+export function startDocumentLocker(businessId: string) {
+  return invokeOrThrow<{ sessionId: string; authorizationUrl: string }>('document-locker', { action: 'start', businessId, consent: true });
+}
+
+export function fetchLockerDocuments(businessId: string, sessionId: string) {
+  return invokeOrThrow<{ status: string; imported: number }>('document-locker', { action: 'fetch', businessId, sessionId });
 }
 
 export async function ensureDraftBusiness(intentId: string, suggestedName?: string) {

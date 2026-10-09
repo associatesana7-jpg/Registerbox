@@ -56,7 +56,7 @@ Deno.serve(async (request) => {
 
     const identifierHash = await sha256(identifier);
     const cacheSince = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { data: cached } = identifierType === 'GSTIN' ? await supabase
+    const { data: cached } = identifierType === 'GSTIN' && body.useCache === true ? await supabase
       .from('kyc_verifications')
       .select('id, status, normalized_data, verified_at')
       .eq('identifier_type', identifierType)
@@ -132,7 +132,7 @@ Deno.serve(async (request) => {
           'authorization': accessToken,
           'x-api-key': apiKey,
           'x-api-version': identifierType === 'GSTIN' ? '1.3.0' : '1.0.0',
-          'x-accept-cache': 'true',
+          'x-accept-cache': 'false',
         },
         body: JSON.stringify(providerBody),
         signal: AbortSignal.timeout(25_000),
@@ -176,9 +176,16 @@ Deno.serve(async (request) => {
     };
 
     const verifiedAt = new Date().toISOString();
+    let businessId: string | null = null;
+    if (typeof body.businessId === 'string') {
+      const { data: owned } = await supabase.from('business_profiles').select('id').eq('id', body.businessId).is('deleted_at', null).maybeSingle();
+      if (!owned) return json({ error: 'Business not found in your account.' }, 403);
+      businessId = owned.id;
+    }
     const consentPurpose = 'Verify business identity and determine applicable registrations and licences.';
     const { data: verification, error: insertError } = await supabase.from('kyc_verifications').insert({
       user_id: authData.user.id,
+      business_id: businessId,
       identifier_type: identifierType,
       identifier_hash: identifierHash,
       identifier_last_four: identifier.slice(-4),
@@ -190,6 +197,11 @@ Deno.serve(async (request) => {
       verified_at: verifiedAt,
     }).select('id').single();
     if (insertError) throw insertError;
+    if (valid && businessId) {
+      const patch = identifierType === 'PAN' ? { pan: identifier } : { gstin: identifier, legal_name: normalizedData.legalName, trade_name: normalizedData.tradeName, entity_type: normalizedData.entityType };
+      const { error: saveError } = await supabase.from('business_profiles').update(patch).eq('id', businessId);
+      if (saveError) return json({ error: 'Verified by the provider, but profile saving failed. Please retry.' }, 500);
+    }
 
     return json({
       verificationId: verification.id,

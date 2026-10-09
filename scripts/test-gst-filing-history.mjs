@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {parseFilingHistory,filingBlock} from '../supabase/functions/_shared/gst-filing-history.ts';
+const row={rtntype:'GSTR1',ret_prd:'082026',status:'Filed',arn:'TEST-ARN',valid:'N',dof:'10-09-2026'};
+const history=parseFilingHistory({status_cd:'1',data:{EFiledlist:[row,{...row,rtntype:'GSTR3B',ret_prd:'072026'}]}},'082026');
+assert.equal(history.records.length,1);
+assert.equal(filingBlock(history,'gstr-1').record.arn,'TEST-ARN');
+assert.equal(filingBlock(history,'gstr-3b'),null);
+assert.equal(filingBlock(parseFilingHistory({status_cd:1,data:{}},'082026'),'gstr-1'),null);
+assert.throws(()=>parseFilingHistory({status_cd:0,data:{}},'082026'));
+assert.throws(()=>parseFilingHistory({status_cd:1,data:{unexpected:true}},'082026'));
+assert.throws(()=>parseFilingHistory({status_cd:1,data:{EFiledlist:[{}]}},'082026'));
+assert.ok(filingBlock(parseFilingHistory({status_cd:1,data:{EFiledlist:[{...row,status:'Submitted'}]}},'082026'),'GSTR-1'));
+console.log('Filing-history tests passed: period isolation, filed/valid-N blocking, pending blocking, unavailable fail-closed. No live writes.');

@@ -34,7 +34,8 @@ Deno.serve(async (request) => {
   const nextQuestion = nextRows?.[0] ?? null;
   let businessId: string | null = null;
   if (!nextQuestion) {
-    const { data: intent } = await supabase.from('business_intents').select('id,existing_business_id,industry,subindustry,entity_preference').eq('id', session.intent_id).single();
+    const { data: intent, error: intentError } = await supabase.from('business_intents').select('id,existing_business_id,industry,subindustry,entity_preference,location_state,location_city').eq('id', session.intent_id).single();
+    if (intentError || !intent) return json({ error: 'Could not read the saved business goal. Please retry.' }, 500);
     const { data: answers } = await supabase.from('onboarding_answers').select('question_key,answer_json').eq('session_id', sessionId);
     const answerRows = answers ?? [];
     const legalName = answerValue(answerRows, 'business.legal_name');
@@ -68,7 +69,8 @@ Deno.serve(async (request) => {
       await supabase.from('business_intents').update({ existing_business_id: businessId }).eq('id', session.intent_id);
       await supabase.from('business_members').upsert({ business_id: businessId, user_id: auth.user.id, role: 'OWNER', status: 'active' }, { onConflict: 'business_id,user_id' });
     } else {
-      await supabase.from('business_profiles').update(businessPatch).eq('id', businessId);
+      const { error: updateError } = await supabase.from('business_profiles').update(businessPatch).eq('id', businessId);
+      if (updateError) return json({ error: 'Could not save the business details. Your answers are saved; please retry.' }, 500);
     }
     const address = typeof gstData?.address === 'string' ? gstData.address : answerValue(answerRows, 'establishment.address');
     const city = typeof gstData?.city === 'string' ? gstData.city : null;
@@ -85,6 +87,7 @@ Deno.serve(async (request) => {
     }
     await supabase.from('onboarding_sessions').update({ status: 'COMPLETED', current_stage: 'analysis', current_question_key: null, completion_percentage: 100, completed_at: new Date().toISOString(), last_activity_at: new Date().toISOString() }).eq('id', sessionId);
     await supabase.from('business_intents').update({ status: 'READY_FOR_ANALYSIS' }).eq('id', session.intent_id);
+    await supabase.from('profiles').update({ onboarding_status: 'completed' }).eq('id', auth.user.id);
   } else {
     await supabase.from('onboarding_sessions').update({ current_stage: 'questions', current_question_key: nextQuestion.field_key, completion_percentage: nextQuestion.completion_percentage, last_activity_at: new Date().toISOString() }).eq('id', sessionId);
   }

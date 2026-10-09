@@ -3,10 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Segmented, flowStyles } from '@/components/flow-parts';
+import { FlowProgress, SoftNotice } from '@/components/experience';
 import { Badge, Button, Card, ErrorBanner, Field, PageHeader, Screen } from '@/components/registerbox-ui';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { type BusinessIdentityResult, verifyBusinessIdentity } from '@/lib/registerbox-api';
+import { saveVerifiedGstProfile } from '@/lib/business-profiles';
 
 type IdentifierType = 'PAN' | 'GSTIN';
 const patterns: Record<IdentifierType, RegExp> = {
@@ -15,7 +17,7 @@ const patterns: Record<IdentifierType, RegExp> = {
 };
 
 export default function IdentifyBusinessScreen() {
-  const { business, updateBusiness } = useApp();
+  const { business, updateBusiness, selectBusiness } = useApp();
   const [identifierType, setIdentifierType] = useState<IdentifierType>('PAN');
   const [value, setValue] = useState(business.pan === 'DEMO-PAN' ? '' : business.pan);
   const [panName, setPanName] = useState('');
@@ -43,12 +45,13 @@ export default function IdentifyBusinessScreen() {
     const timer = setTimeout(async () => {
       try {
         setLoading(true);
-        const verified = await verifyBusinessIdentity(identifierType, normalized, identifierType === 'PAN' ? panName.trim() : undefined, identifierType === 'PAN' ? dateOfBirth : undefined);
+        const verified = await verifyBusinessIdentity(identifierType, normalized, identifierType === 'PAN' ? panName.trim() : undefined, identifierType === 'PAN' ? dateOfBirth : undefined, identifierType==='PAN'?businessRef.current.id:undefined);
         if (currentRequest !== requestNumber.current) return;
         if (!verified.valid) {
           setError(`This ${identifierType} could not be verified as active.`);
           return;
         }
+        if(identifierType==='GSTIN'){const savedId=await saveVerifiedGstProfile(verified);await selectBusiness(savedId);if(currentRequest!==requestNumber.current)return;}
         setResult(verified);
         const currentBusiness = businessRef.current;
         updateBusinessRef.current({
@@ -74,7 +77,7 @@ export default function IdentifyBusinessScreen() {
       }
     }, 650);
     return () => clearTimeout(timer);
-  }, [consent, dateOfBirth, formatValid, identifierType, normalized, panDetailsValid, panName]);
+  }, [consent, dateOfBirth, formatValid, identifierType, normalized, panDetailsValid, panName,selectBusiness]);
 
   function switchType(next: string) {
     const selected = next as IdentifierType;
@@ -93,8 +96,9 @@ export default function IdentifyBusinessScreen() {
   }
 
   return (
-    <Screen footer={<Button title={result ? 'Continue' : 'Verify to continue'} icon={result ? '→' : undefined} disabled={!result || loading} onPress={() => router.push('/onboarding/business')} />}>
-      <PageHeader title="Let’s find your business" subtitle="Enter a PAN or GSTIN. We’ll securely verify it and fill the details available from official records." back={() => router.back()} />
+    <Screen footer={<Button title={result ? 'Continue' : 'Verify to continue'} icon={result ? '→' : undefined} disabled={!result || loading} onPress={() => router.replace('/(tabs)')} />}>
+      <PageHeader title={identifierType === 'PAN' ? 'Let’s get started with your PAN' : 'Let’s find your business with GSTIN'} subtitle="Verify an identifier to reuse business details available from connected records." back={() => router.back()} />
+      <FlowProgress current={1} total={4} labels={['Identity', 'Your goal', 'Business details', 'Compliance plan']} />
       <View style={flowStyles.stack}>
         <Segmented options={['PAN', 'GSTIN']} selected={identifierType} onSelect={switchType} />
         <Field placeholder={`Enter ${identifierType}`} autoCapitalize="characters" autoCorrect={false} maxLength={identifierType === 'PAN' ? 10 : 15} value={value} onChangeText={(text) => { requestNumber.current += 1; setValue(text.toUpperCase()); setResult(null); setError(''); }} />
@@ -102,7 +106,7 @@ export default function IdentifyBusinessScreen() {
         {identifierType === 'PAN' && <>
           <Text style={styles.panNotice}>Sandbox PAN verification matches the details you provide; it does not disclose a person’s name from a PAN number.</Text>
           <Field label="Name as per PAN" placeholder="Legal name or PAN holder name" value={panName} onChangeText={(text) => { requestNumber.current += 1; setPanName(text); setResult(null); setError(''); }} autoCapitalize="words" />
-          <Field label="DOB / date of incorporation" placeholder="DD/MM/YYYY" value={dateOfBirth} onChangeText={(text) => { requestNumber.current += 1; setDateOfBirth(text); setResult(null); setError(''); }} keyboardType="number-pad" maxLength={10} />
+          <Field label="DOB / date of incorporation" placeholder="DD/MM/YYYY" value={dateOfBirth} onChangeText={(text) => { requestNumber.current += 1; const digits = text.replace(/\D/g, '').slice(0, 8); setDateOfBirth(digits.replace(/^(\d{2})(\d)/, '$1/$2').replace(/^(\d{2}\/\d{2})(\d)/, '$1/$2')); setResult(null); setError(''); }} keyboardType="number-pad" maxLength={10} />
         </>}
         <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: consent }} onPress={toggleConsent} style={styles.consentRow}>
           <View style={[styles.checkbox, consent && styles.checkboxSelected]}>{consent && <Text style={styles.check}>✓</Text>}</View>
@@ -119,7 +123,7 @@ export default function IdentifyBusinessScreen() {
           {result.address && <Detail label="Principal address" value={result.address} />}
           <Text style={styles.source}>Source: government registry via Sandbox.co.in • checked {new Date(result.verifiedAt).toLocaleString()}</Text>
         </Card>}
-        <View style={styles.security}><Text style={styles.securityTitle}>🔒 Private by design</Text><Text style={styles.small}>Verification credentials stay in Supabase. We keep an audit fingerprint and the business details needed for compliance—not a second raw copy of the identifier.</Text></View>
+        <SoftNotice icon="♙" title="Private by design" detail="Verification credentials stay on the server. We keep an audit fingerprint and the business details needed for compliance—not a second raw copy of your identifier." />
       </View>
     </Screen>
   );
@@ -135,5 +139,4 @@ const styles = StyleSheet.create({
   consentText: { flex: 1, color: palette.muted, fontSize: 11, lineHeight: 17 }, verifying: { color: palette.blue, fontSize: 14, fontWeight: '800' }, small: { color: palette.muted, fontSize: 11, lineHeight: 17 },
   resultHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 }, resultTitle: { color: palette.green, fontWeight: '900', fontSize: 14 }, businessName: { color: palette.ink, fontSize: 19, fontWeight: '900' },
   detail: { flexDirection: 'row', gap: 12 }, detailLabel: { width: 92, color: palette.muted, fontSize: 11 }, detailValue: { flex: 1, color: palette.ink, fontSize: 12, fontWeight: '700' }, source: { color: palette.muted, fontSize: 10, lineHeight: 15, borderTopWidth: 1, borderTopColor: palette.line, paddingTop: 10 },
-  security: { backgroundColor: palette.sky, borderRadius: 14, padding: 14, gap: 5 }, securityTitle: { color: palette.blue, fontWeight: '800', fontSize: 12 },
 });

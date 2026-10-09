@@ -296,6 +296,13 @@ verify_jwt = true
 [functions.onboarding-engine]
 verify_jwt = true
 
+[functions.registerbox-ai]
+verify_jwt = true
+
+[functions.document-locker]
+# GET is a public, static consent return page; every POST validates the user's JWT.
+verify_jwt = false
+
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
 [auth.sms.twilio]
 enabled = false
@@ -417,6 +424,12 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 
 # pg-delta is the schema diff engine for db diff / db pull / db remote commit.
 # Set enabled = false to fall back to the legacy migra engine.
+[functions.gst-workspace]
+verify_jwt = true
+
+[functions.gst-returns]
+verify_jwt = true
+
 [experimental.pgdelta]
 enabled = true
 # Directory under `supabase/` where declarative files are written.

@@ -19,8 +19,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
-      ,"package": "in.registerbox.app"
+      "predictiveBackGestureEnabled": false,
+      "package": "in.registerbox.app"
     },
     "web": {
       "output": "static",
@@ -41,6 +41,19 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "owner": "kartpinindia",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "351fe150-5d6d-4aca-a9d6-02d775fc2555"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/351fe150-5d6d-4aca-a9d6-02d775fc2555"
+    },
+    "runtimeVersion": {
+      "policy": "fingerprint"
     }
   }
 }

@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 
@@ -17,7 +18,7 @@ export default function AccountScreen() {
       <Card><Text selectable style={styles.business}>{business.legalName}</Text><Text style={styles.type}>Proprietorship • Bengaluru</Text></Card>
       <View style={styles.stack}>{settings.map((item, index) => <View key={item} style={styles.row}><Text style={styles.icon}>{['♧', '◫', '▥', '◉', '♢'][index]}</Text><Text selectable style={styles.label}>{item}</Text><Switch value={enabled[item]} onValueChange={(value) => setEnabled((current) => ({ ...current, [item]: value }))} trackColor={{ false: '#D9E1EE', true: palette.blue }} /></View>)}</View>
       <Card><Text style={styles.promise}>Your business. Our Autopilot. Always.</Text><Text selectable style={styles.copy}>Actions requiring OTP, eSign, DSC, consent or legal approval will always come back to you.</Text></Card>
-      {!demoMode && <Text onPress={() => supabase.auth.signOut()} style={styles.signOut}>Sign out</Text>}
+      {!demoMode && <Text onPress={async () => { await supabase.auth.signOut(); router.replace('/auth'); }} style={styles.signOut}>Sign out</Text>}
     </Screen>
   );
 }
