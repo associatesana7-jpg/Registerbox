@@ -22,14 +22,14 @@ export function Screen({ children, footer, dark = false, padded = true, header }
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   return (
-    <View style={[styles.page, { backgroundColor: dark ? palette.navy : palette.pale }]}>
+    <View style={[styles.page, { backgroundColor: dark ? palette.navy : palette.pale, paddingTop: insets.top }]}>
       <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
+        contentInsetAdjustmentBehavior="never"
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: Math.max(insets.top, 18), paddingBottom: Math.max(insets.bottom, 20) + (footer ? 88 : 0) },
-          padded && { paddingHorizontal: width > 700 ? 32 : 20 },
+          { paddingTop: 20, paddingBottom: Math.max(insets.bottom, 24) + (footer ? 82 : 0) },
+          padded && { paddingHorizontal: width > 700 ? 32 : 18 },
         ]}>
         <View style={styles.contentWidth}>{header}{children}</View>
       </ScrollView>
@@ -79,21 +79,21 @@ export function ErrorBanner({ message }: { message?: string }) { if (!message) r
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
-  scrollContent: { flexGrow: 1, alignItems: 'center', gap: 20 },
+  scrollContent: { flexGrow: 1, alignItems: 'center', gap: 18 },
   contentWidth: { width: '100%', maxWidth: contentWidth, alignSelf: 'center' },
-  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingTop: 12, paddingHorizontal: 20, backgroundColor: 'rgba(255,255,255,0.96)', borderTopWidth: 1, borderTopColor: palette.line },
+  footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingTop: 12, paddingHorizontal: 18, backgroundColor: 'rgba(255,255,255,0.98)', borderTopWidth: 1, borderTopColor: palette.line },
   brandRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  logo: { width: 34, height: 34, borderRadius: 10, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '10deg' }] },
+  logo: { width: 34, height: 34, borderRadius: 9, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-6deg' }] },
   logoText: { color: palette.white, fontWeight: '900', fontSize: 19 },
-  brandText: { fontSize: 20, color: palette.ink, fontWeight: '800', letterSpacing: -0.5 },
+  brandText: { fontSize: 20, color: palette.ink, fontWeight: '900', letterSpacing: -0.7 },
   pageHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingBottom: 20 },
   back: { color: palette.ink, fontSize: 34, lineHeight: 34 },
-  h1: { color: palette.ink, fontWeight: '800', fontSize: 25, lineHeight: 31, letterSpacing: -0.5 },
+  h1: { color: palette.ink, fontWeight: '900', fontSize: 27, lineHeight: 32, letterSpacing: -0.7 },
   subtitle: { color: palette.muted, fontSize: 14, lineHeight: 20, paddingTop: 5 },
-  button: { minHeight: 52, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
-  buttonText: { color: palette.white, fontWeight: '800', fontSize: 15 },
+  button: { minHeight: 54, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
+  buttonText: { color: palette.white, fontWeight: '800', fontSize: 14 },
   buttonTextSecondary: { color: palette.blue },
-  secondaryButton: { backgroundColor: palette.white, borderWidth: 1.5, borderColor: palette.blue },
+  secondaryButton: { backgroundColor: palette.white, borderWidth: 1, borderColor: '#B7D0FF' },
   ghostButton: { minHeight: 44, backgroundColor: 'transparent' },
   darkButton: { backgroundColor: palette.navy2 },
   pressed: { opacity: 0.8, transform: [{ scale: 0.992 }] },
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   fieldWrap: { minHeight: 52, flexDirection: 'row', alignItems: 'center', backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.sm, overflow: 'hidden' },
   field: { flex: 1, minHeight: 50, color: palette.ink, fontSize: 15, paddingHorizontal: 14 },
   prefix: { color: palette.green, fontWeight: '800', paddingLeft: 14, paddingRight: 4 },
-  card: { backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.md, padding: 16, gap: 12, boxShadow: '0 8px 24px rgba(21, 63, 135, 0.07)' },
+  card: { backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.md, padding: 16, gap: 12, boxShadow: '0 6px 20px rgba(21, 63, 135, 0.055)' },
   badge: { alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 5 },
   badgeText: { fontSize: 10, fontWeight: '800' },
   choice: { minHeight: 58, borderWidth: 1, borderColor: palette.line, borderRadius: radius.sm, paddingHorizontal: 14, paddingVertical: 11, backgroundColor: palette.white, flexDirection: 'row', alignItems: 'center', gap: 12 },

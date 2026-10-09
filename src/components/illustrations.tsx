@@ -4,11 +4,17 @@ import { StyleSheet, Text, View } from 'react-native';
 import { palette } from '@/constants/design';
 
 export function TownIllustration() {
-  return <View style={styles.town}><View style={styles.moon} /><Shop color="#1464C8" label="CAFE" /><Shop color="#6B4AC9" label="CAVE" tall /><View style={styles.road} /></View>;
-}
-
-function Shop({ color, label, tall }: { color: string; label: string; tall?: boolean }) {
-  return <View style={[styles.shop, { backgroundColor: color, height: tall ? 124 : 105 }]}><View style={styles.awning}><Text style={styles.shopText}>{label}</Text></View><View style={styles.window} /><View style={styles.door} /></View>;
+  const buildings = [70, 92, 122, 83, 112, 78, 138, 95, 115, 74];
+  return <View style={styles.town}>
+    <View style={styles.skyGlow} />
+    <View style={styles.skyline}>{buildings.map((height,index)=><View key={index} style={[styles.skyBuilding,{height,width:index%3===0?34:28,opacity:index%2===0?0.7:0.45}]}>
+      {index%3===0?<View style={styles.skyDome}/>:null}
+      {index%4===0?<View style={styles.spire}/>:null}
+      <View style={styles.skyWindows}><View style={styles.skyWindow}/><View style={styles.skyWindow}/></View>
+    </View>)}</View>
+    <View style={styles.skyGround} />
+    <View style={styles.skyRoad} />
+  </View>;
 }
 
 export function BotIllustration({ rocket = false }: { rocket?: boolean }) {
@@ -21,14 +27,16 @@ export function DocumentCelebration() {
 }
 
 const styles = StyleSheet.create({
-  town: { height: 210, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', gap: 14, position: 'relative' },
-  moon: { position: 'absolute', right: 30, top: 10, width: 58, height: 58, borderRadius: 30, backgroundColor: 'rgba(159,111,255,0.3)' },
-  shop: { width: 108, borderRadius: 8, alignItems: 'center', paddingTop: 12, boxShadow: '0 12px 30px rgba(0,0,0,0.24)' },
-  awning: { position: 'absolute', top: -14, width: 116, height: 29, backgroundColor: '#F0B15D', borderRadius: 5, alignItems: 'center', justifyContent: 'center' },
-  shopText: { fontSize: 10, fontWeight: '900', color: palette.white },
-  window: { width: 46, height: 35, marginTop: 20, borderRadius: 4, backgroundColor: '#80CFFF', borderWidth: 5, borderColor: '#153A71' },
-  door: { width: 30, height: 40, position: 'absolute', bottom: 0, backgroundColor: '#102E64', borderTopLeftRadius: 5, borderTopRightRadius: 5 },
-  road: { position: 'absolute', left: 0, right: 0, bottom: -7, height: 12, borderRadius: 8, backgroundColor: '#12356E' },
+  town: { height: 250, justifyContent: 'flex-end', position: 'relative', overflow: 'hidden' },
+  skyGlow: { position: 'absolute', alignSelf: 'center', top: 0, width: 280, height: 170, borderRadius: 160, backgroundColor: '#EDF6FF' },
+  skyline: { height: 170, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', gap: 3 },
+  skyBuilding: { backgroundColor: '#B6D9FB', borderTopLeftRadius: 9, borderTopRightRadius: 9, alignItems: 'center', paddingTop: 22 },
+  skyDome: { position: 'absolute', top: -15, width: 25, height: 22, borderTopLeftRadius: 15, borderTopRightRadius: 15, backgroundColor: '#A5D1FB' },
+  spire: { position: 'absolute', top: -27, width: 3, height: 28, backgroundColor: '#A5D1FB' },
+  skyWindows: { flexDirection: 'row', gap: 6 },
+  skyWindow: { width: 4, height: 7, borderRadius: 2, backgroundColor: '#F8FCFF' },
+  skyGround: { position: 'absolute', bottom: 0, height: 30, left: 0, right: 0, backgroundColor: '#C7E5FE', borderTopLeftRadius: 45, borderTopRightRadius: 45 },
+  skyRoad: { position: 'absolute', bottom: -95, alignSelf: 'center', height: 125, width: 140, backgroundColor: '#F6FAFF', borderTopLeftRadius: 70, borderTopRightRadius: 70 },
   botWrap: { alignItems: 'center', paddingVertical: 8 },
   botGlow: { width: 210, height: 190, borderRadius: 105, alignItems: 'center', justifyContent: 'center' },
   botHead: { width: 94, height: 67, borderRadius: 30, backgroundColor: palette.white, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#BFD4F8' },

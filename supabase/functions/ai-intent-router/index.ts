@@ -99,7 +99,7 @@ Deno.serve(async (request) => {
   } catch (error) {
     aiError = error instanceof Error ? error.message : String(error);
     console.error('Qwen classification fallback', aiError);
-    classification = fallback(message);
+    return json({ error: 'AI could not analyse your goal. Please retry. No business classification has been assumed.', code: 'AI_UNAVAILABLE' }, 503);
   }
 
   const existingBusinessId = typeof body.existingBusinessId === 'string' ? body.existingBusinessId : null;
@@ -122,6 +122,7 @@ Deno.serve(async (request) => {
   }
   const { data: session, error: sessionError } = await supabase.from('onboarding_sessions').insert({ user_id: auth.user.id, intent_id: intent.id, current_stage: 'discovery' }).select('id').single();
   if (sessionError) return json({ error: 'We could not create the onboarding session.' }, 500);
+  await supabase.from('profiles').update({ onboarding_status: 'in_progress' }).eq('id', auth.user.id);
 
   await supabase.from('ai_runs').insert({ user_id: auth.user.id, intent_id: intent.id, operation: 'INTENT_CLASSIFICATION', model, status: runStatus, latency_ms: latencyMs, output_json: classification, error_code: aiError?.slice(0, 120) ?? null });
   await supabase.from('domain_events').insert({ user_id: auth.user.id, intent_id: intent.id, event_type: 'BUSINESS_INTENT_CLASSIFIED', payload: { workflowPackCodes: classification.workflowPackCodes, source: runStatus } });

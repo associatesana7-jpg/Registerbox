@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import { validateDraft, reconcile, hash, unwrap } from '../supabase/functions/gst-returns/validation.ts';
+const gstin='29ABCDE1234F1Z5', period='082026';
+// Synthetic fixture only; never sent to any provider.
+const payload={gstin,fp:period,b2b:[{ctin:'29FGHIJ5678K1Z1',inv:[{inum:'TEST-1',idt:'10-08-2026',val:118,pos:'29',rchrg:'N',inv_typ:'R',itms:[{num:1,itm_det:{txval:100,rt:18,camt:9,samt:9,iamt:0,csamt:0}}]}]}]};
+assert.equal(validateDraft(payload,'gstr-1',gstin,period),payload);
+const copy=()=>structuredClone(payload);
+let bad=copy();bad.b2b[0].inv.push(structuredClone(bad.b2b[0].inv[0]));assert.throws(()=>validateDraft(bad,'gstr-1',gstin,period),/Duplicate/);
+bad=copy();bad.b2b[0].inv[0].idt='31-02-2026';assert.throws(()=>validateDraft(bad,'gstr-1',gstin,period),/real date/);
+bad=copy();bad.b2b[0].inv[0].val=200;assert.throws(()=>validateDraft(bad,'gstr-1',gstin,period),/value does not match/);
+bad=copy();bad.b2b[0].inv[0].pos='27';assert.throws(()=>validateDraft(bad,'gstr-1',gstin,period),/place of supply/);
+bad=copy();bad.supecoa=[];assert.throws(()=>validateDraft(bad,'gstr-1',gstin,period),/Nothing was dropped/);
+assert.throws(()=>validateDraft(payload,'gstr-1','DIFFERENT',period),/does not match/);
+assert.throws(()=>unwrap({status_cd:'0',data:{}}),/not confirmed/);
+const snapshot={sec_sum:[{sec_nm:'B2B',ttl_rec:1,ttl_tax:100,ttl_val:118,ttl_igst:0,ttl_cgst:9,ttl_sgst:9,ttl_cess:0}]};
+assert.equal(reconcile(payload,snapshot,'gstr-1').matched,true);
+assert.equal(reconcile(payload,{},'gstr-1').matched,false);
+const extra=structuredClone(snapshot);extra.sec_sum.push({sec_nm:'B2CS',ttl_tax:10});assert.equal(reconcile(payload,extra,'gstr-1').matched,false);
+assert.equal(await hash({b:2,a:1}),await hash({a:1,b:2}));
+assert.notEqual(await hash(payload),await hash({...payload,fp:'072026'}));
+console.log('GST return tests passed: invoice validation, identity, totals, additional portal data, response status and approval fingerprints.');

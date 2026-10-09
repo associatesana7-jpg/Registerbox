@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Badge, Button, Card, ErrorBanner, PageHeader, Screen } from '@/components/registerbox-ui';
+import { FlowProgress, SoftNotice } from '@/components/experience';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { chooseAndUploadDocument, ensureDraftBusiness, getNextOnboardingQuestion, saveOnboardingAnswer, verifyBusinessIdentity, type OnboardingQuestion } from '@/lib/registerbox-api';
@@ -11,7 +12,7 @@ const optionLabels: Record<string, string> = { DINE_IN: 'Dine-in', TAKEAWAY: 'Ta
 
 export default function DynamicOnboardingScreen() {
   const params = useLocalSearchParams<{ sessionId: string; intentId: string }>();
-  const { onboarding, updateBusiness } = useApp();
+  const { onboarding, updateBusiness, refreshAccount, setOnboarding } = useApp();
   const [question, setQuestion] = useState<OnboardingQuestion | null>(onboarding?.nextQuestion ?? null);
   const [value, setValue] = useState('');
   const [choice, setChoice] = useState<string[]>([]);
@@ -37,6 +38,7 @@ export default function DynamicOnboardingScreen() {
     if (!question) return;
     const result = await saveOnboardingAnswer(params.sessionId, question.field_key, answer, source, reference);
     if (result.businessId) updateBusiness({ id: result.businessId });
+    if (result.complete) { setOnboarding(null); await refreshAccount(); }
     setQuestion(result.nextQuestion); setComplete(result.complete); setValue(''); setChoice([]); setName(''); setDob('');
   }
 
@@ -81,19 +83,20 @@ export default function DynamicOnboardingScreen() {
 
   return (
     <Screen footer={<Button title={question?.expected_answer_type === 'document' ? 'Choose document' : 'Continue'} icon="→" loading={loading} disabled={!question} onPress={submit} />}>
-      <PageHeader title="A few focused questions" subtitle={onboarding?.classification.summary ?? 'We only ask for facts that change your compliance path.'} back={() => router.back()} />
-      <View style={styles.progressTrack}><View style={[styles.progressFill, { width: `${Math.max(6, progress)}%` }]} /></View><Text style={styles.progressText}>{progress}% profile complete</Text>
+      <PageHeader title={onboarding?.classification.industry?.toLowerCase().includes('food') ? "Let's set up your food business" : 'A few focused questions'} subtitle="We only ask for facts that change your compliance path." back={() => router.back()} />
+      <Text style={{color:palette.muted,fontSize:12,fontWeight:'700'}}>Your business profile</Text><FlowProgress current={Math.max(1, progress)} total={100} />
+      {onboarding?.classification.summary ? <SoftNotice title="What RegisterBox understood" detail={onboarding.classification.summary} /> : null}
       {onboarding?.workflowPacks?.length ? <View style={styles.packs}>{onboarding.workflowPacks.map((pack) => <Badge key={pack.id} label={pack.name} />)}</View> : null}
       {question && <Card><Text selectable style={styles.question}>{question.question_text}</Text>{question.help_text && <Text selectable style={styles.help}>{question.help_text}</Text>}
-        {(question.expected_answer_type === 'choice' || isRegistration) && <View style={styles.options}>{question.options_json.map((option) => <Pressable key={option} onPress={() => setChoice(question.expected_answer_type === 'choice' ? (choice.includes(option) ? choice.filter((item) => item !== option) : [...choice, option]) : [option])} style={[styles.option, choice.includes(option) && styles.optionSelected]}><Text style={[styles.optionText, choice.includes(option) && styles.optionTextSelected]}>{optionLabels[option] ?? option}</Text></Pressable>)}</View>}
+        {(question.expected_answer_type === 'choice' || isRegistration) && <View style={styles.options}>{question.options_json.map((option) => <Pressable accessibilityRole={question.expected_answer_type === 'choice' ? 'checkbox' : 'radio'} accessibilityState={{checked:choice.includes(option)}} key={option} onPress={() => setChoice(question.expected_answer_type === 'choice' ? (choice.includes(option) ? choice.filter((item) => item !== option) : [...choice, option]) : [option])} style={[styles.option, choice.includes(option) && styles.optionSelected]}><Text style={[styles.optionText, choice.includes(option) && styles.optionTextSelected]}>{optionLabels[option] ?? option}</Text><Text style={{color:choice.includes(option)?palette.blue:palette.muted,fontSize:20}}>{choice.includes(option)?'◉':'○'}</Text></Pressable>)}</View>}
         {(!['choice','document','registration'].includes(question.expected_answer_type) || (isRegistration && ['VERIFY_NUMBER','ENTER_NUMBER'].includes(choice[0]))) && <View style={styles.fields}><TextInput value={value} onChangeText={setValue} autoCapitalize={(isPan || isGst) ? 'characters' : 'sentences'} keyboardType={question.expected_answer_type === 'number' || isFssai ? 'number-pad' : 'default'} placeholder={prompt} placeholderTextColor="#8A98B5" style={styles.field} />{isPan && choice[0] === 'VERIFY_NUMBER' && <><TextInput value={name} onChangeText={setName} placeholder="Name exactly as on PAN" placeholderTextColor="#8A98B5" style={styles.field} /><TextInput value={dob} onChangeText={setDob} placeholder="DOB / incorporation date (DD/MM/YYYY)" placeholderTextColor="#8A98B5" style={styles.field} /></>}</View>}
       </Card>}
       <ErrorBanner message={error} />
-      <View style={styles.trust}><Text style={styles.trustTitle}>🔒 Your evidence stays private</Text><Text style={styles.trustCopy}>Uploads go directly to your private Supabase Storage path and are linked to your business record. AI keys and verification credentials never ship in the app.</Text></View>
+      <SoftNotice icon="♙" title="Your evidence stays private" detail="Uploads are stored in a private business document path. Verification credentials never ship in the app." />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  progressTrack: { height: 7, backgroundColor: palette.line, borderRadius: 5, overflow: 'hidden' }, progressFill: { height: '100%', backgroundColor: palette.blue }, progressText: { color: palette.muted, fontSize: 10, textAlign: 'right', marginTop: -12 }, packs: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' }, question: { color: palette.ink, fontSize: 20, lineHeight: 27, fontWeight: '900' }, help: { color: palette.muted, fontSize: 12, lineHeight: 18 }, options: { gap: 9 }, option: { minHeight: 48, borderWidth: 1, borderColor: palette.line, borderRadius: 11, paddingHorizontal: 13, justifyContent: 'center' }, optionSelected: { borderColor: palette.blue, backgroundColor: palette.sky }, optionText: { color: palette.ink, fontWeight: '700', fontSize: 13 }, optionTextSelected: { color: palette.blue }, fields: { gap: 9 }, field: { minHeight: 50, borderWidth: 1, borderColor: palette.line, borderRadius: 11, paddingHorizontal: 13, color: palette.ink, backgroundColor: palette.white }, trust: { padding: 14, borderRadius: 12, backgroundColor: '#F5F8FD' }, trustTitle: { color: palette.ink, fontWeight: '800', fontSize: 11 }, trustCopy: { color: palette.muted, fontSize: 10, lineHeight: 15, paddingTop: 5 }, completeTitle: { color: palette.ink, fontSize: 21, fontWeight: '900' },
+  packs: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' }, question: { color: palette.ink, fontSize: 20, lineHeight: 27, fontWeight: '900' }, help: { color: palette.muted, fontSize: 12, lineHeight: 18 }, options: { gap: 9 }, option: { minHeight: 54, borderWidth: 1, borderColor: palette.line, borderRadius: 13, paddingHorizontal: 13, justifyContent: 'space-between',alignItems:'center', flexDirection:'row' }, optionSelected: { borderColor: palette.blue, backgroundColor: palette.sky }, optionText: { color: palette.ink, fontWeight: '700', fontSize: 13 }, optionTextSelected: { color: palette.blue }, fields: { gap: 9 }, field: { minHeight: 50, borderWidth: 1, borderColor: palette.line, borderRadius: 11, paddingHorizontal: 13, color: palette.ink, backgroundColor: palette.white }, completeTitle: { color: palette.ink, fontSize: 21, fontWeight: '900' },
 });

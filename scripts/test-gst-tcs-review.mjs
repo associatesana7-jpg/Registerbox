@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {reviewOperatorTcs} from '../supabase/functions/_shared/gst-tcs-review.ts';
+const context={gstin:'29FGHIJ5678K1Z1',period:'092026',role:'operator'};
+const row={source:'Operator ledger',document:'INV-1',date:'2026-09-10',supplierGstin:'29ABCDE1234F1Z5',recipientGstin:'',operatorGstin:context.gstin,pos:'29',treatment:'section52',kind:'invoice',originalDocument:'',originalPeriod:'',taxable:100,igst:0,cgst:9,sgst:9,cess:0,tcsIgst:0,tcsCgst:0.25,tcsSgst:0.25};
+const credit={...row,kind:'credit_note',document:'CN-1',originalDocument:'INV-1',taxable:20,cgst:1.8,sgst:1.8,tcsCgst:0.05,tcsSgst:0.05};
+const result=reviewOperatorTcs([row,credit,{...row,document:'INV-2',treatment:'section9_5'}],context);
+assert.equal(result.issues.length,0);assert.equal(result.filingAvailable,false);
+assert.equal(result.groups[0].gross,100);assert.equal(result.groups[0].returned,20);assert.equal(result.groups[0].net,80);
+assert.equal(result.groups[0].tcsCgst,0.2,'TCS must never use invoice GST amounts');
+const missing=reviewOperatorTcs([{...row,tcsCgst:undefined}],context);
+assert.equal(missing.groups[0].tcsComplete,false);assert.match(missing.issues[0],/missing/);
+assert.match(reviewOperatorTcs([row,row],context).issues.join(' '),/duplicate/);
+assert.match(reviewOperatorTcs([{...row,supplierGstin:''}],context).issues.join(' '),/unregistered/);
+assert.match(reviewOperatorTcs([{...row,kind:'amendment',originalDocument:'OLD',originalPeriod:'082026'}],context).issues.join(' '),/original statement/);
+assert.throws(()=>reviewOperatorTcs([row],{...context,role:'seller'}),/operator/);
+console.log('TCS workpaper passed: supplier/POS grouping, separate supply/return values, explicit TCS heads, missing-source visibility, section-9(5) exclusion and no filing capability.');

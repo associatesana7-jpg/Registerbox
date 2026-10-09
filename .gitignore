@@ -46,3 +46,7 @@ example
 # Local UI test artifacts
 .playwright-cli/
 output/
+
+# Local configuration and dependencies
+.env
+node_modules
