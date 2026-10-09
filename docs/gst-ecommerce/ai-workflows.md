@@ -17,3 +17,7 @@ Table 15A review links acknowledged, reconciled, integrity-checked local filing 
 - Amendment evidence migration applied; draft table remains service-only with RLS.
 - No GST return was saved, offset, authorized or filed as a development test. No provider capability flags were enabled.
 - EAS project: kartpinindia/registerbox-ai, ID 351fe150-5d6d-4aca-a9d6-02d775fc2555. A linked project or JS bundle export alone is not an installed native release.
+
+## Mobile release verification
+
+The first Android preview failed because a shared node_modules symlink changed native autolinking paths and the runtime fingerprint between this computer and EAS. Release worktrees must use their own clean npm ci installation. Expo Doctor also identified SDK 57 patch updates; these are resolved through expo install --fix. Physical-device iOS distribution remains blocked on Apple signing credentials and provisioning.
