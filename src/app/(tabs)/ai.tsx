@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { GstAiWorkspace } from '@/components/gst-ai-workspace';
-import {GST_WORKFLOWS,GST_KNOWLEDGE_VERSION,safeGstActions,type GstAiAction} from '../../../supabase/functions/_shared/gst-assistant-knowledge';
+import { GstAiNilLauncher } from '@/components/gst-ai-nil-launcher';
+import {GST_WORKFLOWS,GST_KNOWLEDGE_VERSION,isNilFilingRequest,safeGstActions,type GstAiAction} from '../../../supabase/functions/_shared/gst-assistant-knowledge';
 import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { GstBillReview } from '@/components/gst-bill-review';
@@ -10,7 +11,7 @@ import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { addExtractedBillToBooks, askRegisterBoxAi, chooseAndExtractGstBill, type BillExtraction } from '@/lib/registerbox-api';
 
-const prompts = ['Do I need an FSSAI licence for a cloud kitchen?', 'Can I open another branch in Mysore?', 'Explain this GST notice', 'What licences do I need for a food truck?', 'Help me renew my trade licence'];
+const prompts = ['File my nil return', 'Do I need an FSSAI licence for a cloud kitchen?', 'Can I open another branch in Mysore?', 'Explain this GST notice', 'What licences do I need for a food truck?', 'Help me renew my trade licence'];
 
 export default function AiScreen() {
   const {business,session}=useApp();
@@ -19,7 +20,8 @@ export default function AiScreen() {
 function AiContent() {
   const { business } = useApp();
   const [actions,setActions]=useState<GstAiAction[]>([]);
-  const [workspace,setWorkspace]=useState<'platform'|'tcs'|null>(null);
+  const [nilForm,setNilForm]=useState<'gstr-1'|'gstr-3b'>('gstr-1');
+  const [workspace,setWorkspace]=useState<'platform'|'tcs'|'nil'|null>(null);
   const [knowledgeVersion,setKnowledgeVersion]=useState(GST_KNOWLEDGE_VERSION);
   const [answerSource,setAnswerSource]=useState('');
   const account=useRef(business.id);account.current=business.id;
@@ -35,6 +37,7 @@ function AiContent() {
   useEffect(()=>()=>{account.current='';},[]);
   function workflow(action:GstAiAction){
     if(!business.id){setError('Select a business profile first.');return;}
+    if(action==='file_nil'){setWorkspace('nil');return;}
     if(action==='upload_bill'){void uploadBill();return;}
     if(action==='upload_platform'||action==='review_tcs'){setWorkspace(action==='review_tcs'?'tcs':'platform');return;}
     if(action==='open_purchases')router.push('/gst-purchases');
@@ -43,6 +46,13 @@ function AiContent() {
   }
   async function ask(value = question) {
     if (!value.trim() || loading) return;
+    if(isNilFilingRequest(value)){
+      if(!business.id){setError('Select a GST business profile first.');return;}
+      setNilForm(/\bgstr[- ]?3b\b/i.test(value)?'gstr-3b':'gstr-1');
+      setError('');setQuestion('');setActions([]);setMissingFacts([]);setWorkspace('nil');
+      setAnswer('Let’s file your nil return. Confirm the return and month below, then select your saved signatory and authorize using the GST OTP.');
+      setAnswerSource('workflow_guide');setKnowledgeVersion(GST_KNOWLEDGE_VERSION);return;
+    }
     if(!providerConsent){setError('Tick the Groq consent box before sending an AI question.');return;}
     if(bill&&/\b(add|save|upload)\b.*\b(bill|invoice)\b.*\b(gst|book|purchase)/i.test(value)){
       setQuestion('');setAnswer('Your bill is ready below. Review every extracted field, tick the approval, and add it to the correct GST purchase period.');return;
@@ -66,7 +76,7 @@ function AiContent() {
         <ErrorBanner message={error} />
         <Pressable accessibilityRole="checkbox" accessibilityState={{checked:providerConsent}} onPress={()=>setProviderConsent(!providerConsent)} style={styles.consentRow}><Text style={styles.consentTick}>{providerConsent?'☑':'☐'}</Text><Text style={styles.consentText}>Send my redacted question and limited GST workflow status to Groq for this answer. PAN, GSTIN, Aadhaar, email and phone are removed first.</Text></Pressable>
         <View style={styles.billCard}><Text style={styles.answerLabel}>GST ACTIONS</Text><Text style={styles.answerText}>Upload reports here, then review and authorize filing in the GST workspace.</Text><Button title="Upload platform / POS CSV" variant="secondary" onPress={()=>workflow('upload_platform')}/><Button title="Review & file GST return" onPress={()=>workflow('open_gst')}/><Button title="GSTR-8 / TCS workpaper" variant="ghost" onPress={()=>workflow('review_tcs')}/></View>
-        {workspace&&business.id?<GstAiWorkspace key={business.id+workspace} businessId={business.id} operator={workspace==='tcs'}/>:null}
+        {workspace==='nil'&&business.id?<GstAiNilLauncher key={business.id+'nil'+nilForm} initialForm={nilForm}/>:workspace&&business.id?<GstAiWorkspace key={business.id+workspace} businessId={business.id} operator={workspace==='tcs'}/>:null}
         <View style={styles.billCard}><Text style={styles.answerLabel}>BILL TO GST BOOKS</Text><Text style={styles.answerText}>Upload a bill photo. Groq extracts a draft; you review and approve before it enters purchase books.</Text><Button title="Upload bill photo" variant="secondary" loading={billBusy} onPress={uploadBill}/></View>
         {loading ? <View style={styles.answer}><Text style={styles.answerLabel}>RegisterBox AI</Text><Text style={styles.answerText}>Checking your saved business profile and rule-backed compliance results…</Text></View> : answer ? <View style={styles.answer}><Text selectable style={styles.answerLabel}>RegisterBox AI</Text><Text selectable style={styles.answerText}>{answer}</Text>{missingFacts.length > 0 && <Text selectable style={styles.missing}>Still needed: {missingFacts.join(', ')}</Text>}<Text style={styles.confidence}>{answerSource==='workflow_guide'?'RegisterBox workflow guide':'AI guidance'} · Knowledge {knowledgeVersion}</Text></View> : <View style={styles.stack}>{prompts.map((prompt) => <Pressable key={prompt} onPress={() => ask(prompt)} style={styles.prompt}><Text style={styles.bubble}>◉</Text><Text selectable style={styles.promptText}>{prompt}</Text></Pressable>)}</View>}
         {actions.map(action=><Button key={action} title={GST_WORKFLOWS[action].label} variant="secondary" onPress={()=>workflow(action)}/>)}

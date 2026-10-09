@@ -21,3 +21,7 @@ Table 15A review links acknowledged, reconciled, integrity-checked local filing 
 ## Mobile release verification
 
 The first Android preview failed because a shared node_modules symlink changed native autolinking paths and the runtime fingerprint between this computer and EAS. Release worktrees must use their own clean npm ci installation. Expo Doctor also identified SDK 57 patch updates; these are resolved through expo install --fix. Physical-device iOS distribution remains blocked on Apple signing credentials and provisioning.
+
+## Direct nil intent
+
+Knowledge version 2026-10-09.2 recognizes "File my nil return" and the common spelling "nill" locally. This command opens the form/period selector without an external-model request. Explicit GSTR-3B selects that form; unsupported special forms do not open a GSTR-1 nil flow. The selected business remains fixed, and the route enters the existing nil declaration, saved signatory, OTP and filing workflow. No OTP is requested or return submitted from interpreting chat text.

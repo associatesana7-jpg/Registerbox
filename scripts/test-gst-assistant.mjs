@@ -29,3 +29,13 @@ assert.match(knowledge.redactAssistantText('OTP: 123456'),/REDACTED/);
 failModel=true;const fallback=await request({question:'How do I file GSTR-8?',providerConsent:true,businessId:'business-a'});
 assert.equal(fallback.body.source,'workflow_guide');assert.match(fallback.body.answer,/not connected/);assert.deepEqual(fallback.body.actions,['review_tcs']);
 console.log('GST AI handler passed: selected-business isolation, provider consent, redaction, shared capability knowledge, allowlisted actions and deterministic provider-outage fallback.');
+
+assert.deepEqual(knowledge.suggestedGstActions('File my nill return'),['file_nil']);
+assert.equal(knowledge.isNilFilingRequest("Don't file my nil return"),false);
+assert.equal(knowledge.isNilFilingRequest('What is a nil return?'),false);
+assert.deepEqual(knowledge.suggestedGstActions('File my nil GSTR-8'),['review_tcs']);
+assert.deepEqual(knowledge.safeGstActions(['file_nil','file_without_otp']),['file_nil']);
+
+assert.equal(knowledge.isNilFilingRequest('File nil GSTR-8'),false);
+assert.equal(knowledge.isNilFilingRequest('File nil GSTR-4'),false);
+assert.equal(knowledge.isNilFilingRequest('File my nil GSTR-3B'),true);
