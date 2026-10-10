@@ -1,7 +1,8 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 
-import { Card, PageHeader, Screen } from '@/components/registerbox-ui';
+import { Button, Card, PageHeader, Screen } from '@/components/registerbox-ui';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { supabase } from '@/lib/supabase';
@@ -15,9 +16,10 @@ export default function AccountScreen() {
     <Screen>
       <PageHeader title="We’ve got you covered" subtitle="RegisterBox monitors new compliance requirements and important updates." />
       <Card><Text selectable style={styles.business}>{business.legalName}</Text><Text style={styles.type}>Proprietorship • Bengaluru</Text></Card>
+      <Card><Text style={styles.business}>Tally integration</Text><Text style={styles.copy}>Connect your Tally company and upload accounting entries.</Text><Button title="Connect to Tally" onPress={() => router.push('/tally')} /></Card>
       <View style={styles.stack}>{settings.map((item, index) => <View key={item} style={styles.row}><Text style={styles.icon}>{['♧', '◫', '▥', '◉', '♢'][index]}</Text><Text selectable style={styles.label}>{item}</Text><Switch value={enabled[item]} onValueChange={(value) => setEnabled((current) => ({ ...current, [item]: value }))} trackColor={{ false: '#D9E1EE', true: palette.blue }} /></View>)}</View>
       <Card><Text style={styles.promise}>Your business. Our Autopilot. Always.</Text><Text selectable style={styles.copy}>Actions requiring OTP, eSign, DSC, consent or legal approval will always come back to you.</Text></Card>
-      {!demoMode && <Text onPress={() => supabase.auth.signOut()} style={styles.signOut}>Sign out</Text>}
+      {!demoMode && <Text onPress={async () => { await supabase.auth.signOut(); router.replace('/auth'); }} style={styles.signOut}>Sign out</Text>}
     </Screen>
   );
 }

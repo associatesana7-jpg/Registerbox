@@ -1,0 +1,49 @@
+REGISTERBOX TALLY CONNECTOR — WINDOWS x64
+
+1. Put RegisterBox-Tally-Connector.exe in a permanent folder on the Windows
+   computer running Tally. Windows 10/11 64-bit is the initial target.
+2. Double-click the EXE. No Node.js install or terminal setup is needed.
+   It opens a setup dashboard in your default browser.
+3. Keep the connector console window open. Open Tally, enable the HTTP server
+   and load your company. In the dashboard, save the matching Tally address,
+   then choose "Test connection & load companies" and select the company.
+4. Show pairing details. On this PC, pair RegisterBox web using the local
+   address and token. On your phone, first configure and test trusted HTTPS
+   in the dashboard; localhost on the phone cannot reach the PC.
+5. Use Account > Connect to Tally in the RegisterBox app. You can also upload
+   supported CSVs directly in the local connector dashboard.
+6. Review entries and destination, back up the company, and confirm import.
+   Refresh import history. Reconcile unknown outcomes instead of reposting.
+
+SETTINGS
+The dashboard contains the Tally address/port, connector port, optional Tally
+program path, connection test, company selector, token, web-origin allowlist,
+HTTPS/certificate setup and optional Windows sign-in startup shortcut.
+Settings/history live under %LOCALAPPDATA%\RegisterBox\TallyConnector.
+Do not delete the journal or change Tally addresses to clear uncertain writes.
+Company creation, passwords and loading a company remain in Tally itself.
+
+PHONE ACCESS
+A trusted HTTPS endpoint is required. Supply a trusted certificate/key and
+matching hostname for a direct listener, or configure an HTTPS reverse proxy.
+The program does not automatically provision DNS/certificates/cloud tunnels
+or alter Windows firewall settings. HTTPS testing checks the real endpoint;
+phone trust and reachability must also be checked on the phone.
+Never expose Tally port 9000 to the internet.
+
+VERIFICATION
+Double-click Verify-Connector.cmd to run the embedded self-test on Windows.
+This checks runtime/dashboard/setup/CSV behavior and never writes to Tally.
+Use a backed-up test company for actual ledger/voucher compatibility checks.
+
+RELEASE STATUS
+This is an unsigned portable executable, not a signed installer. Windows may
+flag its unknown publisher. It has been cross-built on a Mac; the Windows
+launch, startup shortcut and a live Tally installation still need verification.
+Current features: basic ledgers and balanced accounting vouchers. Inventory,
+GST invoice allocations and custom masters are not yet supported.
+No guarantee is made for every historical or customised Tally version.
+
+Authenticity/integrity: compare the EXE against SHA256SUMS.txt. The build manifest
+records the bundled runtime, checksum and validation limits. Third-party
+licenses are provided alongside the program.

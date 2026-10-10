@@ -1,39 +1,37 @@
 {
   "expo": {
-    "name": "RegisterBox AI",
+    "name": "RegisterBox",
     "slug": "registerbox-ai",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/registerbox-app-icon.png",
     "scheme": "registerbox",
     "userInterfaceStyle": "light",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/images/registerbox-app-icon.png",
       "bundleIdentifier": "in.registerbox.app",
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/registerbox-adaptive-icon.png"
       },
-      "predictiveBackGestureEnabled": false
-      ,"package": "in.registerbox.app"
+      "predictiveBackGestureEnabled": false,
+      "package": "in.registerbox.app"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/registerbox-app-icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#081A4A",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/registerbox-splash-logo.png",
+          "imageWidth": 240
         }
       ],
       "expo-secure-store"
@@ -41,6 +39,19 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "351fe150-5d6d-4aca-a9d6-02d775fc2555"
+      }
+    },
+    "owner": "kartpinindia",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/351fe150-5d6d-4aca-a9d6-02d775fc2555"
     }
   }
 }

@@ -46,3 +46,14 @@ example
 # Local UI test artifacts
 .playwright-cli/
 output/
+
+# Customer-local Tally accounting journal
+.tally-connector/
+
+# Generated downloadable Windows connector artifacts
+downloads/*.exe
+downloads/*.zip
+downloads/*.png
+downloads/build-manifest.json
+downloads/SHA256SUMS.txt
+downloads/THIRD-PARTY-LICENSES.txt
