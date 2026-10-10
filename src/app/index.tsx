@@ -45,11 +45,7 @@ export default function SplashScreen() {
         onLoad={() => setAnimationReady(true)}
         onError={() => { setAnimationFinished(true); actionsOpacity.setValue(1); }}
         contentFit="contain"
-        source={
-          animationFinished
-            ? require('../../assets/images/registerbox-logo-final.png')
-            : require('../../assets/images/registerbox-logo-animation.gif')
-        }
+        source={require('../../assets/images/registerbox-logo-final.png')}
         style={styles.logoAnimation}
       />
 
