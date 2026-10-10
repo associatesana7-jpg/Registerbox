@@ -2,7 +2,8 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Brand, Button, ErrorBanner, Field, Screen } from '@/components/registerbox-ui';
+import { Brand, Button, Card, ErrorBanner, Field, Screen } from '@/components/registerbox-ui';
+import { Eyebrow, SoftNotice } from '@/components/experience';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { sendEmailOtp } from '@/lib/registerbox-api';
@@ -20,19 +21,19 @@ export default function LoginScreen() {
 
   return (
     <Screen>
-      <Brand />
+      <Brand compact />
       <View style={styles.hero}>
-        <View style={styles.miniLogo}><Text style={{ fontSize: 26 }}>◇</Text></View>
-        <Text selectable style={styles.title}>Welcome!</Text>
-        <Text selectable style={styles.sub}>Use your email to set up or manage{`\n`}your business.</Text>
+        <View style={styles.miniLogo}><Text style={{ fontSize: 30, color: palette.blue }}>◇</Text></View>
+        <Eyebrow>START YOUR BUSINESS JOURNEY</Eyebrow>
+        <Text selectable style={styles.title}>Welcome to{`\n`}Register<Text style={{ color: palette.blue }}>Box</Text></Text>
+        <Text selectable style={styles.sub}>Sign in to start or manage your business.</Text>
       </View>
-      <View style={{ gap: 14 }}>
-        <Field placeholder="Enter your email address" keyboardType="email-address" textContentType="emailAddress" autoCapitalize="none" autoCorrect={false} value={email} onChangeText={setEmail} />
+      <Card style={{ gap: 16 }}>
+        <Field label="Email address" placeholder="you@business.com" keyboardType="email-address" textContentType="emailAddress" autoCapitalize="none" autoCorrect={false} value={email} onChangeText={setEmail} />
         <ErrorBanner message={error} />
-        <Button title="Email me an OTP" onPress={send} loading={loading} />
-      </View>
-      <View style={styles.or}><View style={styles.line} /><Text style={styles.orText}>Or continue with</Text><View style={styles.line} /></View>
-      <View style={styles.socialRow}><View style={{ flex: 1 }}><Button title="G  Google" variant="secondary" onPress={() => setError('Google sign-in needs OAuth credentials before it can be enabled.')} /></View><View style={{ flex: 1 }}><Button title="●  Apple" variant="secondary" onPress={() => setError('Apple sign-in needs Apple credentials before it can be enabled.')} /></View></View>
+        <Button title="Send 6-digit code" icon="→" onPress={send} loading={loading} disabled={!email.includes('@')} />
+      </Card>
+      <SoftNotice title="One account, every business step" detail="We email a secure sign-in code. Your saved business profile will be here when you return." icon="✉" />
       <Button title="Preview sample business" variant="ghost" onPress={() => { setDemoMode(true); router.replace('/onboarding/identify'); }} />
       <Text selectable style={styles.legal}>By continuing, you agree to our <Text style={styles.link}>Terms & Privacy Policy</Text></Text>
     </Screen>
@@ -40,14 +41,10 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  hero: { alignItems: 'center', gap: 10, paddingTop: 78, paddingBottom: 42 },
-  miniLogo: { width: 56, height: 56, borderRadius: 18, backgroundColor: palette.sky, alignItems: 'center', justifyContent: 'center' },
-  title: { color: palette.ink, fontSize: 30, fontWeight: '900' },
-  sub: { color: palette.muted, fontSize: 16, textAlign: 'center', lineHeight: 23 },
-  or: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 20 },
-  line: { flex: 1, height: 1, backgroundColor: palette.line },
-  orText: { color: palette.muted, fontSize: 12 },
-  socialRow: { flexDirection: 'row', gap: 12 },
+  hero: { alignItems: 'center', gap: 12, paddingTop: 74, paddingBottom: 36 },
+  miniLogo: { width: 70, height: 70, borderRadius: 24, backgroundColor: palette.sky, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  title: { color: palette.ink, fontSize: 31, fontWeight: '900', textAlign: 'center', lineHeight: 36, letterSpacing: -0.8 },
+  sub: { color: palette.muted, fontSize: 15, textAlign: 'center', lineHeight: 21 },
   legal: { textAlign: 'center', color: palette.muted, fontSize: 11, lineHeight: 17, paddingTop: 20 },
   link: { color: palette.blue, fontWeight: '700' },
 });

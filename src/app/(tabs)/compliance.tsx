@@ -1,21 +1,25 @@
-import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-
-import { Segmented } from '@/components/flow-parts';
-import { Badge, Card, PageHeader, Screen } from '@/components/registerbox-ui';
-import { applicationRows } from '@/data/demo';
+import { router } from 'expo-router';
+import { Text, View } from 'react-native';
+import { NavTile, ScreenTitle, SoftNotice } from '@/components/experience';
 import { palette } from '@/constants/design';
+import { Segmented } from '@/components/flow-parts';
+import { Badge, Button, Card, ErrorBanner, Screen } from '@/components/registerbox-ui';
+import { useBusinessRecords } from '@/hooks/use-business-records';
 
 export default function ComplianceScreen() {
-  const [tab, setTab] = useState('All (5)');
-  return (
-    <Screen>
-      <PageHeader title="Application Tracker" subtitle="Track each application from preparation to certificate." />
-      <Segmented options={['All (5)', 'In Progress (2)', 'Completed (1)']} selected={tab} onSelect={setTab} />
-      <View style={styles.stack}>{applicationRows.filter((row) => tab.startsWith('All') || row.status === (tab.startsWith('Completed') ? 'Completed' : 'In Progress')).map((row) => <Pressable key={row.name} onPress={() => row.name.startsWith('FSSAI') && router.push('/query')}><Card style={{ padding: 13 }}><View style={styles.row}><View style={styles.icon}><Text>{row.icon}</Text></View><View style={{ flex: 1 }}><Text selectable style={styles.name}>{row.name}</Text><Text selectable style={styles.detail}>{row.detail}</Text></View><Badge label={row.status} tone={row.tone as 'blue' | 'green' | 'red' | 'amber'} /></View></Card></Pressable>)}</View>
-    </Screen>
-  );
+  const { data, loading, error, refresh } = useBusinessRecords();
+  const [tab, setTab] = useState('All');
+  const rows = data?.applications ?? [];
+  return <Screen>
+    <ScreenTitle overline="COMPLIANCE" title="Application Tracker" subtitle="Follow actual applications from preparation to decision. Recommendations do not count as submissions." />
+    <NavTile icon="▤" title="GST returns" detail="Connect, prepare, compare, review and file when the live provider allows it" onPress={() => router.push('/gst-returns')} />
+    <Segmented options={['All', 'In progress', 'Approved']} selected={tab} onSelect={setTab} />
+    <ErrorBanner message={error} />
+    {loading ? <SoftNotice title="Loading applications…" /> : !rows.length && !error ? <SoftNotice title="No applications yet" detail="A compliance recommendation is not a submitted application." /> : rows.filter((row) => tab === 'All' || (tab === 'Approved' ? row.status === 'APPROVED' : !['APPROVED', 'REJECTED', 'CANCELLED'].includes(row.status))).map((row) => <Card key={row.id}>
+      <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-start',gap:8}}><Text style={{color:palette.ink,fontSize:14,fontWeight:'900',flex:1}}>{row.services?.name || 'Application'}</Text><Badge label={row.status.replaceAll('_', ' ')} /></View>
+      <Text style={{color:palette.muted,fontSize:12}}>{row.submitted_at ? 'Submitted ' + new Date(row.submitted_at).toLocaleDateString() : 'Not submitted'}</Text>
+    </Card>)}
+    <Button title="Refresh" variant="secondary" onPress={refresh} />
+  </Screen>;
 }
-
-const styles = StyleSheet.create({ stack: { gap: 10, paddingTop: 8 }, row: { flexDirection: 'row', alignItems: 'center', gap: 10 }, icon: { width: 32, height: 32, borderRadius: 8, backgroundColor: palette.sky, alignItems: 'center', justifyContent: 'center' }, name: { color: palette.ink, fontSize: 12, fontWeight: '900' }, detail: { color: palette.muted, fontSize: 9, paddingTop: 4 } });

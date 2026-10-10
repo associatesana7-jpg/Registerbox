@@ -1,9 +1,15 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { Image, type ImageSourcePropType } from 'react-native';
 
 import { palette } from '@/constants/design';
 
-const icons: Record<string, string> = { index: '⌂', compliance: '✓', documents: '▤', ai: '◉', account: '☰' };
+const icons: Record<string, ImageSourcePropType> = {
+  index: require('../../../assets/images/action-icons/tab-home.png'),
+  compliance: require('../../../assets/images/action-icons/tab-compliance.png'),
+  documents: require('../../../assets/images/action-icons/tab-documents.png'),
+  ai: require('../../../assets/images/action-icons/tab-ai.png'),
+  account: require('../../../assets/images/action-icons/tab-account.png'),
+};
 
 export default function TabsLayout() {
   return (
@@ -13,7 +19,7 @@ export default function TabsLayout() {
       tabBarInactiveTintColor: palette.muted,
       tabBarStyle: { height: 72, paddingTop: 7, paddingBottom: 9, borderTopColor: palette.line, backgroundColor: palette.white },
       tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
-      tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 19, fontWeight: '900' }}>{icons[route.name] ?? '•'}</Text>,
+      tabBarIcon: ({ color }) => <Image source={icons[route.name] ?? icons.index} resizeMode="contain" style={{width:24,height:24,tintColor:color}} />,
     })}>
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="compliance" options={{ title: 'Compliance' }} />
