@@ -30,7 +30,7 @@
   .rb-button,.rb-secondary-button{font-size:14px;min-height:52px;border-radius:11px;padding:14px 18px;justify-content:center}
   .rb-hero-actions .rb-button,.rb-hero-actions .rb-secondary-button{width:100%;justify-content:space-between}
   .rb-button:hover,.rb-service-card:hover,.rb-button:active{transform:none;box-shadow:none}
-  .rb-button,.rb-service-card{transition:background-color 150ms,border-color 150ms!important}
+  .rb-button,.rb-service-card{transition:background-color 200ms,border-color 200ms!important}
   .rb-hero-notes{font-size:11px;gap:8px 16px;flex-wrap:wrap;margin-top:16px}
   .rb-hero-visual{width:100%;padding:8px 0 0}
   .rb-orbit,.rb-spark,.rb-floating-note{display:none}
@@ -159,3 +159,5 @@
 }
 @media(max-width:360px){.rb-header .rb-brand{font-size:18px}.rb-header .rb-brand [data-expoimage]{width:30px!important;height:30px!important}.rb-header .rb-brand small{letter-spacing:1px}.rb-login{font-size:11px;padding-inline:4px}}
 @media(max-width:360px){.rb-hero-actions .rb-button,.rb-hero-actions .rb-secondary-button{font-size:11px;padding-inline:8px;gap:6px;white-space:nowrap}}
+
+@media(max-width:600px) and (prefers-reduced-motion:reduce){.rb-button,.rb-service-card{transition:none!important}}
