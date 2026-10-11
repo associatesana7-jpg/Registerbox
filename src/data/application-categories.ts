@@ -34,7 +34,26 @@ applicationCategories.food.documents=applicationCategories.food.documents.filter
 applicationCategories.food.documents.push({type:'APPLICANT_PHOTO',label:'Applicant photograph'},{type:'GOVT_ID',label:'Government-issued applicant identity proof'},{type:'PREMISES_LAYOUT',label:'Manufacturing / processing premises layout',when:['food_activity','Manufacturing']},{type:'EQUIPMENT_LIST',label:'Manufacturing equipment and capacity list',when:['food_activity','Manufacturing']},{type:'WATER_REPORT',label:'Water analysis report for review where applicable',when:['water_used','Yes']});
 applicationCategories.food.source='https://foscos.fssai.gov.in/apply-for-lic-and-reg';
 applicationCategories.food.notice='FoSCoS documents vary by kind of business and registration/licence route. This is an intake checklist; eligibility and the portal-generated checklist must be confirmed before submission.';
-applicationCategories.gst_registration={title:'Apply for GST registration',questions:[...location,structure,{key:'business_pan',label:'PAN of the legal applicant',pattern:'^[A-Z]{5}[0-9]{4}[A-Z]$'},{key:'registration_reason',label:'Reason for seeking registration',options:['Liability to register','Voluntary registration','Interstate supplies','E-commerce','Transfer / succession','Other — needs review']},{key:'commencement',label:'Date business commenced · YYYY-MM-DD',pattern:'^\\d{4}-\\d{2}-\\d{2}$'},premises,{key:'additional_places',label:'Any additional places of business in this state?',options:yesNo},{key:'goods_services',label:'What will you supply?',options:['Goods','Services','Both']},{key:'principal_products',label:'Principal goods/services and known HSN/SAC codes'},{key:'signatory',label:'Name of the authorized signatory'},...contact],documents:[{type:'PAN_CARD',label:'Legal applicant PAN'},{type:'CONSTITUTION_PROOF',label:'Proof of constitution (as applicable)'},{type:'PROMOTER_PHOTO',label:'Promoter / partner photographs'},{type:'SIGNATORY_AUTHORIZATION',label:'Authorization / resolution for signatory'},...addressDocs,{type:'PREMISES_OWNER_PROOF',label:'Ownership evidence of the premises'},{type:'OWNER_NOC',label:'Consent for consent/shared premises',when:['premises','Home-based']}],source:'https://tutorial.gst.gov.in/userguide/registration/Apply_for_Registration_Normal_Taxpayer.htm',notice:'REG-01 preparation only. PAN validation, promoter details, jurisdiction, portal OTP/Aadhaar steps and any additional evidence requested by GST remain separate. Registration is not return filing.'};
+// The shared application screen collects the business name first on web and mobile.
+applicationCategories.gst_registration={
+  title:'Apply for GST registration',
+  questions:[
+    {key:'address',label:'What is your full business address, including PIN code?',kind:'address'},
+    {key:'activity',label:'What is the nature of your business?',help:'Tell us what you sell or what services you provide. For example: clothing shop, restaurant or software services.'},
+    {key:'contact_mobile',label:'What is your phone number?',pattern:'^[6-9][0-9]{9}$',help:'Enter your 10-digit Indian mobile number.'},
+    {key:'contact_email',label:'What is your email address?',pattern:'^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$'},
+    {key:'premises',label:'Do you own or rent the business premises?',options:['Owned','Rented'],help:'This helps us show the correct property document to upload.'},
+  ],
+  documents:[
+    {type:'AADHAAR_CARD',label:'Aadhaar card'},
+    {type:'PAN_CARD',label:'PAN card'},
+    {type:'PROMOTER_PHOTO',label:'Passport-size photo'},
+    {type:'RENT_AGREEMENT',label:'Rental agreement',when:['premises','Rented']},
+    {type:'OFFICE_UTILITY',label:'Electricity bill'},
+    {type:'PREMISES_OWNER_PROOF',label:'Khata copy / property tax receipt (self-owned premises)',when:['premises','Owned']},
+  ],
+  notice:'Your details and documents will be saved for GST registration preparation. Our team will contact you if anything else is needed before submission.',
+};
 applicationCategories.retail.questions.push(structure,{key:'commencement',label:'Establishment commencement date · YYYY-MM-DD',pattern:'^\\d{4}-\\d{2}-\\d{2}$'},{key:'establishment_type',label:'Establishment type',options:['Shop','Office / commercial establishment','Restaurant / eating house','Other']},...contact);
 applicationCategories.retail.source='https://registration.shramsuvidha.gov.in/Users/stateintegration_acts/karnataka';
 applicationCategories.retail.notice='Shops and Establishments requirements are state-specific. State labour portal forms, local trade permissions and supporting evidence need jurisdiction review; this is not a universal filing checklist.';
