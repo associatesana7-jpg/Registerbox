@@ -12,6 +12,9 @@ export function WebShell({ children }: PropsWithChildren) {
   const segments = useSegments();
   const { session, loadingSession } = useApp();
   const [open, setOpen] = useState(false);
+  // Control Center owns its staff authentication and server-side role checks.
+  // Never send its signed-out visitors through the customer login guard.
+  if (pathname === '/control-center' || pathname.startsWith('/control-center/')) return <>{children}</>;
   const landing = pathname === '/' && !segments.includes('(tabs)' as never);
   const publicPage = landing || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/policies';
   if (publicPage) return <>{children}</>;

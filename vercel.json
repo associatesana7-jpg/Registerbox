@@ -3,6 +3,18 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/auth/:path*",
+      "has": [{ "type": "host", "value": "admin\\.registerbox\\.in" }],
+      "destination": "/control-center",
+      "permanent": false
+    },
+    {
+      "source": "/dashboard",
+      "has": [{ "type": "host", "value": "admin\\.registerbox\\.in" }],
+      "destination": "/control-center",
+      "permanent": false
+    },
+    {
       "source": "/",
       "has": [{ "type": "host", "value": "admin\\.registerbox\\.in" }],
       "destination": "/control-center",
