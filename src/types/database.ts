@@ -2258,6 +2258,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      submit_application_draft: {
+        Args: { p_business: string; p_category: string }
+        Returns: Json
+      }
       get_next_onboarding_requirement: {
         Args: { target_session_id: string }
         Returns: {

@@ -11,6 +11,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ animation: 'fade' }} />
         <Stack.Screen name="auth/index" />
         <Stack.Screen name="auth/otp" />
+        <Stack.Screen name="control-center" options={{ animation: 'fade' }} />
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
         <Stack.Screen name="query" options={{ presentation: 'modal' }} />

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "admin\\.registerbox\\.in" }],
+      "destination": "/control-center",
+      "permanent": false
+    }
+  ]
+}
