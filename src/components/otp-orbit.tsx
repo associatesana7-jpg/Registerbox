@@ -106,7 +106,7 @@ export function OtpOrbit({ ref, value, focused, invalid, busy }: Props) {
               { scale: reducedMotion ? 1 : curl.interpolate({ inputRange: [0, 1], outputRange: [1, 0.78] }) },
             ],
           }, focused && !busy && index === value.length && styles.activeBox, invalid && styles.invalidBox]}>
-            <Text maxFontSizeMultiplier={1.4} style={styles.digit}>{value[index] || ''}</Text>
+            {!!value[index] && <Text maxFontSizeMultiplier={1.4} style={styles.digit}>{value[index]}</Text>}
             {focused && !busy && index === value.length && <View style={styles.caret} />}
           </Animated.View>
         ))}

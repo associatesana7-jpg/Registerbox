@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { Image } from 'expo-image';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -23,7 +24,7 @@ export default function LoginScreen() {
     <Screen>
       <Brand compact />
       <View style={styles.hero}>
-        <View style={styles.miniLogo}><Text style={{ fontSize: 30, color: palette.blue }}>◇</Text></View>
+        <Image source={require('../../../assets/images/registerbox-app-icon.png')} contentFit="contain" accessibilityLabel="RegisterBox logo" style={styles.miniLogo} />
         <Eyebrow>START YOUR BUSINESS JOURNEY</Eyebrow>
         <Text selectable style={styles.title}>Welcome to{`\n`}Register<Text style={{ color: palette.blue }}>Box</Text></Text>
         <Text selectable style={styles.sub}>Sign in to start or manage your business.</Text>
@@ -42,7 +43,7 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   hero: { alignItems: 'center', gap: 12, paddingTop: 74, paddingBottom: 36 },
-  miniLogo: { width: 70, height: 70, borderRadius: 24, backgroundColor: palette.sky, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  miniLogo: { width: 86, height: 86, borderRadius: 20, backgroundColor: palette.white, marginBottom: 8 },
   title: { color: palette.ink, fontSize: 31, fontWeight: '900', textAlign: 'center', lineHeight: 36, letterSpacing: -0.8 },
   sub: { color: palette.muted, fontSize: 15, textAlign: 'center', lineHeight: 21 },
   legal: { textAlign: 'center', color: palette.muted, fontSize: 11, lineHeight: 17, paddingTop: 20 },

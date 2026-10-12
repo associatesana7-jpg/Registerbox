@@ -4,21 +4,63 @@
   "redirects": [
     {
       "source": "/auth/:path*",
-      "has": [{ "type": "host", "value": "admin\\.registerbox\\.in" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "admin\\.registerbox\\.in"
+        }
+      ],
       "destination": "/control-center",
       "permanent": false
     },
     {
       "source": "/dashboard",
-      "has": [{ "type": "host", "value": "admin\\.registerbox\\.in" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "admin\\.registerbox\\.in"
+        }
+      ],
       "destination": "/control-center",
       "permanent": false
     },
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "admin\\.registerbox\\.in" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "admin\\.registerbox\\.in"
+        }
+      ],
       "destination": "/control-center",
       "permanent": false
+    }
+  ],
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin\\.registerbox\\.in"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/images/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
     }
   ]
 }
