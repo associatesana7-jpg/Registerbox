@@ -17,7 +17,7 @@ export function WebShell({ children }: PropsWithChildren) {
   // Never send its signed-out visitors through the customer login guard.
   if (pathname === '/control-center' || pathname.startsWith('/control-center/')) return <><Head><meta name="robots" content="noindex,nofollow"/></Head>{children}</>;
   const landing = pathname === '/' && !segments.includes('(tabs)' as never);
-  const publicPage = landing || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/policies' || pathname === '/services' || pathname.startsWith('/services/');
+  const publicPage = landing || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
   if (publicPage) return <>{pathname.startsWith('/auth') && <Head><meta name="robots" content="noindex,nofollow"/></Head>}{children}</>;
   const next = safeNext(typeof window !== 'undefined' ? window.location.pathname + window.location.search : pathname);
   return <div className="rb-shell"><Head><meta name="robots" content="noindex,nofollow"/></Head>

@@ -14,6 +14,12 @@ export type Database = {
   }
   public: {
     Tables: {
+      privacy_deletion_requests: {
+        Row: { id: string; user_id: string | null; scope: 'account' | 'data'; details: string; status: 'pending' | 'processing' | 'completed' | 'retained'; created_at: string; target_at: string; resolved_at: string | null; response: string | null; retained_until: string | null }
+        Insert: { id?: string; user_id?: string | null; scope: 'account' | 'data'; details?: string; status?: string; created_at?: string; target_at?: string; resolved_at?: string | null; response?: string | null; retained_until?: string | null }
+        Update: { status?: string; resolved_at?: string | null; response?: string | null; retained_until?: string | null }
+        Relationships: []
+      }
       ai_conversations: {
         Row: {
           business_id: string

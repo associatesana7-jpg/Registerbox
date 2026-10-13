@@ -26,5 +26,5 @@ export function safeNext(value?: string | string[]) {
   if (!next) return '/dashboard';
   const match = /^\/onboarding\/application\?category=([a-z_]+)$/.exec(next);
   if (match && services.some(service => service.category === match[1])) return next;
-  return ['/dashboard', '/gst', '/gst-returns', '/gst-purchases', '/compliance', '/documents', '/ai', '/account', '/tally', '/document-locker', '/onboarding/identify'].includes(next) ? next : '/dashboard';
+  return ['/dashboard', '/gst', '/gst-returns', '/gst-purchases', '/compliance', '/documents', '/ai', '/account', '/tally', '/document-locker', '/delete-account', '/onboarding/identify'].includes(next) ? next : '/dashboard';
 }
