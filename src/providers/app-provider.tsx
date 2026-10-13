@@ -1,6 +1,6 @@
 import type { Session } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { demoCompliances, type ComplianceItem } from '@/data/demo';
 import type { IntentResult } from '@/lib/registerbox-api';
@@ -71,14 +71,21 @@ export function AppProvider({ children }: PropsWithChildren) {
   const [compliances, setCompliances] = useState<ComplianceItem[]>([]);
   const [onboarding, setOnboarding] = useState<IntentResult | null>(null);
   const [resumeSession, setResumeSession] = useState<{ sessionId: string; intentId: string } | null>(null);
+  const accountRevision = useRef(0);
 
   const refreshAccount = useCallback(async (nextSession?: Session | null, selectedId?: string) => {
+    const revision = ++accountRevision.current;
     const activeSession = nextSession === undefined ? (await supabase.auth.getSession()).data.session : nextSession;
+    if (revision !== accountRevision.current) return {};
     setSession(activeSession);
     if (!activeSession) {
       setBusiness(initialBusiness); setBusinessProfiles([]); setResumeSession(null); setOnboarding(null); setCompliances([]); setLoadingSession(false);
       return {};
     }
+    // A real account must never retain preview mode's GST sign-in guard.
+    setDemoMode(false);
+    setLoadingSession(true);
+    try {
     const user = activeSession.user;
     await supabase.from('profiles').upsert({ id: user.id, email: user.email ?? null }, { onConflict: 'id' });
     const preferredId=selectedId || await AsyncStorage.getItem(`registerbox:selected-business:${user.id}`);
@@ -87,6 +94,7 @@ export function AppProvider({ children }: PropsWithChildren) {
       supabase.from('business_profiles').select('id,legal_name,trade_name,entity_type,pan,gstin,business_category,business_subcategory,annual_turnover,employee_count,questionnaire').is('deleted_at', null).order('updated_at', { ascending: false }),
       supabase.from('onboarding_sessions').select('id,intent_id').eq('status', 'ACTIVE').order('last_activity_at', { ascending: false }).limit(1).maybeSingle(),
     ]);
+    if (revision !== accountRevision.current) return {};
     const savedBusiness=savedBusinesses?.find(row=>row.id===preferredId) || savedBusinesses?.[0];
     setBusinessProfiles((savedBusinesses||[]).map(row=>({id:row.id,name:row.trade_name||row.legal_name||'Business profile',gstin:row.gstin})));
     if(savedBusiness)await AsyncStorage.setItem(`registerbox:selected-business:${user.id}`,savedBusiness.id);
@@ -96,6 +104,7 @@ export function AppProvider({ children }: PropsWithChildren) {
       address = response.data;
     }
     const questionnaire = savedBusiness?.questionnaire && typeof savedBusiness.questionnaire === 'object' && !Array.isArray(savedBusiness.questionnaire) ? savedBusiness.questionnaire : {};
+    if (revision !== accountRevision.current) return {};
     const nextBusiness = savedBusiness ? {
       id: savedBusiness.id,
       legalName: savedBusiness.legal_name ?? savedBusiness.trade_name ?? '',
@@ -109,19 +118,39 @@ export function AppProvider({ children }: PropsWithChildren) {
     setBusiness(nextBusiness);
     const resumable = savedSession ? { sessionId: savedSession.id, intentId: savedSession.intent_id } : null;
     setResumeSession(resumable);
-    setLoadingSession(false);
     return { businessId: savedBusiness?.id, resumeSession: resumable ?? undefined };
+    } finally {
+      if (revision === accountRevision.current) setLoadingSession(false);
+    }
   }, []);
 
   const selectBusiness=useCallback(async(id:string)=>{await refreshAccount(undefined,id);setCompliances([]);setOnboarding(null);},[refreshAccount]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => { void refreshAccount(data.session); });
+    let mounted = true;
+    let authEvent = 0;
+    supabase.auth.getSession().then(({ data }) => {
+      // An initial read must not overwrite a newer OTP sign-in or sign-out.
+      if (mounted && authEvent === 0) void refreshAccount(data.session).catch(() => {});
+    }).catch(() => { if (mounted && authEvent === 0) setLoadingSession(false); });
     const { data } = supabase.auth.onAuthStateChange((_event, next) => {
+      const event = ++authEvent;
+      ++accountRevision.current;
+      setSession(next);
+      if (next) setDemoMode(false);
+      setLoadingSession(true);
       // Supabase holds the auth lock during this callback. Defer queries until it returns.
-      setTimeout(() => { void refreshAccount(next); }, 0);
+      setTimeout(() => {
+        if (mounted && event === authEvent) void refreshAccount(next).catch(() => {});
+      }, 0);
     });
-    return () => data.subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      // This is an async-request counter, not a DOM ref; invalidate its latest value.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      ++accountRevision.current;
+      data.subscription.unsubscribe();
+    };
   }, [refreshAccount]);
 
   const changeDemoMode = useCallback((value: boolean) => {

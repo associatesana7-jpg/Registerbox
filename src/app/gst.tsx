@@ -19,7 +19,7 @@ export default function GstScreen() {
   const {session,loadingSession,business,demoMode}=useApp();
   if(loadingSession)return <Screen><Text>Loading your account…</Text></Screen>;
   if(!session||demoMode)return <Redirect href="/auth"/>;
-  if(!business.id)return <Screen><Stack.Screen options={{headerShown:false}}/><GstHeader title="GST Returns" onBack={()=>router.back()}/><BusinessProfilePicker/></Screen>;
+  if(!business.id)return <Screen><Stack.Screen options={{headerShown:false}}/><GstHeader title="Connect GST first" onBack={()=>router.back()}/><Text style={{color:palette.muted,lineHeight:21,marginBottom:16}}>You’re signed in. Add your GST business below, then connect it with your GST portal username and OTP. Your RegisterBox sign-in stays active.</Text><BusinessProfilePicker/></Screen>;
   return <GstWorkspace key={session.user.id+business.id} businessId={business.id} initialGstin={business.gstin} name={business.tradeName||business.legalName}/>;
 }
 function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialGstin:string;name:string}) {
@@ -28,7 +28,7 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
   const [consent,setConsent]=useState(false),[verifyConsent,setVerifyConsent]=useState(false),[readConsent,setReadConsent]=useState(false),[disconnectConsent,setDisconnectConsent]=useState(false);
   const [busy,setBusy]=useState(true),[error,setError]=useState('');
   const [section,setSection]=useState('GSTR-3B');
-  const [page,setPage]=useState<'period'|'summary'|'connection'>('period');
+  const [page,setPage]=useState<'period'|'summary'|'connection'>('connection');
   const [resumeMode,setResumeMode]=useState<string|null>(null);
   const previous=new Date();previous.setDate(1);previous.setMonth(previous.getMonth()-1);
   const [year,setYear]=useState(String(previous.getFullYear())),[month,setMonth]=useState(String(previous.getMonth()+1).padStart(2,'0'));
@@ -38,7 +38,7 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
   const [coverageOpen,setCoverageOpen]=useState(false);
   const running=useRef(false),mounted=useRef(true);
   const [now,setNow]=useState(()=>Date.now());
-  useEffect(()=>{mounted.current=true;gstAction<{connection:GstConnection}>(businessId,'status').then(({connection:next})=>{if(mounted.current){setConnection(next);setGstin(next.gstin||initialGstin||'');setUsername(next.username||'');}}).catch(cause=>{if(mounted.current)setError(cause.message);}).finally(()=>{if(mounted.current)setBusy(false);});const timer=setInterval(()=>setNow(Date.now()),1000);return()=>{mounted.current=false;clearInterval(timer);};},[businessId,initialGstin]);
+  useEffect(()=>{mounted.current=true;gstAction<{connection:GstConnection}>(businessId,'status').then(({connection:next})=>{if(mounted.current){setConnection(next);setGstin(next.gstin||initialGstin||'');setUsername(next.username||'');setPage(next.status==='linked'&&Date.parse(next.expiresAt||'')>Date.now()?'period':'connection');}}).catch(cause=>{if(mounted.current)setError(cause.message);}).finally(()=>{if(mounted.current)setBusy(false);});const timer=setInterval(()=>setNow(Date.now()),1000);return()=>{mounted.current=false;clearInterval(timer);};},[businessId,initialGstin]);
   const linked=connection?.status==='linked'&&Date.parse(connection.expiresAt||'')>now;
   const pending=connection?.status==='otp_pending';
   const cooldown=Math.max(0,Math.ceil((Date.parse(connection?.lastOtpAt||'')+60000-now)/1000))||0;

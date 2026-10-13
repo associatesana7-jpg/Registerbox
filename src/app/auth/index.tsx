@@ -15,7 +15,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   async function send() {
-    try { setLoading(true); setError(''); await sendEmailOtp(email); router.push('/auth/otp'); }
+    try { setLoading(true); setError(''); setDemoMode(false); await sendEmailOtp(email); router.push('/auth/otp'); }
     catch (cause) { setError(cause instanceof Error ? cause.message : 'We could not send the OTP. Please try again.'); }
     finally { setLoading(false); }
   }
@@ -35,6 +35,7 @@ export default function LoginScreen() {
         <Button title="Send 6-digit code" icon="→" onPress={send} loading={loading} disabled={!email.includes('@')} />
       </Card>
       <SoftNotice title="One account, every business step" detail="We email a secure sign-in code. Your saved business profile will be here when you return." icon="✉" />
+      <Button title="Use an existing password account" variant="ghost" onPress={() => router.push('/auth/password')} />
       <Button title="Preview sample business" variant="ghost" onPress={() => { setDemoMode(true); router.replace('/onboarding/identify'); }} />
       <Text selectable style={styles.legal}>By continuing, you agree to our <Text style={styles.link}>Terms & Privacy Policy</Text></Text>
     </Screen>
