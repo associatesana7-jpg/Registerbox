@@ -143,7 +143,7 @@ Deno.serve(async (request) => {
         if(blocked.record.status.toLowerCase()==='filed')await update({state:'filed',acknowledgement:blocked.record.arn,otp_sent_at:null,last_error:'Confirmed already filed on GST portal; no duplicate request sent.'});
         throw new SafeError(blocked.message);
       }
-      if(isNil(draft.payload)&&draft.form==='gstr-3b'&&!history.records.some(row=>row.form==='GSTR1'&&row.status.toLowerCase()==='filed'))throw new SafeError('GST has not confirmed GSTR-1 filed for this period. Complete it before authorizing nil GSTR-3B.');
+      if(draft.form==='gstr-3b'&&(isNil(draft.payload)||['evc','file'].includes(action))&&!history.records.some(row=>row.form==='GSTR1'&&row.status.trim().toLowerCase()==='filed'))throw new SafeError('GST has not confirmed GSTR-1 filed for this period. Complete it before authorizing GSTR-3B.');
     }
     if (locked.status !== 'linked' || !locked.token_ciphertext || Date.parse(locked.expires_at) <= Date.now()) throw new SafeError('GST session expired. Reconnect with login OTP. Your draft is saved.');
     const legacy = Object.keys(env).find((name)=>/^key_live_[a-z0-9]+$/i.test(name));
@@ -298,11 +298,13 @@ Deno.serve(async (request) => {
       if (action === 'evc' && draft.form === 'gstr-1' && draft.state === 'proceed_pending' && draft.reference_id) allowed.push('proceed_pending');
       if (!allowed.includes(draft.state)) throw new SafeError('Wait for nil return preparation to complete before requesting OTP.');
     } else {
-      if (!draft.snapshot || !draft.snapshot_hash || !draft.reconciliation?.matched || Date.now()-Date.parse(draft.snapshot_at) > 900000) throw new SafeError('Fetch and reconcile a fresh GST snapshot before filing.');
+      const snapshotAge=Date.now()-Date.parse(draft.snapshot_at);
+      if (!draft.snapshot || !draft.snapshot_hash || !draft.reconciliation?.matched || !Number.isFinite(snapshotAge) || snapshotAge<0 || snapshotAge > 900000) throw new SafeError('Fetch and reconcile a fresh GST snapshot before filing.');
       if (body.booksReviewed !== true || body.itcReviewed !== true || body.priorReturnsReviewed !== true) throw new SafeError('Confirm books, ITC eligibility and prior-return checks before requesting filing.');
       if (!['prepared','otp_sent'].includes(draft.state)) throw new SafeError('Complete GST preparation/offset first.');
       latest = await snapshot();
       if (await hash(latest) !== draft.snapshot_hash) { await update({state:'prepared',snapshot:null,snapshot_hash:null,reconciliation:null,otp_sent_at:null}); throw new SafeError('GST data changed since review. Reconcile and approve again.'); }
+      if (draft.form==='gstr-3b'&&!latest.tx_pmt) throw new SafeError('GST payment details are missing. Offset and refresh before requesting filing authorization.');
     }
     if (action === 'evc') {
       if (typeof body.pan !== 'string' || !/^[A-Z]{5}\d{4}[A-Z]$/.test(body.pan)) throw new SafeError('Enter the authorized signatory PAN.');
@@ -312,7 +314,8 @@ Deno.serve(async (request) => {
       await update({state:'otp_sent',signatory_pan:body.pan,otp_sent_at:new Date().toISOString()}); return await done();
     }
     if (action === 'file') {
-      if (draft.state !== 'otp_sent' || !draft.signatory_pan || !draft.otp_sent_at || Date.now()-Date.parse(draft.otp_sent_at)>600000 || !validFilingOtp(body.otp)) throw new SafeError('Request and enter the fresh GST filing code exactly as received (letters and numbers).');
+      const otpAge=Date.now()-Date.parse(draft.otp_sent_at);
+      if (draft.state !== 'otp_sent' || !draft.signatory_pan || !draft.otp_sent_at || !Number.isFinite(otpAge) || otpAge<0 || otpAge>600000 || !validFilingOtp(body.otp)) throw new SafeError('Request and enter the fresh GST filing code exactly as received (letters and numbers).');
       const nil = isNil(draft.payload);
       const payload = nil ? nilFilingPayload(draft.form,draft.gstin,period) : draft.form === 'gstr-1' ? {gstin:draft.gstin,ret_period:period,newSumFlag:latest.newSumFlag,sec_sum:latest.sec_sum,chksum:latest.chksum} : latest;
       if (!nil && draft.form === 'gstr-1' && (!Array.isArray(latest.sec_sum) || typeof latest.chksum !== 'string')) throw new SafeError('GST filing summary/checksum is missing.');

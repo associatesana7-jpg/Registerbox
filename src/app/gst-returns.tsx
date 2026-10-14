@@ -22,6 +22,7 @@ import { GstNilReturn } from '@/components/gst-nil-return';
 import { addSellerPlatformDraft, addSellerPlatform3b, addOperatorPlatform3b } from '../../supabase/functions/_shared/gst-platform-draft';
 import { GstPlatformReview } from '@/components/gst-platform-review';
 import { validFilingOtp } from '../../supabase/functions/_shared/gst-filing-otp';
+import { returnHistoryReason, returnPhase } from '@/lib/gst-return-workspace';
 
 const labels: Record<string,string> = {draft:'Save private draft',save:'Save to GST portal',proceed:'Prepare GSTR-1 for filing',poll:'Check processing status',reconcile:'Fetch & reconcile',ledger:'Fetch ledger balances',preview_offset:'Review allocation',offset:'Authorize liability offset',evc:'Request filing OTP',file:'Verify OTP & file return'};
 const declarations: Record<string,string> = {
@@ -69,12 +70,12 @@ function Workspace({businessId}:{businessId:string}) {
   useEffect(()=>{
     active.current=true;
     returnAction(businessId,'list').then(data=>{if(active.current){setDrafts(data.drafts||[]);setWrites(data.writesEnabled);setGstin(data.gstin||'');const input=initialParams.current;const period=(input.month||'').padStart(2,'0')+(input.year||'');
-      const existing=input.mode==='nil'?data.drafts?.find(d=>d.form===input.form&&d.year===Number(input.year)&&d.month===Number(input.month)):undefined;
-      if(existing){setSelected(existing);setPayload(JSON.stringify(existing.payload,null,2));setPan(existing.signatory_pan||'');setPhase('prepare');}
+      const existing=data.drafts?.find(d=>d.form===input.form&&d.year===Number(input.year)&&d.month===Number(input.month));
+      if(existing){setSelected(existing);setPayload(JSON.stringify(existing.payload,null,2));setPan(existing.signatory_pan||'');setPhase(returnPhase(existing));}
       else if(data.gstin&&/^\d{6}$/.test(period)&&['nil','regular','payment'].includes(input.mode||'')){setPayload(JSON.stringify(input.mode==='nil'?{gstin:data.gstin,ret_period:period,registerbox_nil:true,declarations:{}}:input.form==='gstr-1'?{gstin:data.gstin,fp:period,b2b:[]}:blank3b(data.gstin,period),null,2));}}}).catch(cause=>{if(active.current)setError(cause.message);});
     return()=>{active.current=false;};
   },[businessId]);
-  function choose(draft:ReturnDraft){setSelected(draft);setForm(draft.form);setYear(String(draft.year));setMonth(String(draft.month).padStart(2,'0'));setPayload(JSON.stringify(draft.payload,null,2));setApproved('');setBooks(false);setItc(false);setPrior(false);setPan(draft.signatory_pan||'');setOtp('');resetPayment();setEvidence(null);setPhase(draft.state==='filed'||draft.state==='otp_sent'?'authorize':draft.state==='draft'||draft.state==='blocked'?'prepare':'compare');}
+  function choose(draft:ReturnDraft){setSelected(draft);setForm(draft.form);setYear(String(draft.year));setMonth(String(draft.month).padStart(2,'0'));setPayload(JSON.stringify(draft.payload,null,2));setApproved('');setBooks(false);setItc(false);setPrior(false);setPan(draft.signatory_pan||'');setOtp('');resetPayment();setEvidence(null);setPhase(returnPhase(draft));}
   async function importJson() {
     setError('');
     try {
@@ -99,6 +100,7 @@ function Workspace({businessId}:{businessId:string}) {
       if(!active.current)return;
       if(data.draft){setSelected(data.draft);setPayload(JSON.stringify(data.draft.payload,null,2));setDrafts(rows=>[data.draft!,...rows.filter(row=>row.id!==data.draft!.id)]);}
       if(data.paymentContext)setPayment(data.paymentContext);
+      if(['draft','save','reconcile','offset'].includes(action))setPayment(null);
       if(data.paymentReview)setPaymentReview(data.paymentReview);
       if(['draft','save','reconcile','ledger','offset'].includes(action)){setAllocationHash('');setPaymentReview(null);}
       if(data.allocationHash)setAllocationHash(data.allocationHash);
@@ -117,8 +119,7 @@ function Workspace({businessId}:{businessId:string}) {
   const periodOpen=!!selected&&!periodIsClosed(selected.year,selected.month);
   const nextPeriodStart=selected?new Date(Date.UTC(selected.year,selected.month,1)).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}):'';
   function action(name:string,disabled=false,reason?:string){
-    const portalRecord=filingHistory?.records.find(row=>row.form===form.replace(/-/g,'').toUpperCase());
-    const historyReason=['draft','save','proceed','offset','evc','file'].includes(name)?(!filingHistory||filingHistory.period!==month.padStart(2,'0')+year?'Check GST portal filing status before continuing.':portalRecord?`GST reports ${portalRecord.status} for this return. A duplicate filing is blocked.`:undefined):undefined;
+    const historyReason=returnHistoryReason(filingHistory,form,month.padStart(2,'0')+year,name);
     const blocked=disabled||(name!=='draft'&&dirty)||!!historyReason;
     return <View key={name} style={{gap:6}}>
       <Check disabled={busy} checked={approved===name} onPress={()=>setApproved(approved===name?'':name)} label={declarations[name]}/>
@@ -127,7 +128,7 @@ function Workspace({businessId}:{businessId:string}) {
     </View>;
   }
   const otpBlockReason=periodOpen?`The ${selected?.month}/${selected?.year} tax period is still open. Filing can start from ${nextPeriodStart}.`
-    :!writes?'Live GST writes are unavailable. Reload this screen to check the current setting.'
+    :!writes?'Live filing is release-locked pending provider acceptance testing. Your private draft is not a filed return.'
     :!selected?.reconciliation?.matched?'Fetch and reconcile this return. The saved GST comparison must match.'
     :!['prepared','otp_sent'].includes(selected?.state||'draft')?`This return is still ${selected?.state||'draft'}. Complete GST preparation and any payment offset first.`
     :!books||!itc||!prior?'Confirm the books, ITC and prior-return checks above.'
@@ -145,7 +146,7 @@ function Workspace({businessId}:{businessId:string}) {
   return <Screen key={phase}><Stack.Screen options={{headerShown:false}}/><GstHeader title={phase==='start'?'Your GST Returns':phase==='authorize'?'Authorize Filing':phase==='review'?`Review ${form.toUpperCase()}`:phase==='compare'?'Reconciliation':phase==='payment'?'Payment & Setoff':payload.includes('"registerbox_nil": true')?'Nil Return Eligibility':`Prepare ${form.toUpperCase()}`} onBack={()=>phase==='start'?router.back():setPhase('start')}/><View style={{gap:16}}>
     <FlowProgress current={Math.max(1,phases.findIndex(([key])=>key===phase)+1)} total={phases.length} labels={phases.map(([,label])=>label)} />
     <View accessibilityRole="progressbar" style={{flexDirection:'row',flexWrap:'wrap',gap:7}}>{phases.map(([key,label],index)=>{const current=phases.findIndex(([value])=>value===phase),done=index<current,active=index===current;return <View key={key} style={{flexDirection:'row',alignItems:'center',gap:5,paddingVertical:7,paddingHorizontal:9,borderRadius:9,borderWidth:1,borderColor:active?palette.blue:done?palette.green:palette.line,backgroundColor:active?palette.sky:palette.white}}><Text style={{color:done?palette.green:active?palette.blue:palette.muted,fontSize:11,fontWeight:'900'}}>{done?'✓':index+1}</Text><Text style={{color:active?palette.blue:done?palette.ink:palette.muted,fontSize:10,fontWeight:'800'}}>{label}</Text></View>;})}</View>
-    {!writes?<Badge label="Draft mode · live actions unavailable" tone="amber"/>:null}
+    {!writes?<SoftNotice title="Draft preparation only" detail="Live GST filing is release-locked pending provider acceptance testing. Saving figures here does not submit your return or meet a filing deadline."/>:null}
     <ErrorBanner message={error}/>
     {phase!=='start'&&selected?.source_evidence?<Card><Text style={{fontWeight:'700'}}>Amendment original links</Text><Text>{selected.source_evidence.matched?'Original records linked to acknowledged filed archives. Review each change below.':'Original linkage is incomplete. This draft cannot be submitted.'}</Text>{selected.source_evidence.issues.map((issue,index)=><Text key={index} style={{color:palette.red}}>{issue}</Text>)}{selected.source_evidence.links.map((link,index)=><View key={index} style={{gap:4}}><Text>{link.section.toUpperCase()} · {link.reference} · original period {link.originalPeriod}</Text><Text>Taxable value: ₹{link.original.txval.toFixed(2)} → ₹{link.revised.txval.toFixed(2)}. Change: ₹{link.delta.txval.toFixed(2)}.</Text><Text>Tax change: IGST ₹{link.delta.iamt.toFixed(2)}, CGST ₹{link.delta.camt.toFixed(2)}, SGST ₹{link.delta.samt.toFixed(2)}, cess ₹{link.delta.csamt.toFixed(2)}.</Text></View>)}<Text>Linked against app filing archives only. GST amendment history verification is still pending. These changes have not been added automatically to GSTR-3B.</Text></Card>:null}
 
