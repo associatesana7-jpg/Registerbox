@@ -30,6 +30,7 @@ import {
 } from '@/lib/control-center-api';
 import { supabase } from '@/lib/supabase';
 import { AdminFilingWorkspace } from '@/components/admin-filing-workspace';
+import { Link } from 'expo-router';
 
 const ADMIN_EMAIL = 'fekupsony@gmail.com';
 
@@ -241,6 +242,7 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
   ];
 
   return <View style={styles.dashboardRoot}>{!phone&&<Sidebar compact={compactSidebar} active={activeSection} onSelect={selectSection}/>}<View style={styles.main}>
+    {data.staff.roles.some(role=>['SUPER_ADMIN','SECURITY_ADMIN'].includes(role))?<Link href="/privacy-operations" style={{padding:12,color:palette.blue}}>Privacy requests & grievances →</Link>:null}
     <View style={[styles.topbar,phone&&styles.topbarPhone]}>{phone?<BrandMark/>:<View style={styles.search}><Text style={styles.searchIcon}>⌕</Text><TextInput accessibilityLabel="Search Control Center" value={query} onChangeText={setQuery} editable={activeSection!=='overview'} placeholder={activeSection==='overview'?'Choose a workspace to search records':'Search the current workspace...'} placeholderTextColor="#8C9AB3" style={styles.searchInput}/><Text style={styles.searchHint}>⌘ K</Text></View>}<Pressable accessibilityLabel="Refresh dashboard" onPress={refreshCurrent} disabled={loading||directoryLoading} style={styles.iconButton}>{loading||directoryLoading?<ActivityIndicator color={palette.blue} size="small"/>:<Text style={styles.iconButtonText}>↻</Text>}</Pressable><View style={styles.avatar}><Text style={styles.avatarText}>{data.staff.displayName.slice(0,1).toUpperCase()}</Text></View>{!phone&&<View style={styles.staffTop}><Text style={styles.staffName}>{data.staff.displayName}</Text><Text style={styles.staffRole}>{humanStatus(data.staff.roles[0]||'staff')}</Text></View>}<Pressable accessibilityLabel="Sign out" onPress={onSignOut} style={[styles.signOut,phone&&styles.signOutPhone]}><Text style={styles.signOutText}>{phone?'Exit':'Sign out'}</Text></Pressable></View>
     {phone&&<ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileNav}>{navigation.flatMap((group)=>group.items).filter((item):item is {label:string;icon:string;section:NavigationSection}=>!!item.section).map((item)=><Pressable key={item.section} onPress={()=>selectSection(item.section)} style={[styles.mobileNavItem,activeSection===item.section&&styles.mobileNavItemActive]}><Text style={[styles.mobileNavText,activeSection===item.section&&styles.mobileNavTextActive]}>{item.label}</Text></Pressable>)}</ScrollView>}
     {filingBusiness?<AdminFilingWorkspace key={filingBusiness} businessId={filingBusiness} onBack={()=>{setFilingBusiness(null);if(activeSection!=='overview')void loadDirectory(activeSection)}}/>:activeSection==='overview'?<ScrollView contentContainerStyle={[styles.dashboardScroll,singleColumn&&styles.dashboardScrollMobile]}>

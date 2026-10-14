@@ -1,5 +1,5 @@
 {
-  "release": "2026-10-14-gstr3b-workspace",
-  "sourceCommit": "6c1c66cd3c2b156799413986458b1ecb6837d295",
-  "description": "Regular GSTR-3B draft restoration, filing-status handling and authorization safeguards."
+  "release": "2026-10-14-privacy-controls",
+  "sourceCommit": "114195ae9a9ceafd448473975d8a706060c92194",
+  "description": "Versioned bilingual privacy notices, optional AI permissions and owner-scoped privacy request controls. Not legal certification."
 }

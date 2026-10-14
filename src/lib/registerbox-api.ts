@@ -3,6 +3,7 @@ import { File } from 'expo-file-system';
 
 import type { ComplianceItem } from '@/data/demo';
 import { supabase } from '@/lib/supabase';
+import { requirePrivacyPurpose } from '@/lib/privacy-center';
 
 export function normalizeEmail(value: string) {
   const email = value.trim().toLowerCase();
@@ -170,6 +171,7 @@ export type BillExtraction = {
 };
 
 export async function chooseAndExtractGstBill(businessId: string) {
+  await requirePrivacyPurpose('ai_bill_extraction');
   const picked = await DocumentPicker.getDocumentAsync({ type: ['image/jpeg', 'image/png', 'image/webp'], copyToCacheDirectory: true });
   if (picked.canceled) return null;
   const asset = picked.assets[0];
@@ -253,7 +255,7 @@ async function invokeOrThrow<T>(name: string, body: Record<string, unknown>) {
 }
 
 export function classifyBusinessIntent(message: string, existingBusinessId?: string) {
-  return invokeOrThrow<IntentResult>('ai-intent-router', { message, existingBusinessId });
+  return requirePrivacyPurpose('ai_assistance').then(()=>invokeOrThrow<IntentResult>('ai-intent-router', { message, existingBusinessId }));
 }
 
 export function saveOnboardingAnswer(sessionId: string, fieldKey: string, value: unknown, source: 'USER' | 'KNOWN' | 'CONNECTOR' | 'DOCUMENT' = 'USER', sourceReference?: string) {
@@ -265,7 +267,7 @@ export function getNextOnboardingQuestion(sessionId: string) {
 }
 
 export function askRegisterBoxAi(question: string, providerConsent: boolean, businessId?: string) {
-  return invokeOrThrow<{ answer: string; confidence: number; missingFacts: string[]; suggestedAction: string | null; actions: import('../../supabase/functions/_shared/gst-assistant-knowledge').GstAiAction[]; knowledgeVersion: string; source: 'qwen'|'workflow_guide' }>('registerbox-ai', { question, providerConsent, businessId });
+  return requirePrivacyPurpose('ai_assistance').then(()=>invokeOrThrow<{ answer: string; confidence: number; missingFacts: string[]; suggestedAction: string | null; actions: import('../../supabase/functions/_shared/gst-assistant-knowledge').GstAiAction[]; knowledgeVersion: string; source: 'qwen'|'workflow_guide' }>('registerbox-ai', { question, providerConsent, businessId }));
 }
 
 export function startDocumentLocker(businessId: string) {

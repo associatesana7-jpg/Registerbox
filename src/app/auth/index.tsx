@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -37,7 +37,8 @@ export default function LoginScreen() {
       <SoftNotice title="One account, every business step" detail="We email a secure sign-in code. Your saved business profile will be here when you return." icon="✉" />
       <Button title="Use an existing password account" variant="ghost" onPress={() => router.push('/auth/password')} />
       <Button title="Preview sample business" variant="ghost" onPress={() => { setDemoMode(true); router.replace('/onboarding/identify'); }} />
-      <Text selectable style={styles.legal}>By continuing, you agree to our <Text style={styles.link}>Terms & Privacy Policy</Text></Text>
+      <Text selectable style={styles.legal}>Your email is used for sign-in and account security. Optional AI permission is separate. Under-18 and lawful-guardian processing needs verified authority before personal information is provided.</Text>
+      <Link href="/privacy" style={styles.link}>Read the privacy notice and manage your choices</Link>
     </Screen>
   );
 }

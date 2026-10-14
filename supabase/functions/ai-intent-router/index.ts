@@ -2,6 +2,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { corsHeaders, json } from '../_shared/http.ts';
 import { callQwenStructured } from '../_shared/qwen.ts';
+import { hasPrivacyConsent } from '../_shared/privacy-consent.ts';
 
 const intentTypes = ['START_NEW_BUSINESS','REGISTER_COMPANY','REGISTER_LLP','START_FOOD_BUSINESS','ADD_BUSINESS_ACTIVITY','OPEN_NEW_BRANCH','START_MANUFACTURING','START_ECOMMERCE','START_RETAIL','CHECK_COMPLIANCE','GET_REGISTRATION','OTHER'] as const;
 type IntentType = typeof intentTypes[number];
@@ -78,6 +79,7 @@ Deno.serve(async (request) => {
   if (authError || !auth.user) return json({ error: 'Your session has expired. Please sign in again.' }, 401);
 
   const body = await request.json().catch(() => ({}));
+  if (!await hasPrivacyConsent(supabase, auth.user.id, 'ai_assistance')) return json({ error: 'Enable optional AI assistance in Privacy Centre before sending a business goal to Groq. Manual service applications remain available.' }, 403);
   const message = typeof body.message === 'string' ? body.message.trim() : '';
   if (message.length < 3 || message.length > 1500) return json({ error: 'Describe your business goal in 3 to 1,500 characters.' }, 400);
 
@@ -98,8 +100,8 @@ Deno.serve(async (request) => {
     runStatus = 'SUCCEEDED';
   } catch (error) {
     aiError = error instanceof Error ? error.message : String(error);
-    console.error('Qwen classification fallback', aiError);
-    classification = fallback(message);
+    console.error('AI classification unavailable');
+    return json({ error: 'AI could not analyse your goal. Please retry. No business classification has been assumed.', code: 'AI_UNAVAILABLE' }, 503);
   }
 
   const existingBusinessId = typeof body.existingBusinessId === 'string' ? body.existingBusinessId : null;
@@ -122,8 +124,9 @@ Deno.serve(async (request) => {
   }
   const { data: session, error: sessionError } = await supabase.from('onboarding_sessions').insert({ user_id: auth.user.id, intent_id: intent.id, current_stage: 'discovery' }).select('id').single();
   if (sessionError) return json({ error: 'We could not create the onboarding session.' }, 500);
+  await supabase.from('profiles').update({ onboarding_status: 'in_progress' }).eq('id', auth.user.id);
 
-  await supabase.from('ai_runs').insert({ user_id: auth.user.id, intent_id: intent.id, operation: 'INTENT_CLASSIFICATION', model, status: runStatus, latency_ms: latencyMs, output_json: classification, error_code: aiError?.slice(0, 120) ?? null });
+  await supabase.from('ai_runs').insert({ user_id: auth.user.id, intent_id: intent.id, operation: 'INTENT_CLASSIFICATION', model, status: runStatus, latency_ms: latencyMs, output_json: classification, error_code: aiError ? 'AI_UNAVAILABLE' : null });
   await supabase.from('domain_events').insert({ user_id: auth.user.id, intent_id: intent.id, event_type: 'BUSINESS_INTENT_CLASSIFIED', payload: { workflowPackCodes: classification.workflowPackCodes, source: runStatus } });
 
   const { data: nextRows } = await supabase.rpc('get_next_onboarding_requirement', { target_session_id: session.id });

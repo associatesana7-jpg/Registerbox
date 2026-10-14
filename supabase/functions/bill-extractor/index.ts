@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.117.1';
+import { hasPrivacyConsent } from '../_shared/privacy-consent.ts';
 import { corsHeaders, json } from '../_shared/http.ts';
 import { callQwenVisionStructured } from '../_shared/qwen.ts';
 import { PurchaseError, validateBooks, type Purchase } from '../_shared/gst-purchases.ts';
@@ -65,6 +66,7 @@ Deno.serve(async (request) => {
     if (!business || business.user_id !== auth.user.id) return json({ error: 'This business is not available.' }, 403);
 
     if (body.action === 'extract') {
+      if (!await hasPrivacyConsent(admin, auth.user.id, 'ai_bill_extraction')) return json({ error: 'Enable optional bill-image AI in Privacy Centre before a bill is sent to Groq. Manual purchase entry remains available.' }, 403);
       const { count } = await admin.from('gst_bill_extractions').select('id', { count: 'exact', head: true }).eq('user_id', auth.user.id).gte('created_at', new Date(Date.now() - 3600000).toISOString());
       if ((count ?? 0) >= 30) return json({ error: 'Bill extraction limit reached. Try again later.' }, 429);
       const { data: document } = await admin.from('documents').select('id,business_id,storage_path,original_filename,mime_type,uploaded_by').eq('id', body.documentId).is('deleted_at', null).maybeSingle();
@@ -110,8 +112,8 @@ Deno.serve(async (request) => {
     return json({ purchase: result.data, extractionId: extraction.id });
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
-    console.error('Bill extraction failed', detail.slice(0, 300));
-    const message = detail === 'GROQ_KEY_MISSING' ? 'Bill AI is not configured. Add the groq_API_KEY Edge Function secret.' : detail.startsWith('AI provider HTTP') ? 'Groq could not read this bill. Try a clearer, straight-on image with good lighting.' : detail;
+    console.error('Bill extraction unavailable');
+    const message = detail === 'GROQ_KEY_MISSING' ? 'Bill AI is not configured.' : 'Bill AI could not complete this request. The original remains saved; review it or use manual entry.';
     return json({ error: error instanceof PurchaseError ? error.message : message || 'Bill extraction failed. The original file remains saved.' }, error instanceof PurchaseError ? 400 : 502);
   }
 });

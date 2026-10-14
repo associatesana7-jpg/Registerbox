@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.117.1';
 import { corsHeaders, json } from '../_shared/http.ts';
 import { callQwenStructured } from '../_shared/qwen.ts';
+import { hasPrivacyConsent } from '../_shared/privacy-consent.ts';
 import {GST_AI_ACTIONS,GST_WORKFLOWS,GST_KNOWLEDGE_VERSION,gstCapabilityKnowledge,safeGstActions,suggestedGstActions,redactAssistantText} from '../_shared/gst-assistant-knowledge.ts';
 
 type AssistantAnswer={answer:string;confidence:number;missingFacts:string[];actions:string[]};
@@ -18,6 +19,7 @@ Deno.serve(async request=>{
   let body;try{body=JSON.parse(raw);}catch{return json({error:'Invalid request.'},400);}
   if(!body||typeof body!=='object')return json({error:'Invalid request.'},400);
   if(body.providerConsent!==true)return json({error:'Approve sending this redacted question and limited workflow context to Groq first.'},400);
+  if(!await hasPrivacyConsent(client,auth.user.id,'ai_assistance'))return json({error:'Enable optional AI assistance in Privacy Centre after reading its notice. A withdrawn or missing permission cannot be overridden by this request.'},403);
   const question=typeof body.question==='string'?body.question.trim():'';
   if(question.length<3||question.length>1500)return json({error:'Ask a question in 3 to 1,500 characters.'},400);
   const knowledge=gstCapabilityKnowledge(env),actions=suggestedGstActions(question);
