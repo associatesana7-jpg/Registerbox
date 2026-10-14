@@ -6,7 +6,7 @@ export function PrivacyNotice({language,onLanguage}:{language:'en'|'hi';onLangua
   return <View style={{gap:16}}>
     <View style={{flexDirection:'row',gap:12}}><Button title="English" variant={language==='en'?'primary':'secondary'} onPress={()=>onLanguage('en')}/><Button title="हिन्दी" variant={language==='hi'?'primary':'secondary'} onPress={()=>onLanguage('hi')}/></View>
     <Text selectable>Privacy notice · {PRIVACY_NOTICE_VERSION}</Text>
-    {privacyNoticeSections[language].map(section=><Card key={section.title}><Text accessibilityRole="header" style={{fontSize:18,fontWeight:'700'}}>{section.title}</Text><Text selectable style={{lineHeight:24}}>{section.body}</Text></Card>)}
+    {privacyNoticeSections[language].map(section=><Card key={section.title}><Text accessibilityRole="header" style={{fontSize:18,fontWeight:'700',letterSpacing:0,lineHeight:26}}>{section.title}</Text><Text selectable style={{lineHeight:24}}>{section.body}</Text></Card>)}
     <Link href={`mailto:${privacyContact.email}?subject=RegisterBox%20privacy%20request`}>{privacyContact.email}</Link>
     <Link href="/privacy">Privacy Centre · permissions and requests</Link>
     <Link href="/delete-account">Account and data deletion</Link>
