@@ -20,7 +20,7 @@ export default function ApplicationScreen(){
   const category=requested&&applicationCategories[requested]?requested:'new';
   const {session,loadingSession}=useApp();
   if(loadingSession)return <Screen><Text>Loading your account…</Text></Screen>;
-  if(!session)return <Redirect href="/auth"/>;
+  if(!session)return <Redirect href={{pathname:'/auth',params:{next:`/onboarding/application?category=${category}`}}}/>;
   if(category==='gst')return <Redirect href="/gst"/>;
   return <CategoryApplication key={category+session.user.id} category={category} userId={session.user.id}/>;
 }
@@ -50,7 +50,7 @@ function CategoryApplication({category,userId}:{category:string;userId:string}){
       // A postal suggestion/user edit must never overwrite a government-verified profile address.
       if(!address?.verified){const values={address_line_1:answers.address_line_1,address_line_2:answers.address_line_2||null,state:answers.state,district:answers.district,city:answers.city,pincode:answers.pincode,verified:false};const result=address?await supabase.from('business_addresses').update(values).eq('id',address.id):await supabase.from('business_addresses').insert({...values,business_id:id,type:'principal'});if(result.error)throw new Error('Answers saved, but the reusable address could not be saved. Retry before continuing.');}
     }
-    setBusinessId(id);await selectBusiness(id);return id;
+    setBusinessId(id);if(id!==business.id)await selectBusiness(id);return id;
   }
   async function next(){setBusy(true);setError('');try{if(question){const message=question.kind==='address'?validateAddress(answers):validateQuestion(question,answers);if(message)throw new Error(message);}if(step===reviewStep){for(let i=0;i<questions.length;i++){const q=questions[i],message=q.kind==='address'?validateAddress(answers):validateQuestion(q,answers);if(message){setStep(i+1);throw new Error(message);}}}await saveDraft();if(step===reviewStep)setSaved(true);else setStep(step+1);}catch(cause){setError(cause instanceof Error?cause.message:'Could not save your answers.');}finally{setBusy(false);}}
   async function submit(){setBusy(true);setError('');try{for(let i=0;i<questions.length;i++){const q=questions[i],message=q.kind==='address'?validateAddress(answers):validateQuestion(q,answers);if(message){setStep(i+1);throw new Error(message);}}const id=await saveDraft();const {data,error:submitError}=await supabase.rpc('submit_application_draft',{p_business:id,p_category:category});if(submitError)throw submitError;const result=object(data);setApplicationReference(typeof result.reference==='string'?result.reference:'');setSaved(true);}catch(cause){setError(cause instanceof Error?cause.message:'Could not send this application to RegisterBox.');}finally{setBusy(false);}}
