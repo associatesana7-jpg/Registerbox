@@ -72,6 +72,7 @@ export function AppProvider({ children }: PropsWithChildren) {
   const [onboarding, setOnboarding] = useState<IntentResult | null>(null);
   const [resumeSession, setResumeSession] = useState<{ sessionId: string; intentId: string } | null>(null);
   const accountRevision = useRef(0);
+  const hydratedUserId = useRef<string | null>(null);
 
   const refreshAccount = useCallback(async (nextSession?: Session | null, selectedId?: string) => {
     const revision = ++accountRevision.current;
@@ -79,12 +80,14 @@ export function AppProvider({ children }: PropsWithChildren) {
     if (revision !== accountRevision.current) return {};
     setSession(activeSession);
     if (!activeSession) {
+      hydratedUserId.current = null;
       setBusiness(initialBusiness); setBusinessProfiles([]); setResumeSession(null); setOnboarding(null); setCompliances([]); setLoadingSession(false);
       return {};
     }
     // A real account must never retain preview mode's GST sign-in guard.
     setDemoMode(false);
-    setLoadingSession(true);
+    // Refreshing an already loaded account must not unmount an in-progress form.
+    setLoadingSession(hydratedUserId.current !== activeSession.user.id);
     try {
     const user = activeSession.user;
     await supabase.from('profiles').upsert({ id: user.id, email: user.email ?? null }, { onConflict: 'id' });
@@ -118,6 +121,7 @@ export function AppProvider({ children }: PropsWithChildren) {
     setBusiness(nextBusiness);
     const resumable = savedSession ? { sessionId: savedSession.id, intentId: savedSession.intent_id } : null;
     setResumeSession(resumable);
+    hydratedUserId.current = user.id;
     return { businessId: savedBusiness?.id, resumeSession: resumable ?? undefined };
     } finally {
       if (revision === accountRevision.current) setLoadingSession(false);
@@ -138,7 +142,8 @@ export function AppProvider({ children }: PropsWithChildren) {
       ++accountRevision.current;
       setSession(next);
       if (next) setDemoMode(false);
-      setLoadingSession(true);
+      if (!next) hydratedUserId.current = null;
+      setLoadingSession(!next || hydratedUserId.current !== next.user.id);
       // Supabase holds the auth lock during this callback. Defer queries until it returns.
       setTimeout(() => {
         if (mounted && event === authEvent) void refreshAccount(next).catch(() => {});

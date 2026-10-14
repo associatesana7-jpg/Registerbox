@@ -94,6 +94,33 @@ const session = { user: { id: 'test-user', email: 'sample@example.invalid' }, ac
   assert.equal(app.render().loadingSession, false);
 }
 // Exercise the actual GST route decision with a fresh signed-in account.
+// Saving/selecting a business and refreshing tokens must leave active forms mounted.
+{
+  const app = harness();
+  app.initial.resolve({ data: { session } }); await settle();
+  const barrier = deferred(); app.blockQueries(barrier);
+  const refresh = app.render().selectBusiness('application-business');
+  await settle();
+  assert.equal(app.render().loadingSession, false, 'Business refresh must not replace the active screen');
+  barrier.resolve(); await refresh;
+  const tokenBarrier = deferred(); app.blockQueries(tokenBarrier);
+  app.event('TOKEN_REFRESHED', { ...session, access_token: 'refreshed-test-token' });
+  await settle();
+  assert.equal(app.render().loadingSession, false, 'Token refresh must not replace the active screen');
+  tokenBarrier.resolve(); await settle();
+}
+// A different account still blocks rendering until its own profile is ready.
+{
+  const app = harness();
+  app.initial.resolve({ data: { session } }); await settle();
+  const barrier = deferred(); app.blockQueries(barrier);
+  const otherSession = { user: { id: 'other-user', email: 'other@example.invalid' } };
+  app.event('SIGNED_IN', otherSession); await settle();
+  assert.equal(app.render().loadingSession, true);
+  barrier.resolve(); await settle();
+  assert.equal(app.render().session, otherSession);
+  assert.equal(app.render().loadingSession, false);
+}
 {
   const gstSource = fs.readFileSync(new URL('../src/app/gst.tsx', import.meta.url), 'utf8');
   const gstCompiled = ts.transpileModule(gstSource, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
