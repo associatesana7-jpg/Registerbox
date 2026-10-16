@@ -91,3 +91,15 @@ for(const state of ['saved','save_pending','offset_pending','prepared']){
   assert.equal(data.sup_details.osup_det.txval,'');assert.equal(data.registerbox_nil,undefined);
 }
 console.log('Shared mobile/web GSTR-3B screen verified: existing draft/revision restored, Not filed allowed, release lock visible, pending/saved returns resumed safely, filed archive immutable and new amounts remain blank. No live API calls.');
+{
+  const app=harness({...fixture,state:'prepared',source_evidence:{version:'gst-portal-resume-v1',scope:'gst_portal',checkedAt:new Date().toISOString(),paymentState:'settled',previousDraft:{payload:{registerbox_nil:true}}}},true);
+  await flush();let tree=app.render();
+  assert.ok(button(tree,'Continue from GST portal'));
+  assert.equal(find(tree,n=>n.type==='GstNilReturn'),undefined,'Imported portal return must leave the rejected nil screen');
+  assert.equal(button(tree,'Continue from GST portal').props.disabled,true);
+  find(tree,n=>typeof n.type==='function'&&n.props.label?.startsWith('Load this period’s saved GSTR-3B')).props.onPress();
+  tree=app.render();await button(tree,'Continue from GST portal').props.onPress();
+  assert.equal(app.requests.at(-1).action,'resume_portal');assert.equal(app.requests.at(-1).input.consent,true);
+  tree=app.render();assert.ok(button(tree,'Proceed to Authorize'),'Resumed paid return proceeds to human review');
+}
+console.log('Portal recovery screen verified: explicit import consent, regular return routing, original declaration evidence handled and review before OTP.');

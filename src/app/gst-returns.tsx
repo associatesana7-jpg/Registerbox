@@ -24,13 +24,14 @@ import { GstPlatformReview } from '@/components/gst-platform-review';
 import { validFilingOtp } from '../../supabase/functions/_shared/gst-filing-otp';
 import { returnHistoryReason, returnPhase } from '@/lib/gst-return-workspace';
 
-const labels: Record<string,string> = {draft:'Save private draft',save:'Save to GST portal',proceed:'Prepare GSTR-1 for filing',poll:'Check processing status',reconcile:'Fetch & reconcile',ledger:'Fetch ledger balances',preview_offset:'Review allocation',offset:'Authorize liability offset',evc:'Request filing OTP',file:'Verify OTP & file return'};
+const labels: Record<string,string> = {resume_portal:'Continue from GST portal',draft:'Save private draft',save:'Save to GST portal',proceed:'Prepare GSTR-1 for filing',poll:'Check processing status',reconcile:'Fetch & reconcile',ledger:'Fetch ledger balances',preview_offset:'Review allocation',offset:'Authorize liability offset',evc:'Request filing OTP',file:'Verify OTP & file return'};
 const declarations: Record<string,string> = {
   draft:'I approve saving this draft privately to RegisterBox. It will not be sent to GST.',
   save:'I reviewed the complete return against my books and approve saving this exact version to the GST portal. This is not filing.',
   proceed:'I approve preparing this saved GSTR-1 for filing on GST.',
   poll:'I approve checking the outcome of the previous operation without repeating it.',
   reconcile:'I approve fetching GST records for this period and comparing them with my saved draft.',
+  resume_portal:'Load this period’s saved GSTR-3B and payment details from GST so I can review and continue filing.',
   ledger:'I approve fetching cash, credit and liability balances. Do not use any funds.',
   preview_offset:'I approve preparing this allocation for review. Do not send it to GST.',
   offset:'I reviewed this exact allocation and authorize using these cash and ITC ledger balances to offset my liability.',
@@ -100,7 +101,7 @@ function Workspace({businessId}:{businessId:string}) {
       if(!active.current)return;
       if(data.draft){setSelected(data.draft);setPayload(JSON.stringify(data.draft.payload,null,2));setDrafts(rows=>[data.draft!,...rows.filter(row=>row.id!==data.draft!.id)]);}
       if(data.paymentContext)setPayment(data.paymentContext);
-      if(['draft','save','reconcile','offset'].includes(action))setPayment(null);
+      if(['draft','save','reconcile','offset'].includes(action)||data.paymentState==='settled')setPayment(null);
       if(data.paymentReview)setPaymentReview(data.paymentReview);
       if(['draft','save','reconcile','ledger','offset'].includes(action)){setAllocationHash('');setPaymentReview(null);}
       if(data.allocationHash)setAllocationHash(data.allocationHash);
@@ -108,12 +109,15 @@ function Workspace({businessId}:{businessId:string}) {
       setEvidence(data.ledger||data.providerStatus||null);setWrites(data.writesEnabled);setApproved('');setOtp('');
       if(action==='draft'||action==='save'||action==='proceed'||action==='poll')setPhase('compare');
       if(action==='reconcile'&&data.draft?.reconciliation?.matched)setPhase(data.draft.form==='gstr-3b'&&data.draft.payload.registerbox_nil!==true&&data.draft.state==='saved'?'payment':'review');
-      if(action==='ledger'||action==='preview_offset')setPhase('payment');
+      if(action==='ledger'||action==='preview_offset')setPhase(data.paymentState==='settled'?'review':'payment');
+      if(action==='resume_portal'){resetPayment();setBooks(false);setItc(false);setPrior(false);setPhase(data.draft?.state==='prepared'?'review':'compare');}
       if(action==='offset')setPhase('compare');
       if(action==='evc'||action==='file')setPhase('authorize');
     }catch(cause){if(active.current)setError(cause instanceof Error?cause.message:'Operation failed.');}
     finally{running.current=false;if(active.current)setBusy(false);}
   }
+  const amendmentEvidence=selected?.source_evidence&&'links' in selected.source_evidence?selected.source_evidence:null;
+  const portalEvidence=selected?.source_evidence?.version==='gst-portal-resume-v1';
   const dirty=!!selected && payload!==JSON.stringify(selected.payload,null,2);
   const nil=selected?.payload.registerbox_nil===true;
   const periodOpen=!!selected&&!periodIsClosed(selected.year,selected.month);
@@ -148,7 +152,8 @@ function Workspace({businessId}:{businessId:string}) {
     <View accessibilityRole="progressbar" style={{flexDirection:'row',flexWrap:'wrap',gap:7}}>{phases.map(([key,label],index)=>{const current=phases.findIndex(([value])=>value===phase),done=index<current,active=index===current;return <View key={key} style={{flexDirection:'row',alignItems:'center',gap:5,paddingVertical:7,paddingHorizontal:9,borderRadius:9,borderWidth:1,borderColor:active?palette.blue:done?palette.green:palette.line,backgroundColor:active?palette.sky:palette.white}}><Text style={{color:done?palette.green:active?palette.blue:palette.muted,fontSize:11,fontWeight:'900'}}>{done?'✓':index+1}</Text><Text style={{color:active?palette.blue:done?palette.ink:palette.muted,fontSize:10,fontWeight:'800'}}>{label}</Text></View>;})}</View>
     {!writes?<SoftNotice title="Draft preparation only" detail="Live GST filing is release-locked pending provider acceptance testing. Saving figures here does not submit your return or meet a filing deadline."/>:null}
     <ErrorBanner message={error}/>
-    {phase!=='start'&&selected?.source_evidence?<Card><Text style={{fontWeight:'700'}}>Amendment original links</Text><Text>{selected.source_evidence.matched?'Original records linked to acknowledged filed archives. Review each change below.':'Original linkage is incomplete. This draft cannot be submitted.'}</Text>{selected.source_evidence.issues.map((issue,index)=><Text key={index} style={{color:palette.red}}>{issue}</Text>)}{selected.source_evidence.links.map((link,index)=><View key={index} style={{gap:4}}><Text>{link.section.toUpperCase()} · {link.reference} · original period {link.originalPeriod}</Text><Text>Taxable value: ₹{link.original.txval.toFixed(2)} → ₹{link.revised.txval.toFixed(2)}. Change: ₹{link.delta.txval.toFixed(2)}.</Text><Text>Tax change: IGST ₹{link.delta.iamt.toFixed(2)}, CGST ₹{link.delta.camt.toFixed(2)}, SGST ₹{link.delta.samt.toFixed(2)}, cess ₹{link.delta.csamt.toFixed(2)}.</Text></View>)}<Text>Linked against app filing archives only. GST amendment history verification is still pending. These changes have not been added automatically to GSTR-3B.</Text></Card>:null}
+    {selected?.form==='gstr-3b'&&phase!=='start'&&['draft','saved','prepared','blocked'].includes(selected.state)?<Card><Text style={heading}>{portalEvidence?'Saved GST portal return':'Already prepared or paid on GST?'}</Text><Text style={muted}>Load the latest saved return and payment status to continue here. Review the fetched figures before authorizing filing.</Text>{action('resume_portal',false)}</Card>:null}
+    {phase!=='start'&&amendmentEvidence?<Card><Text style={{fontWeight:'700'}}>Amendment original links</Text><Text>{amendmentEvidence.matched?'Original records linked to acknowledged filed archives. Review each change below.':'Original linkage is incomplete. This draft cannot be submitted.'}</Text>{amendmentEvidence.issues.map((issue,index)=><Text key={index} style={{color:palette.red}}>{issue}</Text>)}{amendmentEvidence.links.map((link,index)=><View key={index} style={{gap:4}}><Text>{link.section.toUpperCase()} · {link.reference} · original period {link.originalPeriod}</Text><Text>Taxable value: ₹{link.original.txval.toFixed(2)} → ₹{link.revised.txval.toFixed(2)}. Change: ₹{link.delta.txval.toFixed(2)}.</Text><Text>Tax change: IGST ₹{link.delta.iamt.toFixed(2)}, CGST ₹{link.delta.camt.toFixed(2)}, SGST ₹{link.delta.samt.toFixed(2)}, cess ₹{link.delta.csamt.toFixed(2)}.</Text></View>)}<Text>Linked against app filing archives only. GST amendment history verification is still pending. These changes have not been added automatically to GSTR-3B.</Text></Card>:null}
 
     {gstin?<GstFilingHistory businessId={businessId} year={year} month={month} onStatus={setFilingHistory}/>:null}
     {phase==='start'?<Card><Text style={heading}>Saved returns</Text>{drafts.length?drafts.map(draft=><Button key={draft.id} title={`${draft.form.toUpperCase()} · ${draft.month}/${draft.year} · ${draft.state}`} variant="secondary" disabled={busy} onPress={()=>choose(draft)}/>):<Text style={muted}>No saved drafts yet.</Text>}<Button title="Create a new return" disabled={busy} onPress={()=>{setSelected(null);resetPayment();setPayload('');setYear('');setMonth('');setApproved('');setEvidence(null);setBooks(false);setItc(false);setPrior(false);setPhase('prepare');}}/><Text style={muted}>Guided GSTR-1 sections, standard GSTR-3B tables and nil declarations are available. Purchase matching is under GST → ITC/2B. Special scenarios still require review; bank challan payments use the official GST portal.</Text></Card>:null}
@@ -184,6 +189,6 @@ function Workspace({businessId}:{businessId:string}) {
         <Button title="Back to review" variant="ghost" onPress={()=>setPhase('review')}/>
       </Card>}{evidence&&advanced?<Card><Text style={heading}>Latest provider response</Text><Text selectable style={{...muted,fontFamily:'monospace',fontSize:12}}>{JSON.stringify(evidence,null,2)}</Text></Card>:null}</>:null}
     </>:null}
-    <Button title="Back to GST connection" variant="ghost" onPress={()=>router.back()}/>
+    <Button title="Back to GST workspace" variant="ghost" onPress={()=>router.replace('/gst')}/>
   </View></Screen>;
 }

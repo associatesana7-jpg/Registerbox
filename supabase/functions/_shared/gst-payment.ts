@@ -58,5 +58,6 @@ export function preparePayment(context:PaymentContext,choices:Obj,minimumCash:nu
   if(cents(regularCash)<cents(minimumCash))throw Error('Allocation does not meet the declared minimum cash-tax requirement. Reduce ITC use.');
   const shortfalls=HEADS.flatMap(h=>(['tx','intr','fee'] as const).map(part=>({head:h,part,required:Math.round(cashNeeded[h][part]*100)/100,available:context.cash[h][part],shortfall:Math.max(0,cents(cashNeeded[h][part])-cents(context.cash[h][part]))/100})));
   const pditc={liab_ldg_id:regular?.liab_ldg_id??context.liabilities[0].liab_ldg_id,trans_typ:30002,...c};
-  return {allocation:{pdcash,pditc},used,cashNeeded,shortfalls,totalShortfall:shortfalls.reduce((n,r)=>n+r.shortfall,0),ready:shortfalls.every(r=>r.shortfall===0),minimumCash};
+  const nettaxpay=context.liabilities.map(liability=>({liab_ldg_id:liability.liab_ldg_id,trans_typ:liability.trans_typ,...liability.charges}));
+  return {allocation:{pdcash,pditc,nettaxpay},used,cashNeeded,shortfalls,totalShortfall:shortfalls.reduce((n,r)=>n+r.shortfall,0),ready:shortfalls.every(r=>r.shortfall===0),minimumCash};
 }

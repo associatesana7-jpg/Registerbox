@@ -6,6 +6,7 @@ import ts from 'typescript';
 import * as validation from '../supabase/functions/gst-returns/validation.ts';
 import * as nil from '../supabase/functions/gst-returns/nil.ts';
 import * as payment from '../supabase/functions/_shared/gst-payment.ts';
+import * as portalResume from '../supabase/functions/_shared/gst-portal-resume.ts';
 import * as amendmentLinks from '../supabase/functions/_shared/gst-amendment-links.ts';
 import { filingBlock } from '../supabase/functions/_shared/gst-filing-history.ts';
 import { validFilingOtp } from '../supabase/functions/_shared/gst-filing-otp.ts';
@@ -44,6 +45,7 @@ const modules={
   '../gst-workspace/domain.ts':{validPeriod,periodIsClosed,decryptToken:async()=>'test-token'},
   '../_shared/gst-amendment-links.ts':amendmentLinks,'./validation.ts':validation,'./nil.ts':nil,
   '../_shared/gst-payment.ts':payment,'../_shared/gst-filing-otp.ts':{validFilingOtp},
+  '../_shared/gst-portal-resume.ts':portalResume,
   '../_shared/gst-filing-history.ts':{filingBlock,fetchFilingHistory:async()=>{if(history===null)throw Error('Unavailable');return structuredClone(history);}},
 };
 const source=ts.transpileModule(fs.readFileSync('supabase/functions/gst-returns/index.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
@@ -175,3 +177,39 @@ assert.match(returnHistoryReason(history,'gstr-3b','072026','save'),/status/);
 assert.equal(returnPhase({state:'saved'}),'compare');assert.equal(returnPhase({state:'offset_pending'}),'compare');
 assert.equal(returnPhase({state:'draft'}),'prepare');assert.equal(returnPhase({state:'filed'}),'authorize');
 console.log('Regular GSTR-3B handler verified with synthetic data: full draft/save/poll/reconcile/payment/offset/OTP/ARN journey, release lock, ownership, concurrent lock, missing/stale consent, filing history, prior GSTR-1, stale/changed snapshots, cash shortage, changed allocation, rejection, expired OTP, missing acknowledgement and non-retrying timeout recovery. This is not live-provider acceptance.');
+
+// A definitive nil rejection must have a route to the saved portal return after
+// payment. Import is GET-only and creates a new private revision, never a reset.
+await reset();
+const nilPayload={gstin,ret_period:period,registerbox_nil:true,declarations:{noSales:true,noAdjustments:true,completeBooks:true,noPurchases:true,noItc:true,noLiability:true,noAutoPopulation:true,gstr1FiledNil:true}};
+draft={...draft,payload:nilPayload,payload_hash:await validation.hash(nilPayload),state:'blocked',last_error:'GST rejected (RT-3BAS1079): Please do offset',otp_sent_at:new Date().toISOString(),signatory_pan:'ABCDE1234F'};
+portal.tx_pmt.tx_py=portal.tx_pmt.net_tax_pay.map(row=>({...row,...Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]))}));
+portal.tx_pmt.pdcash=[{trans_typ:30002,liab_ldg_id:1,ipd:140}];
+portal.eco_dtls={eco_sup:{txval:0,iamt:0,camt:0,samt:0,csamt:0},eco_reg_sup:{txval:0}};
+const resumed=await act('resume_portal');
+assert.equal(resumed.status,200);assert.equal(resumed.body.paymentState,'settled');assert.equal(draft.state,'prepared');assert.equal(draft.revision,2);
+assert.equal(draft.payload.registerbox_nil,undefined);assert.equal(draft.payload.tx_pmt,undefined);assert.equal(draft.snapshot.tx_pmt.pdcash[0].ipd,140);
+assert.equal(draft.last_error,null);assert.equal(draft.otp_sent_at,null);assert.equal(draft.signatory_pan,null);
+assert.equal(draft.source_evidence.previousDraft.payload.registerbox_nil,true);assert.ok(calls.every(c=>c.method==='GET'));
+assert.equal((await act('evc',{pan:'ABCDE1234F'})).status,200);
+assert.equal((await act('file',{otp:'aB9xQ2'})).status,200);
+assert.deepEqual(calls.at(-1).payload,portal);assert.equal(calls.at(-1).payload.isNil,undefined);
+
+await reset();draft.state='blocked';draft.last_error='RT-3BAS1079';
+portal.tx_pmt.tx_py=structuredClone(portal.tx_pmt.net_tax_pay);
+assert.equal((await act('resume_portal')).body.paymentState,'payable');assert.equal(draft.state,'saved');
+assert.equal((await act('ledger')).status,200);
+const recoveredAllocation=await act('preview_offset',allocation);
+assert.deepEqual(recoveredAllocation.body.paymentReview.allocation.nettaxpay[0].igst,{tx:180,intr:0,fee:0});
+assert.equal((await act('offset',{...allocation,allocationHash:recoveredAllocation.body.allocationHash})).status,200);
+
+await reset();draft.state='unknown';
+assert.notEqual((await act('resume_portal')).status,200);assert.equal(calls.length,0);
+await reset();history.records.push({form:'GSTR3B',period,status:'Filed',arn:'EXISTING-ARN'});
+assert.notEqual((await act('resume_portal')).status,200);assert.equal(draft.state,'filed');assert.equal(calls.length,0);
+await reset();draft.state='blocked';delete portal.sup_details;
+assert.notEqual((await act('resume_portal')).status,200);assert.equal(draft.state,'blocked');
+await reset();assert.notEqual((await act('resume_portal',{consent:false})).status,200);assert.equal(calls.length,0);
+await reset();draft.state='saved';portal.tx_pmt.pdcash=[{liab_ldg_id:1,trans_typ:30002,ipd:140}];
+assert.match((await act('ledger')).body.error,/existing payment/);assert.ok(calls.every(c=>c.method==='GET'));
+console.log('Portal recovery verified: paid nil rejection resumes as full saved return; unpaid resumes offset; original declaration preserved, old OTP cleared, already-filed/unknown/incomplete/stale-consent cases blocked; no automatic payment or filing.');

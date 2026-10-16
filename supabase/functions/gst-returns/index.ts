@@ -7,13 +7,14 @@ import { isNil, reviewNil, nilFilingPayload } from './nil.ts';
 import { paymentContext, preparePayment } from '../_shared/gst-payment.ts';
 import {fetchFilingHistory,filingBlock} from '../_shared/gst-filing-history.ts';
 import { validFilingOtp } from '../_shared/gst-filing-otp.ts';
+import { portal3bPaymentState, portal3bPreparation, portal3bHasZeroEcommerce, portal3bHasPayments } from '../_shared/gst-portal-resume.ts';
 
 class SafeError extends Error {}
 class Rejected extends SafeError {
   constructor(message: string, readonly providerCode?: string) { super(message); }
 }
 const writeActions = ['save','proceed','offset','evc','file'];
-const knownActions = ['signatories','save_signatory','remove_signatory','list','history','draft','save','proceed','poll','reconcile','recover_nil','ledger','preview_offset','offset','evc','file'];
+const knownActions = ['signatories','save_signatory','remove_signatory','list','history','draft','save','proceed','poll','reconcile','recover_nil','resume_portal','ledger','preview_offset','offset','evc','file'];
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok',{headers:corsHeaders});
   if (request.method !== 'POST') return json({error:'Method not allowed.'},405);
@@ -106,7 +107,7 @@ Deno.serve(async (request) => {
     if (!draft) throw new SafeError('Choose a saved draft.');
     draftId = draft.id;
     if (!periodIsClosed(draft.year,draft.month) && (isNil(draft.payload)
-      ? ['reconcile','proceed','evc','file'].includes(action)
+      ? ['reconcile','proceed','resume_portal','evc','file'].includes(action)
       : ['evc','file'].includes(action))) {
       throw new SafeError('This tax period is still open. Keep the draft, then reconcile and file after the month ends in India.');
     }
@@ -129,14 +130,15 @@ Deno.serve(async (request) => {
       return json({draft,writesEnabled,...extra});
     };
     if (action === 'draft') return await done();
-    if (writeActions.includes(action) && (draft.payload.supeco !== undefined || draft.payload.supecoa !== undefined || draft.payload.ecom !== undefined || draft.payload.ecoma !== undefined || draft.payload.eco_dtls !== undefined) && env.GST_ECOMMERCE_WRITES_ENABLED !== 'true') throw new SafeError('Platform figures are saved in your draft. Ecommerce portal submission is awaiting provider acceptance testing.');
+    const zeroPortalEcommerce=draft.source_evidence?.version==='gst-portal-resume-v1'&&draft.form==='gstr-3b'&&portal3bHasZeroEcommerce(draft.payload);
+    if (writeActions.includes(action) && (draft.payload.supeco !== undefined || draft.payload.supecoa !== undefined || draft.payload.ecom !== undefined || draft.payload.ecoma !== undefined || (draft.payload.eco_dtls !== undefined&&!zeroPortalEcommerce)) && env.GST_ECOMMERCE_WRITES_ENABLED !== 'true') throw new SafeError('Platform figures are saved in your draft. Ecommerce portal submission is awaiting provider acceptance testing.');
     if(writeActions.includes(action)&&draft.payload.ecoma!==undefined){
       const linked=await amendmentEvidence(draft.payload);
       if(!linked?.matched)throw new SafeError('Resolve every amendment original before sending this return to GST.');
       if(!draft.source_evidence?.matched||await hash(linked.links)!==await hash(draft.source_evidence.links))throw new SafeError('Amendment evidence changed. Save and review this draft again.');
       if(!linked.portalHistoryVerified)throw new SafeError('Original amounts are linked to app archives. Complete GST amendment history verification is still required before portal submission.');
     }
-    if(writeActions.includes(action)||action==='recover_nil'){
+    if(writeActions.includes(action)||['recover_nil','resume_portal'].includes(action)){
       let history;try{history=await fetchFilingHistory(env,locked,auth.user.id+':'+business.id,draft.year,draft.month);}catch{throw new SafeError('Cannot verify portal filing status. No GST write was sent. Reconnect and check history.');}
       const blocked=filingBlock(history,draft.form);
       if(blocked){
@@ -195,6 +197,20 @@ Deno.serve(async (request) => {
       if (typeof data.reference_id !== 'string' || !data.reference_id) throw new SafeError('No GST tracking reference returned. Do not repeat this operation.');
       return data.reference_id;
     };
+    if(action==='resume_portal'){
+      if(draft.form!=='gstr-3b'||!periodIsClosed(draft.year,draft.month))throw new SafeError('Choose a closed GSTR-3B period.');
+      if(!['draft','saved','prepared','otp_sent','blocked'].includes(draft.state))throw new SafeError('The previous GST operation is still processing or its outcome is unknown. Check that operation before importing portal data.');
+      const latest=await snapshot();
+      let payload;try{payload=portal3bPreparation(latest);}catch(e){throw new SafeError((e as Error).message);}
+      const paymentState=portal3bPaymentState(latest),checkedAt=new Date().toISOString();
+      const previousDraft=draft.source_evidence?.version==='gst-portal-resume-v1'?draft.source_evidence.previousDraft:{revision:draft.revision,payload:draft.payload,payloadHash:draft.payload_hash,lastError:draft.last_error??null,sourceEvidence:draft.source_evidence??null};
+      const sourceEvidence={version:'gst-portal-resume-v1',scope:'gst_portal',checkedAt,paymentState,previousDraft};
+      await update({payload,payload_hash:await hash(payload),revision:draft.revision+1,source_evidence:sourceEvidence,
+        state:paymentState==='settled'?'prepared':'saved',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:checkedAt,
+        reconciliation:{matched:true,differences:[],scope:'Figures imported from the saved GST portal return. Review them against your books before approving filing.'},
+        otp_sent_at:null,signatory_pan:null,reference_id:null,last_error:null});
+      return await done({paymentState});
+    }
     if (action === 'save') {
       if (isNil(draft.payload)) throw new SafeError('Nil returns do not use the invoice-save step. Review nil eligibility first.');
       if (draft.state !== 'draft') throw new SafeError('Only an unsent draft can be saved to GST.');
@@ -260,6 +276,11 @@ Deno.serve(async (request) => {
       if (!['draft','saved'].includes(draft.state)) throw new SafeError('Payment review is unavailable while processing or after offset.');
       const latest = await snapshot();
       const comparison = reconcile(draft.payload,latest,draft.form);
+      if(portal3bPaymentState(latest)==='settled'){
+        await update({state:'prepared',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:new Date().toISOString(),reconciliation:comparison,otp_sent_at:null,signatory_pan:null,last_error:null});
+        return await done({paymentState:'settled'});
+      }
+      if(portal3bPaymentState(latest)==='unconfirmed'&&portal3bHasPayments(latest))throw new SafeError('GST returned an existing payment but no complete current payable table. Refresh the saved return after portal processing; do not offset the same liability again.');
       const ledger = unwrap(await provider('/gst/compliance/tax-payer/ledgers/bal/'+draft.year+'/'+String(draft.month).padStart(2,'0')));
       let context;
       try { context = paymentContext(latest,ledger); } catch (e) { throw new SafeError((e as Error).message); }
@@ -305,6 +326,7 @@ Deno.serve(async (request) => {
       latest = await snapshot();
       if (await hash(latest) !== draft.snapshot_hash) { await update({state:'prepared',snapshot:null,snapshot_hash:null,reconciliation:null,otp_sent_at:null}); throw new SafeError('GST data changed since review. Reconcile and approve again.'); }
       if (draft.form==='gstr-3b'&&!latest.tx_pmt) throw new SafeError('GST payment details are missing. Offset and refresh before requesting filing authorization.');
+      if(draft.form==='gstr-3b'&&draft.source_evidence?.version==='gst-portal-resume-v1'&&portal3bPaymentState(latest)!=='settled')throw new SafeError('GST has not confirmed zero remaining payable for this saved return. Refresh its payment details after offset completes.');
     }
     if (action === 'evc') {
       if (typeof body.pan !== 'string' || !/^[A-Z]{5}\d{4}[A-Z]$/.test(body.pan)) throw new SafeError('Enter the authorized signatory PAN.');

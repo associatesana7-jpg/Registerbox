@@ -7,12 +7,12 @@ export type ReturnDraft = {
   revision: number; state: string; payload: Record<string,unknown>; payload_hash: string;
   snapshot: Record<string,unknown> | null; snapshot_hash: string | null; snapshot_at: string | null;
   reconciliation: {matched:boolean; scope:string; differences:{field:string;expected:number|null;actual:number|null}[]} | null;
-  source_evidence?: import('../../supabase/functions/_shared/gst-amendment-links').AmendmentEvidence|null;
+  source_evidence?: import('../../supabase/functions/_shared/gst-amendment-links').AmendmentEvidence|import('../../supabase/functions/_shared/gst-portal-resume').PortalResumeEvidence|null;
   acknowledgement: string|null; last_error: string|null; reference_id: string|null;
   signatory_pan: string|null;
 };
 export type SavedSignatory = {id:string;name:string;pan:string};
-export type ReturnResponse = {signatories?:SavedSignatory[];history?:FilingHistory;paymentContext?:PaymentContext; paymentReview?:ReturnType<typeof preparePayment>; gstin?:string; draft?:ReturnDraft; drafts?:ReturnDraft[]; writesEnabled:boolean; allocation?:Record<string,unknown>; allocationHash?:string; ledger?:unknown; providerStatus?:unknown};
+export type ReturnResponse = {paymentState?:'settled'|'payable'|'unconfirmed';signatories?:SavedSignatory[];history?:FilingHistory;paymentContext?:PaymentContext; paymentReview?:ReturnType<typeof preparePayment>; gstin?:string; draft?:ReturnDraft; drafts?:ReturnDraft[]; writesEnabled:boolean; allocation?:Record<string,unknown>; allocationHash?:string; ledger?:unknown; providerStatus?:unknown};
 export async function returnAction(businessId: string, action: string, input: Record<string,unknown> = {}): Promise<ReturnResponse> {
   const {data,error} = await supabase.functions.invoke('gst-returns',{body:{...input,businessId,action,consentAction:action,consentVersion:'gst-returns-v1'}});
   if (error) {

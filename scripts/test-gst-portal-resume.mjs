@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {portal3bPaymentState,portal3bPreparation} from '../supabase/functions/_shared/gst-portal-resume.ts';
+const charges=()=>Object.fromEntries(['igst','cgst','sgst','cess'].map(h=>[h,{tx:0,intr:0,fee:0}]));
+const remaining={trans_typ:30002,...charges()};
+const sections=Object.fromEntries(['sup_details','itc_elg','inward_sup','inter_sup','intr_ltfee'].map(k=>[k,{real_portal_field:0}]));
+const snapshot={gstin:'29ABCDE1234F1Z5',ret_period:'082026',...sections,tx_pmt:{tx_py:[remaining],net_tax_pay:[{trans_typ:30002,...charges(),cgst:{tx:0,intr:0,fee:50}}],pdcash:[{c_lfeepd:50}]}};
+assert.equal(portal3bPaymentState(snapshot),'settled','Historical liability and paid late fee must not be mistaken for remaining payable');
+assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{pdcash:[{c_lfeepd:50}]}}),'unconfirmed','Presence of a payment table is not proof of settlement');
+assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[{...remaining,cgst:{tx:0,intr:0,fee:1}}]}}),'payable');
+assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[]}}),'unconfirmed');
+assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[{trans_typ:30002}]}}),'unconfirmed');
+assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[remaining,remaining]}}),'unconfirmed');
+const prepared=portal3bPreparation(snapshot);
+assert.equal(prepared.tx_pmt,undefined);assert.deepEqual(prepared.intr_ltfee,snapshot.intr_ltfee);
+assert.throws(()=>portal3bPreparation({...snapshot,sup_details:{}}),/complete/);
+console.log('Portal recovery: actual payable versus historical/payment data, unknown data, duplicate rows, full section preservation and missing sections verified.');

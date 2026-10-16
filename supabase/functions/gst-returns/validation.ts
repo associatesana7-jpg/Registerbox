@@ -9,6 +9,7 @@ export const DECLARATIONS: Record<string,string> = {
   proceed: 'I approve preparing this saved GSTR-1 for filing on the GST portal.',
   poll: 'Check the outcome of my previous GST operation. Do not repeat it.',
   recover_nil: 'Check filing status and resume my declared nil GSTR-1 from the saved GST already-ready response. Do not repeat preparation or file anything.',
+  resume_portal: 'Fetch the saved GSTR-3B and payment details from GST, preserve my previous draft, and continue with the portal return for review. Do not offset funds, send an OTP or file anything.',
   reconcile: 'Fetch this period from GST and compare it with my saved draft. Do not modify or file anything.',
   ledger: 'Fetch my cash, credit and liability balances for this period. Do not use any funds.',
   offset: 'I reviewed this exact cash and ITC allocation and authorize offsetting my GST liability. This uses my ledger balances.',
