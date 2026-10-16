@@ -1,11 +1,18 @@
 import Head from 'expo-router/head';
 import { branches, contact } from './content';
 export const siteUrl = 'https://www.registerbox.in';
-export const organization = { '@type': 'Organization', '@id': `${siteUrl}/#organization`, name: 'RegisterBox', url: siteUrl, logo: `${siteUrl}/images/registerbox-logo.png`, email: contact.email, telephone: contact.phone };
+export const organization = {
+  '@type': 'Organization', '@id': `${siteUrl}/#organization`, name: 'RegisterBox', url: siteUrl,
+  logo: `${siteUrl}/images/registerbox-logo.png`, image: `${siteUrl}/images/registerbox-og.jpg`,
+  email: contact.email, telephone: contact.phone, sameAs: [contact.googleProfile],
+  contactPoint: { '@type': 'ContactPoint', telephone: contact.phone, email: contact.email, contactType: 'customer service', areaServed: 'IN', availableLanguage: ['English', 'Hindi', 'Kannada'] },
+};
 const branchSchema = branches.map(branch => ({
-  '@type': 'LocalBusiness', '@id': `${siteUrl}/#${branch.id}`, name: `RegisterBox — ${branch.name}`,
+  '@type': ['LocalBusiness', 'ProfessionalService'], '@id': `${siteUrl}/#${branch.id}`, name: `RegisterBox — ${branch.name}`,
   url: `${siteUrl}/contact#bengaluru-branches`, parentOrganization: { '@id': organization['@id'] },
-  telephone: contact.phone, email: contact.email, hasMap: branch.maps,
+  description: `Business registration, GST, FSSAI, trademark and compliance support from RegisterBox in ${branch.name}, Bengaluru.`,
+  image: `${siteUrl}/images/registerbox-og.jpg`, telephone: contact.phone, email: contact.email, hasMap: branch.maps,
+  priceRange: '₹₹', areaServed: { '@type': 'City', name: 'Bengaluru' }, sameAs: branch.id === 'marathahalli' ? [contact.googleProfile] : undefined,
   address: { '@type': 'PostalAddress', streetAddress: branch.streetAddress, addressLocality: 'Bengaluru', addressRegion: 'Karnataka', postalCode: branch.postalCode, addressCountry: 'IN' },
   ...('latitude' in branch ? { geo: { '@type': 'GeoCoordinates', latitude: branch.latitude, longitude: branch.longitude } } : {}),
 }));
