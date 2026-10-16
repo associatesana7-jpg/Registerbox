@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Seo } from './seo.web';
 import { WebBrand } from './brand.web';
@@ -7,9 +7,11 @@ import { publicServices } from './service-pages';
 import { BranchDetails, ContactActions, CustomerFeedback } from './local-support.web';
 
 export default function ContactPage() {
+  const { service: requestedService } = useLocalSearchParams<{service?:string}>();
+  const initialService = publicServices.find(item => item.category === requestedService)?.title || 'General enquiry';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [service, setService] = useState('General enquiry');
+  const [service, setService] = useState(initialService);
   const [message, setMessage] = useState('');
   const [prepared, setPrepared] = useState('');
   function prepare(event: React.FormEvent<HTMLFormElement>) {

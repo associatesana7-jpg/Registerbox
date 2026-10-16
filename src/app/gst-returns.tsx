@@ -184,6 +184,6 @@ function Workspace({businessId}:{businessId:string}) {
         <Button title="Back to review" variant="ghost" onPress={()=>setPhase('review')}/>
       </Card>}{evidence&&advanced?<Card><Text style={heading}>Latest provider response</Text><Text selectable style={{...muted,fontFamily:'monospace',fontSize:12}}>{JSON.stringify(evidence,null,2)}</Text></Card>:null}</>:null}
     </>:null}
-    <Button title="Back to GST connection" variant="ghost" onPress={()=>router.back()}/>
+    <Button title="Back to GST workspace" variant="ghost" onPress={()=>router.replace('/gst')}/>
   </View></Screen>;
 }

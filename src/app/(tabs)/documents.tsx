@@ -15,7 +15,7 @@ export default function DocumentsTab() {
   const [actionError, setActionError] = useState('');
   const [uploading, setUploading] = useState(false);
   async function upload() {
-    if (!business.id) { router.push('/onboarding/intent'); return; }
+    if (!business.id) { router.push({pathname:'/onboarding/application',params:{category:'existing'}}); return; }
     setUploading(true); setActionError('');
     try { if (await chooseAndUploadDocument(business.id, 'OTHER')) await refresh(); }
     catch (cause) { setActionError(cause instanceof Error ? cause.message : 'Upload failed. Please retry.'); }

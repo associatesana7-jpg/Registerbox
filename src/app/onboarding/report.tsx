@@ -17,7 +17,7 @@ export default function ReportScreen() {
       <View style={styles.stack}>{compliances.map((item) => <ComplianceCard key={item.id} item={item} compact />)}</View>
       {!compliances.length && <Text>No matching rules were found. This does not mean your business has no compliance obligations. Add your activity and location or request a review.</Text>}
       <Text style={styles.disclaimer}>Recommendations are based on the information provided. “Check Required” items need one more detail or expert verification.</Text>
-      <Button title="Update business details" variant="ghost" onPress={() => router.push('/onboarding/intent')} />
+      <Button title="Update business details" variant="ghost" onPress={() => router.push({pathname:'/onboarding/application',params:{category:'existing'}})} />
     </Screen>
   );
 }

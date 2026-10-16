@@ -21,6 +21,7 @@ export default function ApplicationScreen(){
   const category=requested&&applicationCategories[requested]?requested:'new';
   const {session,loadingSession}=useApp();
   if(loadingSession)return <Screen><Text>Loading your account…</Text></Screen>;
+  if(requested&&!applicationCategories[requested])return <Screen><PageHeader title="Choose a supported service" subtitle="That application type is not available. Choose the service you need instead."/><Button title="Choose a service" onPress={()=>router.replace('/onboarding/intent')}/></Screen>;
   if(!session)return <Redirect href={{pathname:'/auth',params:{next:`/onboarding/application?category=${category}`}}}/>;
   if(category==='gst')return <Redirect href="/gst"/>;
   return <CategoryApplication key={category+session.user.id} category={category} userId={session.user.id}/>;

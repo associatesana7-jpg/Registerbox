@@ -33,7 +33,7 @@ for (const route of routes) {
       const primary = hero.match(/<a\b(?=[^>]*class="[^"]*\brb-sx-primary\b)[^>]*>/)?.[0];
       assert.ok(primary, 'Primary application link must render');
       assert.doesNotMatch(primary, /wa\.me|docs\.google\.com/, 'Support must not replace the application flow');
-      if (route.endsWith('trademark-registration')) assert.match(primary, /href="\/contact"/);
+      if (route.endsWith('trademark-registration')) assert.match(primary, /href="\/contact\?service=trademark"/);
       else {
         assert.match(primary, /href="\/auth\?next=/, 'Signed-out customers keep their chosen service through sign-in');
         if (route.endsWith('gst-returns')) assert.match(primary, /next=%2Fgst"/);

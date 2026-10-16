@@ -26,13 +26,25 @@ export const services = [
   { category: 'existing', title: 'Business compliance check', group: 'Manage & comply', icon: 'business-check', detail: 'Capture your current business activity and registrations to review relevant requirements.', tag: 'Know your next step' },
 ];
 export function servicePath(category: string) {
-  return category === 'gst' ? '/gst' : `/onboarding/application?category=${encodeURIComponent(category)}`;
+  if (category === 'gst') return '/gst';
+  if (category === 'trademark') return '/contact?service=trademark';
+  return services.some(service => service.category === category) ? `/onboarding/application?category=${encodeURIComponent(category)}` : '/services';
 }
 // Only allow known internal customer destinations after authentication.
 export function safeNext(value?: string | string[]) {
-  const next = Array.isArray(value) ? value[0] : value;
-  if (!next) return '/dashboard';
-  const match = /^\/onboarding\/application\?category=([a-z_]+)$/.exec(next);
-  if (match && services.some(service => service.category === match[1])) return next;
-  return ['/dashboard', '/gst', '/gst-returns', '/gst-purchases', '/compliance', '/documents', '/ai', '/account', '/tally', '/document-locker', '/delete-account', '/privacy', '/onboarding/identify'].includes(next) ? next : '/dashboard';
+  const raw = Array.isArray(value) ? value[0] : value;
+  if (!raw || raw.length > 1500 || !raw.startsWith('/') || raw.startsWith('//') || /[\\\s\u0000-\u001f]/.test(raw)) return '/dashboard';
+  const next = raw.replace(/^\/\(tabs\)(?=\/|$)/, '') || '/dashboard';
+  const url = new URL(next, 'https://registerbox.invalid');
+  const allowed = ['/dashboard', '/gst', '/gst-returns', '/gst-purchases', '/compliance', '/documents', '/ai', '/account', '/tally', '/document-locker', '/delete-account', '/privacy', '/services', '/onboarding/identify', '/onboarding/welcome', '/onboarding/intent', '/onboarding/business', '/onboarding/questions', '/onboarding/report', '/onboarding/review', '/onboarding/documents'];
+  if (url.pathname === '/onboarding/application') {
+    return services.some(service => service.category === url.searchParams.get('category')) && [...url.searchParams.keys()].every(key => key === 'category') ? next : '/dashboard';
+  }
+  if (!allowed.includes(url.pathname)) return '/dashboard';
+  const validators: Record<string, (value:string)=>boolean> = url.pathname === '/gst-returns' ? {
+    form: value => ['gstr-1','gstr-3b'].includes(value),
+    mode: value => ['nil','regular','payment'].includes(value),
+    year: value => /^\d{4}$/.test(value), month: value => /^(0?[1-9]|1[0-2])$/.test(value),
+  } : url.pathname === '/gst-purchases' ? {year: value => /^\d{4}$/.test(value),month: value => /^(0?[1-9]|1[0-2])$/.test(value)} : {};
+  return [...url.searchParams].every(([key,value]) => validators[key]?.(value)) ? next : '/dashboard';
 }

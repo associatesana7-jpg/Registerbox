@@ -1,0 +1,243 @@
+[
+  {
+    "url": "https://www.google.com/maps?cid=13439752852292529636",
+    "status": 200,
+    "final": "https://www.google.com/maps?cid=13439752852292529636",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.google.com/maps/search/?api=1&query=RegisterBox%20149%201st%20Cross%20Trinity%20English%20School%20Road%20Marathahalli%20Bengaluru%20560037",
+    "status": 200,
+    "final": "https://www.google.com/maps/search/?api=1&query=RegisterBox%20149%201st%20Cross%20Trinity%20English%20School%20Road%20Marathahalli%20Bengaluru%20560037",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.google.com/maps/search/?api=1&query=12.9718924%2C77.6524058",
+    "status": 200,
+    "final": "https://www.google.com/maps/search/?api=1&query=12.9718924%2C77.6524058",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.mca.gov.in/content/mca/global/en/home.html",
+    "status": 403,
+    "final": "https://www.mca.gov.in/content/mca/global/en/home.html",
+    "verification": "blocked-or-unverified"
+  },
+  {
+    "url": "https://docs.google.com/forms/d/e/1FAIpQLSfFF7938FGJPuLRipOPcH1VndwzDA17RIFMDOU4AMcpzzpSMA/viewform",
+    "status": 200,
+    "final": "https://docs.google.com/forms/d/e/1FAIpQLSfFF7938FGJPuLRipOPcH1VndwzDA17RIFMDOU4AMcpzzpSMA/viewform",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://tutorial.gst.gov.in/userguide/registration/Apply_for_Registration_Normal_Taxpayer.htm",
+    "status": 200,
+    "final": "https://tutorial.gst.gov.in/userguide/registration/Apply_for_Registration_Normal_Taxpayer.htm",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20business%20registration%20in%20Bengaluru.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+business+registration+in+Bengaluru.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.nsws.gov.in/",
+    "status": 200,
+    "final": "https://www.nsws.gov.in/",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://tutorial.gst.gov.in/userguide/taxpayersdashboard/Search_Taxpayer_manual.htm",
+    "status": 200,
+    "final": "https://tutorial.gst.gov.in/userguide/taxpayersdashboard/Search_Taxpayer_manual.htm",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Open%20a%20new%20branch%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Open+a+new+branch+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://foscos.fssai.gov.in/search-eligibility",
+    "status": 200,
+    "final": "https://foscos.fssai.gov.in/search-eligibility",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://foscos.fssai.gov.in/",
+    "status": 200,
+    "final": "https://foscos.fssai.gov.in/",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Compliance%20check%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Compliance+check+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://g.page/r/CeRt8CUDmIO6EBM/review",
+    "status": 200,
+    "final": "https://search.google.com/local/writereview?placeid=ChIJ70lN_TsTrjsR5G3wJQOYg7o&source=g.page.m.ia._&laa=nmx-review-solicitation-ia2",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://fssai.gov.in/food-law/regulations/amendments/licensing-registration",
+    "status": 200,
+    "final": "https://fssai.gov.in/food-law/regulations/amendments/licensing-registration",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20FSSAI%20%26%20food%20licence%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+FSSAI+%26+food+licence+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://cbic-gst.gov.in/gst-registration-rules.html",
+    "status": 405,
+    "final": "https://cbic-gst.gov.in/gst-registration-rules.html",
+    "verification": "blocked-or-unverified"
+  },
+  {
+    "url": "https://tutorial.gst.gov.in/userguide/returns/GSTR_1.htm",
+    "status": 200,
+    "final": "https://tutorial.gst.gov.in/userguide/returns/GSTR_1.htm",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.gst.gov.in/",
+    "status": 200,
+    "final": "https://www.gst.gov.in/",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://tutorial.gst.gov.in/userguide/returns/GSTR3B_-_File_Nil_Return.htm",
+    "status": 200,
+    "final": "https://tutorial.gst.gov.in/userguide/returns/GSTR3B_-_File_Nil_Return.htm",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.mca.gov.in/content/dam/mca-aem-forms/instructionkits/Instruction%20Kit_Form%20FiLLiP.pdf",
+    "status": 403,
+    "final": "https://www.mca.gov.in/content/dam/mca-aem-forms/instructionkits/Instruction%20Kit_Form%20FiLLiP.pdf",
+    "verification": "blocked-or-unverified"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20GST%20registration%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+GST+registration+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20GST%20return%20support%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+GST+return+support+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20choosing%20a%20service%20for%20my%20Bengaluru%20business.%20My%20business%20does%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+choosing+a+service+for+my+Bengaluru+business.+My+business+does%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.dgft.gov.in/CP/",
+    "status": 200,
+    "final": "https://www.dgft.gov.in/CP/",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20LLP%20registration%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+LLP+registration+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.mca.gov.in/Ministry/pdf/SPICe%2Band_linked_filings_FAQs_V3_13%20Jan_2022_updated.pdf",
+    "status": 403,
+    "final": "https://www.mca.gov.in/Ministry/pdf/SPICe%2Band_linked_filings_FAQs_V3_13%20Jan_2022_updated.pdf",
+    "verification": "blocked-or-unverified"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Manufacturing%20business%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Manufacturing+business+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://cpcb.nic.in/",
+    "status": 200,
+    "final": "https://cpcb.gov.in/",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Online%20%26%20e-commerce%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Online+%26+e-commerce+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Private%20limited%20company%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Private+limited+company+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Shop%20%26%20establishment%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Shop+%26+establishment+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.startupindia.gov.in/content/sih/en/Legal-Considerations-for-a-Startup-.html",
+    "status": 200,
+    "final": "https://www.startupindia.gov.in/content/sih/en/Legal-Considerations-for-a-Startup-.html",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://www.ipindia.gov.in/application-workflow/trademark-filing-process",
+    "verification": "unverified",
+    "error": "TypeError"
+  },
+  {
+    "url": "https://www.ipindia.gov.in/pages/trade-marks/learn/forms-and-official-fees",
+    "verification": "unverified",
+    "error": "TypeError"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Start%20a%20business%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Start+a+business+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://wa.me/918147777843?text=Hi%20RegisterBox%2C%20I%20need%20help%20with%20Trademark%20application%20in%20Bengaluru.%20Just%20starting.%20My%20business%20type%20and%20area%20are%3A%20",
+    "status": 200,
+    "final": "https://api.whatsapp.com/send/?phone=918147777843&text=Hi+RegisterBox%2C+I+need+help+with+Trademark+application+in+Bengaluru.+Just+starting.+My+business+type+and+area+are%3A+&type=phone_number&app_absent=0",
+    "verification": "reachable"
+  },
+  {
+    "url": "https://udyamregistration.gov.in/",
+    "verification": "unverified",
+    "error": "TimeoutError"
+  },
+  {
+    "url": "https://www.indiacode.nic.in/handle/123456789/7609",
+    "verification": "unverified",
+    "error": "TimeoutError"
+  },
+  {
+    "url": "https://registration.shramsuvidha.gov.in/Users/stateintegration_acts/karnataka",
+    "verification": "unverified",
+    "error": "TimeoutError"
+  }
+]

@@ -36,7 +36,7 @@ export default function ServicePage({ slug }: { slug: string }) {
   const [stage, setStage] = useState(0);
   const review = service.category === 'trademark' ? { ...contentReview, date: '16 October 2026', isoDate: '2026-10-16' } : contentReview;
   const path = `/services/${service.slug}`;
-  const startHref: Href = service.category === 'trademark' ? '/contact' : session ? servicePath(service.category) as Href : { pathname: '/auth', params: { next: servicePath(service.category) } };
+  const startHref: Href = service.category === 'trademark' ? '/contact?service=trademark' as Href : session ? servicePath(service.category) as Href : { pathname: '/auth', params: { next: servicePath(service.category) } };
   const actionLabel = serviceActionLabels[service.category];
   const quotedService = ['company', 'llp', 'gst_registration', 'food', 'retail', 'trademark'].includes(service.category);
   const price = quotedService ? details.pricing?.value || 'Ask for a quote' : 'Ask for a quote';
