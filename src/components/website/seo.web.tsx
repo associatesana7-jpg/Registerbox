@@ -1,7 +1,14 @@
 import Head from 'expo-router/head';
-import { contact } from './content';
+import { branches, contact } from './content';
 export const siteUrl = 'https://www.registerbox.in';
-export const organization = { '@type': 'Organization', '@id': `${siteUrl}/#organization`, name: 'RegisterBox', url: siteUrl, logo: `${siteUrl}/images/registerbox-logo.png`, email: contact.email, telephone: contact.phone, address: { '@type': 'PostalAddress', streetAddress: '5th Cross Road, New Thippasandra Main Road', addressLocality: 'Bengaluru', addressRegion: 'Karnataka', postalCode: '560075', addressCountry: 'IN' } };
+export const organization = { '@type': 'Organization', '@id': `${siteUrl}/#organization`, name: 'RegisterBox', url: siteUrl, logo: `${siteUrl}/images/registerbox-logo.png`, email: contact.email, telephone: contact.phone };
+const branchSchema = branches.map(branch => ({
+  '@type': 'LocalBusiness', '@id': `${siteUrl}/#${branch.id}`, name: `RegisterBox — ${branch.name}`,
+  url: `${siteUrl}/contact#bengaluru-branches`, parentOrganization: { '@id': organization['@id'] },
+  telephone: contact.phone, email: contact.email, hasMap: branch.maps,
+  address: { '@type': 'PostalAddress', streetAddress: branch.streetAddress, addressLocality: 'Bengaluru', addressRegion: 'Karnataka', postalCode: branch.postalCode, addressCountry: 'IN' },
+  ...('latitude' in branch ? { geo: { '@type': 'GeoCoordinates', latitude: branch.latitude, longitude: branch.longitude } } : {}),
+}));
 export function Seo({ title, description, path, schema = [] }: { title: string; description: string; path: string; schema?: Record<string, unknown>[] }) {
   const url = `${siteUrl}${path}`;
   return <><Head>
@@ -12,5 +19,5 @@ export function Seo({ title, description, path, schema = [] }: { title: string; 
     <meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta property="og:url" content={url}/>
     <meta property="og:image" content={`${siteUrl}/images/registerbox-og.jpg`}/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image:alt" content="RegisterBox — Your business. Sorted."/>
     <meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={title}/><meta name="twitter:description" content={description}/><meta name="twitter:image" content={`${siteUrl}/images/registerbox-og.jpg`}/>
-  </Head><script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({'@context':'https://schema.org','@graph':[organization, ...schema]}).replace(/</g,'\\u003c')}}/></>;
+  </Head><script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({'@context':'https://schema.org','@graph':[organization, ...(path === '/' || path === '/contact' || path.startsWith('/services/') ? branchSchema : []), ...schema]}).replace(/</g,'\\u003c')}}/></>;
 }

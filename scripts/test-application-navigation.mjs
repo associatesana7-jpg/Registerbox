@@ -22,6 +22,7 @@ const root = load('src/app/_layout.web.tsx', {
   '@/providers/app-provider': { AppProvider: 'AppProvider' },
   '@/components/website/shell.web': { WebShell: 'WebShell' },
   '@/components/website/website.css': {},
+  '@/components/website/service-experience.css': {},
 }).default();
 assert.equal(root.type, 'AppProvider');
 assert.equal(root.props.children.type, 'Stack', 'Auth/loading shell must be inside the navigator');

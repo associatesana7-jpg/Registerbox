@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette } from '@/constants/design';
 
 export function GstHeader({title,onBack}:{title:string;onBack:()=>void}) {
@@ -10,7 +11,25 @@ export function GstTabs({items,value,onChange}:{items:string[];value:string;onCh
 }
 export function GstSelect({label,value,options,onChange,disabled=false}:{label:string;value:string;options:{label:string;value:string}[];onChange:(value:string)=>void;disabled?:boolean}) {
   const [open,setOpen]=useState(false);
-  return <View style={{gap:6}}><Text style={styles.label}>{label}</Text><Pressable accessibilityRole="button" accessibilityLabel={label} disabled={disabled} onPress={()=>setOpen(true)} style={styles.select}><Text style={{fontSize:13,color:palette.ink,fontWeight:'600'}}>{options.find(option=>option.value===value)?.label||'Select'}</Text><Text style={{color:palette.muted}}>⌄</Text></Pressable><Modal visible={open} transparent animationType="fade" onRequestClose={()=>setOpen(false)}><View style={styles.overlay}><Pressable accessibilityLabel="Close options" onPress={()=>setOpen(false)} style={StyleSheet.absoluteFill}/><View style={styles.sheet}><Text style={styles.sheetTitle}>{label}</Text><ScrollView>{options.map(option=><Pressable accessibilityRole="radio" accessibilityState={{checked:option.value===value}} key={option.value} onPress={()=>{onChange(option.value);setOpen(false);}} style={styles.option}><Text style={{color:option.value===value?palette.blue:palette.ink,fontSize:14}}>{option.label}</Text><Text style={{color:palette.blue}}>{option.value===value?'●':'○'}</Text></Pressable>)}</ScrollView><Pressable onPress={()=>setOpen(false)} style={styles.option}><Text style={{color:palette.blue}}>Cancel</Text></Pressable></View></View></Modal></View>;
+  const [query,setQuery]=useState('');
+  const {width}=useWindowDimensions();
+  const insets=useSafeAreaInsets();
+  const mobile=width<=600;
+  const visibleOptions=options.filter(option=>option.label.toLowerCase().includes(query.trim().toLowerCase()));
+  return <View style={{gap:8}}><Text style={[styles.label,{fontSize:13,color:palette.ink}]}>{label}</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityValue={{text:options.find(option=>option.value===value)?.label||'Not selected'}} accessibilityState={{disabled,expanded:open}} disabled={disabled} onPress={()=>{setQuery('');setOpen(true);}} style={[styles.select,{minHeight:54,paddingVertical:13,opacity:disabled?0.55:1}]}><Text style={{flex:1,minWidth:0,fontSize:16,lineHeight:23,color:value?palette.ink:palette.muted,fontWeight:'600'}}>{options.find(option=>option.value===value)?.label||'Tap to choose'}</Text><Text style={{color:palette.muted,paddingLeft:12}}>⌄</Text></Pressable>
+    <Modal visible={open} transparent animationType="none" onRequestClose={()=>setOpen(false)}>
+      <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':Platform.OS==='android'?'height':undefined} style={[styles.overlay,mobile&&{justifyContent:'flex-end',padding:0}]}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Close options" onPress={()=>setOpen(false)} style={StyleSheet.absoluteFill}/>
+        <View accessibilityViewIsModal style={[styles.sheet,{paddingBottom:Math.max(insets.bottom,16)},mobile&&{maxWidth:600,borderBottomLeftRadius:0,borderBottomRightRadius:0,maxHeight:'85%'}]}>
+          <Text accessibilityRole="header" style={styles.sheetTitle}>{label}</Text>
+          {options.length>8&&<TextInput accessibilityLabel={`Search ${label}`} placeholder="Search options…" placeholderTextColor={palette.muted} autoCorrect={false} autoCapitalize="none" value={query} onChangeText={setQuery} style={{fontSize:16,minHeight:48,paddingHorizontal:13,paddingVertical:10,borderWidth:1,borderColor:palette.line,borderRadius:10,color:palette.ink,marginBottom:10}}/>}
+          <ScrollView keyboardShouldPersistTaps="handled">{visibleOptions.map(option=><Pressable accessibilityRole="radio" accessibilityState={{checked:option.value===value,disabled}} disabled={disabled} key={option.value} onPress={()=>{onChange(option.value);setOpen(false);}} style={[styles.option,{gap:14,minHeight:56,backgroundColor:option.value===value?'#F1F6FF':palette.white,paddingHorizontal:10,borderRadius:8}]}><Text style={{flex:1,minWidth:0,lineHeight:23,color:option.value===value?palette.blue:palette.ink,fontSize:16}}>{option.label}</Text><Text style={{color:palette.blue}}>{option.value===value?'●':'○'}</Text></Pressable>)}{!visibleOptions.length&&<Text style={{padding:18,color:palette.muted,fontSize:14}}>No matches. Try a different word.</Text>}</ScrollView>
+          <Pressable accessibilityRole="button" onPress={()=>setOpen(false)} style={[styles.option,{justifyContent:'center',minHeight:52,borderBottomWidth:0}]}><Text style={{color:palette.blue,fontWeight:'700',fontSize:15}}>Cancel</Text></Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  </View>;
 }
 export function GstActionRow({icon,title,onPress}:{icon:string;title:string;onPress:()=>void}) {return <Pressable accessibilityRole="button" onPress={onPress} style={styles.action}><View style={styles.actionIcon}><Text style={{color:palette.blue,fontSize:16}}>{icon}</Text></View><Text style={styles.actionTitle}>{title}</Text><Text style={{color:palette.muted}}>›</Text></Pressable>;}
 export const gstStyles=StyleSheet.create({card:{padding:15,borderRadius:13,backgroundColor:palette.white,borderWidth:1,borderColor:'#E7EDF7',gap:13},title:{fontSize:14,fontWeight:'800',color:palette.ink},caption:{fontSize:12,lineHeight:18,color:palette.muted},stack:{gap:16},});

@@ -1,15 +1,23 @@
 export const contact = {
-  email: 'registerbox@yahoo.com',
+  email: 'registerboxindia@gmail.com',
   whatsapp: 'https://wa.me/918147777843',
   phone: '+91 81477 77843',
-  address: 'Registerbox, BBMP Ward, Hal Aerospace Division, 5th Cross Road, New Thippasandra Main Rd, New Thippasandra, Bengaluru, Karnataka 560075',
+  telephoneHref: 'tel:+918147777843',
+  address: '3rd Floor, Site No. 71, 5th Cross Road, above Kookie Kids, New Thippasandra Main Road, HAL Aerospace Division, Bengaluru, Karnataka 560075',
+  callback: 'https://docs.google.com/forms/d/e/1FAIpQLSfFF7938FGJPuLRipOPcH1VndwzDA17RIFMDOU4AMcpzzpSMA/viewform',
+  googleReview: 'https://g.page/r/CeRt8CUDmIO6EBM/review',
+  googleProfile: 'https://www.google.com/maps?cid=13439752852292529636',
 };
+export const branches = [
+  { id: 'new-thippasandra', name: 'New Thippasandra', address: contact.address, streetAddress: '3rd Floor, Site No. 71, 5th Cross Road, above Kookie Kids, New Thippasandra Main Road, HAL Aerospace Division', postalCode: '560075', maps: 'https://www.google.com/maps/search/?api=1&query=12.9718924%2C77.6524058', latitude: 12.9718924, longitude: 77.6524058 },
+  { id: 'marathahalli', name: 'Marathahalli', address: '149, RegisterBox, 1st Cross, Trinity English School Road, Marathahalli, Bengaluru, Karnataka 560037', streetAddress: '149, RegisterBox, 1st Cross, Trinity English School Road, Marathahalli', postalCode: '560037', maps: 'https://www.google.com/maps/search/?api=1&query=RegisterBox%20149%201st%20Cross%20Trinity%20English%20School%20Road%20Marathahalli%20Bengaluru%20560037' },
+];
 export const services = [
-  { category: 'company', title: 'Private limited company', group: 'Start a business', icon: 'company', detail: 'Build your company application with director, share capital and registered-office details.', tag: 'For your next big idea' },
+  { category: 'company', title: 'Private limited company', group: 'Start a business', icon: 'company', detail: 'Build your company application with director, share capital and registered-office details.', tag: 'For your next big idea', priceLabel: 'Ask for quotation' },
   { category: 'llp', title: 'LLP registration', group: 'Start a business', icon: 'llp', detail: 'Prepare partner details, contributions, consent and your registered-office documents.', tag: 'Partner up, thoughtfully' },
-  { category: 'gst_registration', title: 'GST registration', group: 'Registrations', icon: 'gst-registration', detail: 'Share your business name, address, business activity and contact details, then upload your documents.', tag: 'Simple questions. Easy document uploads.' },
-  { category: 'food', title: 'Food business & FSSAI', group: 'Registrations', icon: 'food', detail: 'Find your food-business route and gather the relevant FoSCoS application evidence.', tag: 'Made for food entrepreneurs' },
-  { category: 'retail', title: 'Shop & establishment', group: 'Registrations', icon: 'retail', detail: 'Collect establishment information and documents for your state-specific requirements.', tag: 'Open your doors with clarity' },
+  { category: 'gst_registration', title: 'GST registration', group: 'Registrations', icon: 'gst-registration', detail: 'Share your business name, address, business activity and contact details, then upload your documents.', tag: 'Simple questions. Easy document uploads.', priceLabel: 'RegisterBox fee ₹199' },
+  { category: 'food', title: 'Food business & FSSAI', group: 'Registrations', icon: 'food', detail: 'Find your food-business route and gather the relevant FoSCoS application evidence.', tag: 'Made for food entrepreneurs', priceLabel: 'RegisterBox fee ₹3,999' },
+  { category: 'retail', title: 'Shop & establishment', group: 'Registrations', icon: 'retail', detail: 'Collect establishment information and documents for your state-specific requirements.', tag: 'Open your doors with clarity', priceLabel: 'RegisterBox fee ₹4,500' },
   { category: 'gst', title: 'GST returns workspace', group: 'Manage & comply', icon: 'gst-return', detail: 'Connect your GST account, prepare drafts, review records and track filing acknowledgements.', tag: 'GSTR-1 · GSTR-3B · Nil' },
   { category: 'new', title: 'Start a new business', group: 'Start a business', icon: 'new-business', detail: 'Choose a structure, explain your activity and save the details for your business journey.', tag: 'Start with a clear plan' },
   { category: 'online', title: 'Online & e-commerce', group: 'Start a business', icon: 'online', detail: 'Plan your website or marketplace business and capture interstate-sales requirements.', tag: 'Your business, beyond borders' },

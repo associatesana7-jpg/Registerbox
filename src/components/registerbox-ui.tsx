@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
-import type { PropsWithChildren, ReactNode } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, type TextInputProps, View, useWindowDimensions } from 'react-native';
+import { useState, type PropsWithChildren, type ReactNode } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, type TextInputProps, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { contentWidth, palette, radius } from '@/constants/design';
@@ -20,28 +20,30 @@ type ScreenProps = PropsWithChildren<{ footer?: ReactNode; dark?: boolean; padde
 export function Screen({ children, footer, dark = false, padded = true, header }: ScreenProps) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const [footerHeight, setFooterHeight] = useState(90);
   const webWidth = process.env.EXPO_OS === 'web' ? { maxWidth: width > 900 ? 880 : 680 } : undefined;
   return (
-    <View style={[styles.page, { backgroundColor: dark ? palette.navy : palette.pale, paddingTop: insets.top }]}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : Platform.OS === 'android' ? 'height' : undefined} style={[styles.page, { backgroundColor: dark ? palette.navy : palette.pale, paddingTop: insets.top }]}>
       <ScrollView
         contentInsetAdjustmentBehavior="never"
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: 20, paddingBottom: Math.max(insets.bottom, 24) + (footer ? 82 : 0) },
+          { paddingTop: 20, paddingBottom: footer ? footerHeight + 24 : Math.max(insets.bottom, 24) },
           padded && { paddingHorizontal: width > 700 ? 32 : 18 },
         ]}>
         <View style={[styles.contentWidth, webWidth]}>{header}{children}</View>
       </ScrollView>
-      {footer && <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 14) }]}><View style={[styles.contentWidth, webWidth]}>{footer}</View></View>}
-    </View>
+      {footer && <View onLayout={event => setFooterHeight(event.nativeEvent.layout.height)} style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 14) }]}><View style={[styles.contentWidth, webWidth]}>{footer}</View></View>}
+    </KeyboardAvoidingView>
   );
 }
 
 export function PageHeader({ title, subtitle, back }: { title: string; subtitle?: string; back?: () => void }) {
   return (
     <View style={styles.pageHeader}>
-      {back && <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={back} hitSlop={12}><Text style={styles.back}>‹</Text></Pressable>}
+      {back && <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={back} hitSlop={8} style={styles.backButton}><Text style={styles.back}>‹</Text></Pressable>}
       <View style={{ flex: 1 }}>
         <Text selectable style={styles.h1}>{title}</Text>
         {subtitle && <Text selectable style={styles.subtitle}>{subtitle}</Text>}
@@ -52,12 +54,13 @@ export function PageHeader({ title, subtitle, back }: { title: string; subtitle?
 
 export function Button({ title, onPress, variant = 'primary', loading = false, disabled = false, icon }: { title: string; onPress?: () => void; variant?: 'primary' | 'secondary' | 'ghost' | 'dark'; loading?: boolean; disabled?: boolean; icon?: string }) {
   const content = loading ? <ActivityIndicator color={variant === 'secondary' || variant === 'ghost' ? palette.blue : palette.white} /> : <Text style={[styles.buttonText, (variant === 'secondary' || variant === 'ghost') && styles.buttonTextSecondary]}>{title}{icon ? `  ${icon}` : ''}</Text>;
-  if (variant === 'primary') return <Pressable disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [pressed && styles.pressed, disabled && styles.disabled]}><LinearGradient colors={[palette.blue2, palette.blue]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.button}>{content}</LinearGradient></Pressable>;
-  return <Pressable disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [styles.button, variant === 'secondary' && styles.secondaryButton, variant === 'ghost' && styles.ghostButton, variant === 'dark' && styles.darkButton, pressed && styles.pressed, disabled && styles.disabled]}>{content}</Pressable>;
+  if (variant === 'primary') return <Pressable accessibilityRole="button" accessibilityLabel={title} accessibilityState={{disabled: disabled || loading, busy: loading}} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [pressed && styles.pressed, (disabled || loading) && styles.disabled]}><LinearGradient colors={[palette.blue2, palette.blue]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.button}>{content}</LinearGradient></Pressable>;
+  return <Pressable accessibilityRole="button" accessibilityLabel={title} accessibilityState={{disabled: disabled || loading, busy: loading}} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [styles.button, variant === 'secondary' && styles.secondaryButton, variant === 'ghost' && styles.ghostButton, variant === 'dark' && styles.darkButton, pressed && styles.pressed, (disabled || loading) && styles.disabled]}>{content}</Pressable>;
 }
 
-export function Field({ label, prefix, style, ...props }: TextInputProps & { label?: string; prefix?: string }) {
-  return <View style={{ gap: 7 }}>{label && <Text selectable style={styles.label}>{label}</Text>}<View style={styles.fieldWrap}>{prefix && <Text style={styles.prefix}>{prefix}</Text>}<TextInput placeholderTextColor="#97A4BF" {...props} style={[styles.field, style]} /></View></View>;
+export function Field({ label, prefix, style, onFocus, onBlur, ...props }: TextInputProps & { label?: string; prefix?: string }) {
+  const [focused, setFocused] = useState(false);
+  return <View style={{ gap: 8 }}>{label && <Text selectable style={styles.label}>{label}</Text>}<View style={[styles.fieldWrap, focused && {borderColor:palette.blue,backgroundColor:'#FBFDFF'}, props.editable === false && {backgroundColor:'#F1F4F9'}]}>{prefix && <Text style={styles.prefix}>{prefix}</Text>}<TextInput placeholderTextColor="#74829B" {...props} accessibilityLabel={props.accessibilityLabel || label} onFocus={event => {setFocused(true);onFocus?.(event);}} onBlur={event => {setFocused(false);onBlur?.(event);}} style={[styles.field, style]} /></View></View>;
 }
 
 export function Card({ children, style }: PropsWithChildren<{ style?: object }>) { return <View style={[styles.card, style]}>{children}</View>; }
@@ -67,15 +70,15 @@ export function Badge({ label, tone = 'blue' }: { label: string; tone?: 'blue' |
   return <View style={[styles.badge, { backgroundColor: map[tone][0] }]}><Text style={[styles.badgeText, { color: map[tone][1] }]}>{label}</Text></View>;
 }
 
-export function Choice({ label, selected, onPress, icon, detail }: { label: string; selected?: boolean; onPress?: () => void; icon?: string; detail?: string }) {
-  return <Pressable onPress={onPress} style={({ pressed }) => [styles.choice, selected && styles.choiceSelected, pressed && styles.pressed]}>{icon && <Text style={styles.choiceIcon}>{icon}</Text>}<View style={{ flex: 1 }}><Text selectable style={styles.choiceLabel}>{label}</Text>{detail && <Text selectable style={styles.choiceDetail}>{detail}</Text>}</View>{selected && <Text style={styles.check}>✓</Text>}</Pressable>;
+export function Choice({ label, selected, onPress, icon, detail, disabled = false }: { label: string; selected?: boolean; onPress?: () => void; icon?: string; detail?: string; disabled?: boolean }) {
+  return <Pressable accessibilityRole="button" accessibilityState={{selected,disabled}} disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.choice, selected && styles.choiceSelected, pressed && styles.pressed,disabled&&styles.disabled]}>{icon && <Text style={styles.choiceIcon}>{icon}</Text>}<View style={{ flex: 1 }}><Text selectable style={styles.choiceLabel}>{label}</Text>{detail && <Text selectable style={styles.choiceDetail}>{detail}</Text>}</View>{selected && <Text style={styles.check}>✓</Text>}</Pressable>;
 }
 
 export function SectionTitle({ children, action }: PropsWithChildren<{ action?: string }>) { return <View style={styles.sectionTitleRow}><Text selectable style={styles.sectionTitle}>{children}</Text>{action && <Text style={styles.link}>{action}</Text>}</View>; }
 
 export function StepDot({ state = 'todo' }: { state?: 'done' | 'active' | 'todo' }) { return <View style={[styles.stepDot, state === 'done' && styles.stepDone, state === 'active' && styles.stepActive]}>{state === 'done' && <Text style={styles.stepCheck}>✓</Text>}</View>; }
 
-export function ErrorBanner({ message }: { message?: string }) { if (!message) return null; return <View style={styles.error}><Text selectable style={styles.errorText}>{message}</Text></View>; }
+export function ErrorBanner({ message }: { message?: string }) { if (!message) return null; return <View accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.error}><Text selectable style={styles.errorText}>{message}</Text></View>; }
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
@@ -87,11 +90,12 @@ const styles = StyleSheet.create({
   logoText: { color: palette.white, fontWeight: '900', fontSize: 19 },
   brandText: { fontSize: 20, color: palette.ink, fontWeight: '900', letterSpacing: -0.7 },
   pageHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingBottom: 20 },
-  back: { color: palette.ink, fontSize: 34, lineHeight: 34 },
+  backButton: {width:44,minHeight:44,alignItems:'center',justifyContent:'center',borderRadius:12,backgroundColor:palette.white,borderWidth:1,borderColor:palette.line},
+  back: { color: palette.ink, fontSize: 30, lineHeight: 34 },
   h1: { color: palette.ink, fontWeight: '900', fontSize: 27, lineHeight: 32, letterSpacing: -0.7 },
   subtitle: { color: palette.muted, fontSize: 14, lineHeight: 20, paddingTop: 5 },
-  button: { minHeight: 54, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
-  buttonText: { color: palette.white, fontWeight: '800', fontSize: 14 },
+  button: { minHeight: 54, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, paddingVertical:14 },
+  buttonText: { color: palette.white, fontWeight: '800', fontSize: 16, lineHeight:22, textAlign:'center', flexShrink:1 },
   buttonTextSecondary: { color: palette.blue },
   secondaryButton: { backgroundColor: palette.white, borderWidth: 1, borderColor: '#B7D0FF' },
   ghostButton: { minHeight: 44, backgroundColor: 'transparent' },
@@ -100,7 +104,7 @@ const styles = StyleSheet.create({
   disabled: { opacity: 0.5 },
   label: { color: palette.ink, fontSize: 13, fontWeight: '700' },
   fieldWrap: { minHeight: 52, flexDirection: 'row', alignItems: 'center', backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.sm, overflow: 'hidden' },
-  field: { flex: 1, minHeight: 50, color: palette.ink, fontSize: 15, paddingHorizontal: 14 },
+  field: { flex: 1, minWidth:0, minHeight: 52, color: palette.ink, fontSize: 16, lineHeight:22, paddingHorizontal: 14, paddingVertical:12 },
   prefix: { color: palette.green, fontWeight: '800', paddingLeft: 14, paddingRight: 4 },
   card: { backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.md, padding: 16, gap: 12, boxShadow: '0 6px 20px rgba(21, 63, 135, 0.055)' },
   badge: { alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 5 },

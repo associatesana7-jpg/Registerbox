@@ -3,6 +3,7 @@ import type { PropsWithChildren } from 'react';
 import { AppProvider } from '@/providers/app-provider';
 import { WebShell } from '@/components/website/shell.web';
 import '@/components/website/website.css';
+import '@/components/website/service-experience.css';
 // The navigator must own the shell so loading/auth changes cannot reset its state.
 function renderShell({ children }: PropsWithChildren) {
   return <WebShell>{children}</WebShell>;
