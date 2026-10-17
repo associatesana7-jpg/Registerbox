@@ -1,5 +1,5 @@
 import { Redirect, router, Stack } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 import { Button, ErrorBanner, Field, Screen } from '@/components/registerbox-ui';
 import { GstFilingHistory } from '@/components/gst-filing-history';
@@ -12,6 +12,7 @@ import { BusinessProfilePicker } from '@/components/business-profile-picker';
 import type { FilingHistory } from '../../supabase/functions/_shared/gst-filing-history';
 import { classifyPortalStatus, GST_RETURN_COVERAGE, portalStateCopy } from '@/lib/gst-filing-workflow';
 import { GstCheckbox } from '@/components/gst-checkbox';
+import { advanceTo3b } from '@/lib/gst-period-navigation';
 
 function Consent({checked,label,onChange,disabled=false}:{checked:boolean;label:string;onChange:()=>void;disabled?:boolean}) {
   return <GstCheckbox checked={checked} label={label} disabled={disabled} onPress={onChange}/>;
@@ -28,7 +29,7 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
   const [gstin,setGstin]=useState(initialGstin||''),[username,setUsername]=useState(''),[otp,setOtp]=useState('');
   const [consent,setConsent]=useState(false),[verifyConsent,setVerifyConsent]=useState(false),[readConsent,setReadConsent]=useState(false),[disconnectConsent,setDisconnectConsent]=useState(false);
   const [busy,setBusy]=useState(true),[error,setError]=useState('');
-  const [section,setSection]=useState('GSTR-3B');
+  const [section,setSection]=useState('GSTR-1');
   const [page,setPage]=useState<'period'|'summary'|'connection'>('connection');
   const [resumeMode,setResumeMode]=useState<string|null>(null);
   const previous=new Date();previous.setDate(1);previous.setMonth(previous.getMonth()-1);
@@ -36,6 +37,14 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
   const [financialYear,setFinancialYear]=useState(previous.getMonth()<3?previous.getFullYear()-1:previous.getFullYear());
   const [result,setResult]=useState<GstReturn|null>(null);
   const [filingHistory,setFilingHistory]=useState<FilingHistory|null>(null);
+  const manualTab=useRef(false),previousHistory=useRef<FilingHistory|null>(null);
+  const onHistory=useCallback((history:FilingHistory|null)=>{
+    setFilingHistory(history);
+    if(advanceTo3b(history,previousHistory.current,manualTab.current)){
+      setSection('GSTR-3B');manualTab.current=false;
+    }
+    if(history)previousHistory.current=history;
+  },[]);
   const [coverageOpen,setCoverageOpen]=useState(false);
   const running=useRef(false),mounted=useRef(true);
   const [now,setNow]=useState(()=>Date.now());
@@ -69,12 +78,12 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
       <ErrorBanner message={error}/>
       {page==='summary'&&result?<GstReturnReview result={result} onContinue={()=>prepare()}/>:null}
       {page==='period'?<>
-        <GstTabs items={['GSTR-1','GSTR-3B','ITC/2B','Ledgers']} value={section} onChange={value=>{setSection(value);setReadConsent(false);setResult(null);}}/>
+        <GstTabs items={['GSTR-1','GSTR-3B','ITC/2B','Ledgers']} value={section} onChange={value=>{manualTab.current=true;setSection(value);setReadConsent(false);setResult(null);}}/>
         <Pressable onPress={()=>setPage('connection')} accessibilityRole="button" style={{flexDirection:'row',alignItems:'center',gap:9,padding:11,borderRadius:10,backgroundColor:palette.white,borderWidth:1,borderColor:palette.line}}><Text style={{fontSize:18,color:palette.blue}}>▣</Text><View style={{flex:1,gap:2}}><Text style={{fontSize:12,fontWeight:'800',color:palette.ink}}>{name||'Your business'}</Text><Text style={{fontSize:10,color:palette.muted}}>{gstin||'Connect your GST account'}</Text></View><Text style={{color:linked?palette.green:palette.amber,fontSize:10,fontWeight:'800'}}>{busy?'Checking':linked?'Connected':'Connect'}</Text><Text style={{color:palette.muted}}>›</Text></Pressable>
-        {section==='ITC/2B'?<View style={s.card}><Text style={s.title}>Purchase reconciliation</Text><Text style={s.caption}>Add or upload purchase books, fetch GSTR-2B, and review matched, missing and different documents.</Text><GstSelect label="Financial Year" value={String(financialYear)} options={yearOptions} onChange={value=>{const fy=Number(value);setFinancialYear(fy);setYear(String(Number(month)<4?fy+1:fy));}}/><GstSelect label="Tax Period" value={month+year} options={periodOptions} onChange={value=>{setMonth(value.slice(0,2));setYear(value.slice(2));}}/><Button title="Open purchase reconciliation" onPress={()=>router.push({pathname:'/gst-purchases',params:{year,month}})}/></View>:section==='Ledgers'?<View style={s.card}><Text style={s.title}>Cash & credit ledgers</Text><Text style={s.caption}>Open a regular GSTR-3B draft to fetch ledger balances and review your payment allocation.</Text><Button title="Open payment workspace" onPress={()=>prepare('payment')}/></View>:<View style={s.card}>
+        {section==='ITC/2B'?<View style={s.card}><Text style={s.title}>Purchase reconciliation</Text><Text style={s.caption}>Add or upload purchase books, fetch GSTR-2B, and review matched, missing and different documents.</Text><GstSelect label="Financial Year" value={String(financialYear)} options={yearOptions} onChange={value=>{manualTab.current=false;setSection(current=>['GSTR-1','GSTR-3B'].includes(current)?'GSTR-1':current);const fy=Number(value);setFinancialYear(fy);setYear(String(Number(month)<4?fy+1:fy));}}/><GstSelect label="Tax Period" value={month+year} options={periodOptions} onChange={value=>{setMonth(value.slice(0,2));setYear(value.slice(2));}}/><Button title="Open purchase reconciliation" onPress={()=>router.push({pathname:'/gst-purchases',params:{year,month}})}/></View>:section==='Ledgers'?<View style={s.card}><Text style={s.title}>Cash & credit ledgers</Text><Text style={s.caption}>Open a regular GSTR-3B draft to fetch ledger balances and review your payment allocation.</Text><Button title="Open payment workspace" onPress={()=>prepare('payment')}/></View>:<View style={s.card}>
           <Text style={s.title}>Select Return Period</Text>
-          <GstSelect label="Financial Year" value={String(financialYear)} options={yearOptions} disabled={busy} onChange={value=>{const fy=Number(value);setFinancialYear(fy);setYear(String(Number(month)<4?fy+1:fy));setReadConsent(false);setResult(null);setFilingHistory(null);}}/>
-          <GstSelect label="Tax Period" value={month+year} options={periodOptions} disabled={busy} onChange={value=>{setMonth(value.slice(0,2));setYear(value.slice(2));setReadConsent(false);setResult(null);setFilingHistory(null);}}/>
+          <GstSelect label="Financial Year" value={String(financialYear)} options={yearOptions} disabled={busy} onChange={value=>{manualTab.current=false;setSection(current=>['GSTR-1','GSTR-3B'].includes(current)?'GSTR-1':current);const fy=Number(value);setFinancialYear(fy);setYear(String(Number(month)<4?fy+1:fy));setReadConsent(false);setResult(null);setFilingHistory(null);}}/>
+          <GstSelect label="Tax Period" value={month+year} options={periodOptions} disabled={busy} onChange={value=>{manualTab.current=false;setSection(current=>['GSTR-1','GSTR-3B'].includes(current)?'GSTR-1':current);setMonth(value.slice(0,2));setYear(value.slice(2));setReadConsent(false);setResult(null);setFilingHistory(null);}}/>
           <Text style={s.caption}>No activity to report? Confirm the nil declaration, authorize the signatory and file with OTP. No invoice upload is needed. Zero tax alone does not mean nil.</Text>
           {linked&&!historyReady?<Text accessibilityRole="alert" style={s.caption}>Checking GST portal filing status before enabling preparation…</Text>:null}
           {portalRecord?<Text accessibilityRole="alert" style={{...s.caption,color:portalState==='FILED'?palette.green:palette.amber}}>{portalStateCopy(portalState)}</Text>:null}
@@ -82,7 +91,7 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
           <Button title="Prepare a regular return" variant="secondary" disabled={busy||periodBlocked} onPress={()=>prepare('regular')}/>
           {linked?<><Consent checked={readConsent} disabled={busy} onChange={()=>setReadConsent(!readConsent)} label={`Allow RegisterBox to load ${form.toUpperCase()} for ${periodLabel} from GST.`}/><Button title="View existing GST data" variant="secondary" loading={busy} disabled={!readConsent} onPress={()=>run('read_return',{form,year:Number(year),month:Number(month),consent:readConsent})}/></>:null}
         </View>}
-        {linked&&['GSTR-1','GSTR-3B'].includes(section)?<GstFilingHistory businessId={businessId} year={year} month={month} onStatus={setFilingHistory}/>:null}
+        {linked&&['GSTR-1','GSTR-3B'].includes(section)?<GstFilingHistory businessId={businessId} year={year} month={month} onStatus={onHistory}/>:null}
         <View style={s.card}><Text style={s.title}>Quick Actions</Text><View><GstActionRow icon="▤" title="Check Nil Return Eligibility" onPress={()=>prepare('nil')}/><GstActionRow icon="▧" title="View Saved & Filed Returns" onPress={()=>router.push('/gst-returns')}/><GstActionRow icon="✓" title="Check 2B vs Books" onPress={()=>setSection('ITC/2B')}/><GstActionRow icon="▥" title="View Ledgers" onPress={()=>setSection('Ledgers')}/><GstActionRow icon="＋" title="Prepare a Regular Return" onPress={()=>prepare('regular')}/></View></View>
         <View style={s.card}><Pressable accessibilityRole="button" accessibilityState={{expanded:coverageOpen}} onPress={()=>setCoverageOpen(!coverageOpen)} style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10}}><View style={{flex:1,gap:3}}><Text style={s.title}>Return coverage</Text><Text style={s.caption}>Forms are enabled only after taxpayer applicability and live provider support are verified.</Text></View><Text style={{color:palette.blue,fontSize:18}}>{coverageOpen?'⌃':'⌄'}</Text></Pressable>{coverageOpen?GST_RETURN_COVERAGE.map(item=><View key={item.form} style={{flexDirection:'row',alignItems:'center',gap:10,paddingTop:9,borderTopWidth:1,borderTopColor:palette.line}}><View style={{flex:1,gap:2}}><Text style={{fontSize:12,fontWeight:'800',color:palette.ink}}>{item.form}</Text><Text style={s.caption}>{item.purpose}</Text></View><Text style={{fontSize:10,fontWeight:'800',color:item.availability==='enabled'?palette.green:palette.amber}}>{item.availability==='enabled'?'Guided flow':'CA/provider review'}</Text></View>):null}</View>
       </>:null}

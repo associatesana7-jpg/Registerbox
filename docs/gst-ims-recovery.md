@@ -10,6 +10,8 @@ GSTR-1 and GSTR-3B resend the filing OTP directly without resetting declarations
 
 The GST landing page no longer clears filing status when switching between form tabs without triggering another fetch. Filing history refreshes on route focus/app foreground/browser focus. Rejected operations refresh the saved server draft instead of retaining a stale client revision.
 
+GST opens with GSTR-1 selected. Confirmed filing for that period advances the landing tab to GSTR-3B. Each newly selected period restarts at GSTR-1 unless its fetched history confirms it filed. Users can still explicitly inspect an already-filed GSTR-1; submitted/pending/unknown statuses never count as filed.
+
 ## IMS boundaries
 
 - IMS is a live invoice queue spanning source periods, not an invoice list filtered to the selected GSTR-3B month. Each document's source period is shown.

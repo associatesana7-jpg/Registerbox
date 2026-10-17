@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {advanceTo3b} from '../src/lib/gst-period-navigation.ts';
+const pending={period:'092026',records:[{form:'GSTR1',status:'Not filed'}]};
+const filed={period:'092026',records:[{form:'GSTR1',status:'Filed'}]};
+assert.equal(advanceTo3b(null,null,false),false);
+assert.equal(advanceTo3b(pending,null,false),false);
+assert.equal(advanceTo3b(filed,null,false),true,'Previously filed GSTR-1 opens next step');
+assert.equal(advanceTo3b(filed,pending,false),true);
+assert.equal(advanceTo3b(filed,pending,true),true,'New filing advances even after manually selecting GSTR-1');
+assert.equal(advanceTo3b(filed,filed,true),false,'User can inspect an already-filed GSTR-1');
+assert.equal(advanceTo3b({...pending,period:'102026'},filed,false),false,'A different period starts at GSTR-1');
+assert.equal(advanceTo3b({period:'092026',records:[{form:'GSTR1',status:'Submitted'}]},pending,false),false,'Only confirmed filed advances');
+assert.match(fs.readFileSync('src/app/gst.tsx','utf8'),/\[section,setSection\]=useState\('GSTR-1'\)/);
+console.log('GST tab sequence verified: GSTR-1 by default, confirmed filing advances to GSTR-3B, new period resets, manual receipt viewing preserved.');
