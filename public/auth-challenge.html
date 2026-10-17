@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src https://challenges.cloudflare.com; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>RegisterBox security check</title>
+  <style>body{margin:0;padding:16px 0;font:14px/1.5 system-ui,sans-serif;color:#52637a;background:white}#widget{min-height:70px}p{text-align:center}button{display:block;margin:16px auto;min-height:44px;padding:0 24px;border:1px solid #dde5ee;border-radius:10px;background:white;color:#132747}button[hidden]{display:none}</style>
+</head>
+<body>
+  <div id="widget"></div>
+  <p id="status" role="status">Checking your connection securely…</p>
+  <button id="retry" type="button" hidden>Try again</button>
+  <script>
+    (() => {
+      const parameters = new URLSearchParams(location.search);
+      const action = parameters.get('action');
+      const request = parameters.get('request');
+      const actions = ['customer_email', 'customer_password', 'admin_email'];
+      const status = document.getElementById('status');
+      const retry = document.getElementById('retry');
+      let widget, complete = false;
+      function send(result) {
+        const message = { type: 'registerbox-captcha', request, ...result };
+        if (window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        else if (parent !== window) parent.postMessage(message, location.origin);
+      }
+      function failed() {
+        status.textContent = 'Check your connection and try the security check again.';
+        retry.hidden = false;
+      }
+      if (!actions.includes(action) || !request || !/^[\d-]{1,64}$/.test(request)) {
+        status.textContent = 'Please open this security check from RegisterBox sign-in.';
+        return;
+      }
+      window.startRegisterBoxChallenge = () => {
+        widget = turnstile.render('#widget', {
+          sitekey: '0x4AAAAAAFZI0vvJIr2vSz2b', action, theme: 'light', size: 'flexible',
+          callback: token => {
+            if (complete) return;
+            complete = true;
+            status.textContent = 'Verified. Returning to sign-in…';
+            send({ status: 'verified', token });
+          },
+          'expired-callback': () => { complete = false; failed(); },
+          'timeout-callback': failed,
+          'error-callback': () => { failed(); return true; }
+        });
+      };
+      retry.onclick = () => {
+        complete = false; retry.hidden = true;
+        status.textContent = 'Checking your connection securely…';
+        if (window.turnstile && widget !== undefined) turnstile.reset(widget);
+        else location.reload();
+      };
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=startRegisterBoxChallenge&render=explicit';
+      script.async = true; script.defer = true; script.onerror = failed;
+      document.head.appendChild(script);
+    })();
+  </script>
+</body>
+</html>
