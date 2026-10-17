@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
-import type { PropsWithChildren, ReactNode } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, type TextInputProps, View, useWindowDimensions } from 'react-native';
+import { useState, type PropsWithChildren, type ReactNode } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, type TextInputProps, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { contentWidth, palette, radius } from '@/constants/design';
@@ -20,28 +20,30 @@ type ScreenProps = PropsWithChildren<{ footer?: ReactNode; dark?: boolean; padde
 export function Screen({ children, footer, dark = false, padded = true, header }: ScreenProps) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const [footerHeight, setFooterHeight] = useState(90);
   const webWidth = process.env.EXPO_OS === 'web' ? { maxWidth: width > 900 ? 880 : 680 } : undefined;
   return (
-    <View style={[styles.page, { backgroundColor: dark ? palette.navy : palette.pale, paddingTop: insets.top }]}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : Platform.OS === 'android' ? 'height' : undefined} style={[styles.page, { backgroundColor: dark ? palette.navy : palette.pale, paddingTop: insets.top }]}>
       <ScrollView
         contentInsetAdjustmentBehavior="never"
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingTop: 20, paddingBottom: Math.max(insets.bottom, 24) + (footer ? 82 : 0) },
-          padded && { paddingHorizontal: width > 700 ? 32 : 18 },
+          { paddingTop: 24, paddingBottom: footer ? footerHeight + 28 : Math.max(insets.bottom + 16, 32) },
+          padded && { paddingHorizontal: width > 700 ? 40 : 20 },
         ]}>
         <View style={[styles.contentWidth, webWidth]}>{header}{children}</View>
       </ScrollView>
-      {footer && <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 14) }]}><View style={[styles.contentWidth, webWidth]}>{footer}</View></View>}
-    </View>
+      {footer && <View onLayout={event => setFooterHeight(event.nativeEvent.layout.height)} style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 14) }]}><View style={[styles.contentWidth, webWidth]}>{footer}</View></View>}
+    </KeyboardAvoidingView>
   );
 }
 
 export function PageHeader({ title, subtitle, back }: { title: string; subtitle?: string; back?: () => void }) {
   return (
     <View style={styles.pageHeader}>
-      {back && <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={back} hitSlop={12}><Text style={styles.back}>‹</Text></Pressable>}
+      {back && <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={back} hitSlop={8} style={styles.backButton}><Text style={styles.back}>‹</Text></Pressable>}
       <View style={{ flex: 1 }}>
         <Text selectable style={styles.h1}>{title}</Text>
         {subtitle && <Text selectable style={styles.subtitle}>{subtitle}</Text>}
@@ -52,12 +54,13 @@ export function PageHeader({ title, subtitle, back }: { title: string; subtitle?
 
 export function Button({ title, onPress, variant = 'primary', loading = false, disabled = false, icon }: { title: string; onPress?: () => void; variant?: 'primary' | 'secondary' | 'ghost' | 'dark'; loading?: boolean; disabled?: boolean; icon?: string }) {
   const content = loading ? <ActivityIndicator color={variant === 'secondary' || variant === 'ghost' ? palette.blue : palette.white} /> : <Text style={[styles.buttonText, (variant === 'secondary' || variant === 'ghost') && styles.buttonTextSecondary]}>{title}{icon ? `  ${icon}` : ''}</Text>;
-  if (variant === 'primary') return <Pressable disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [pressed && styles.pressed, disabled && styles.disabled]}><LinearGradient colors={[palette.blue2, palette.blue]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.button}>{content}</LinearGradient></Pressable>;
-  return <Pressable disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [styles.button, variant === 'secondary' && styles.secondaryButton, variant === 'ghost' && styles.ghostButton, variant === 'dark' && styles.darkButton, pressed && styles.pressed, disabled && styles.disabled]}>{content}</Pressable>;
+  if (variant === 'primary') return <Pressable accessibilityRole="button" accessibilityLabel={title} accessibilityState={{disabled: disabled || loading, busy: loading}} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [pressed && styles.pressed, (disabled || loading) && styles.disabled]}><LinearGradient colors={[palette.blue2, palette.blue]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.button}>{content}</LinearGradient></Pressable>;
+  return <Pressable accessibilityRole="button" accessibilityLabel={title} accessibilityState={{disabled: disabled || loading, busy: loading}} disabled={disabled || loading} onPress={onPress} style={({ pressed }) => [styles.button, variant === 'secondary' && styles.secondaryButton, variant === 'ghost' && styles.ghostButton, variant === 'dark' && styles.darkButton, pressed && styles.pressed, (disabled || loading) && styles.disabled]}>{content}</Pressable>;
 }
 
-export function Field({ label, prefix, style, ...props }: TextInputProps & { label?: string; prefix?: string }) {
-  return <View style={{ gap: 7 }}>{label && <Text selectable style={styles.label}>{label}</Text>}<View style={styles.fieldWrap}>{prefix && <Text style={styles.prefix}>{prefix}</Text>}<TextInput placeholderTextColor="#97A4BF" {...props} style={[styles.field, style]} /></View></View>;
+export function Field({ label, prefix, style, onFocus, onBlur, ...props }: TextInputProps & { label?: string; prefix?: string }) {
+  const [focused, setFocused] = useState(false);
+  return <View style={{ gap: 8 }}>{label && <Text selectable style={styles.label}>{label}</Text>}<View style={[styles.fieldWrap, focused && {borderColor:palette.blue,backgroundColor:'#FBFDFF'}, props.editable === false && {backgroundColor:'#F1F4F9'}]}>{prefix && <Text style={styles.prefix}>{prefix}</Text>}<TextInput placeholderTextColor="#74829B" {...props} accessibilityLabel={props.accessibilityLabel || label} onFocus={event => {setFocused(true);onFocus?.(event);}} onBlur={event => {setFocused(false);onBlur?.(event);}} style={[styles.field, style]} /></View></View>;
 }
 
 export function Card({ children, style }: PropsWithChildren<{ style?: object }>) { return <View style={[styles.card, style]}>{children}</View>; }
@@ -67,49 +70,50 @@ export function Badge({ label, tone = 'blue' }: { label: string; tone?: 'blue' |
   return <View style={[styles.badge, { backgroundColor: map[tone][0] }]}><Text style={[styles.badgeText, { color: map[tone][1] }]}>{label}</Text></View>;
 }
 
-export function Choice({ label, selected, onPress, icon, detail }: { label: string; selected?: boolean; onPress?: () => void; icon?: string; detail?: string }) {
-  return <Pressable onPress={onPress} style={({ pressed }) => [styles.choice, selected && styles.choiceSelected, pressed && styles.pressed]}>{icon && <Text style={styles.choiceIcon}>{icon}</Text>}<View style={{ flex: 1 }}><Text selectable style={styles.choiceLabel}>{label}</Text>{detail && <Text selectable style={styles.choiceDetail}>{detail}</Text>}</View>{selected && <Text style={styles.check}>✓</Text>}</Pressable>;
+export function Choice({ label, selected, onPress, icon, detail, disabled = false }: { label: string; selected?: boolean; onPress?: () => void; icon?: string; detail?: string; disabled?: boolean }) {
+  return <Pressable accessibilityRole="button" accessibilityState={{selected,disabled}} disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.choice, selected && styles.choiceSelected, pressed && styles.pressed,disabled&&styles.disabled]}>{icon && <Text style={styles.choiceIcon}>{icon}</Text>}<View style={{ flex: 1 }}><Text selectable style={styles.choiceLabel}>{label}</Text>{detail && <Text selectable style={styles.choiceDetail}>{detail}</Text>}</View>{selected && <Text style={styles.check}>✓</Text>}</Pressable>;
 }
 
 export function SectionTitle({ children, action }: PropsWithChildren<{ action?: string }>) { return <View style={styles.sectionTitleRow}><Text selectable style={styles.sectionTitle}>{children}</Text>{action && <Text style={styles.link}>{action}</Text>}</View>; }
 
 export function StepDot({ state = 'todo' }: { state?: 'done' | 'active' | 'todo' }) { return <View style={[styles.stepDot, state === 'done' && styles.stepDone, state === 'active' && styles.stepActive]}>{state === 'done' && <Text style={styles.stepCheck}>✓</Text>}</View>; }
 
-export function ErrorBanner({ message }: { message?: string }) { if (!message) return null; return <View style={styles.error}><Text selectable style={styles.errorText}>{message}</Text></View>; }
+export function ErrorBanner({ message }: { message?: string }) { if (!message) return null; return <View accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.error}><Text selectable style={styles.errorText}>{message}</Text></View>; }
 
 const styles = StyleSheet.create({
   page: { flex: 1 },
   scrollContent: { flexGrow: 1, alignItems: 'center', gap: 18 },
-  contentWidth: { width: '100%', maxWidth: contentWidth, alignSelf: 'center' },
+  contentWidth: { width: '100%', maxWidth: contentWidth, alignSelf: 'center', gap:20 },
   footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingTop: 12, paddingHorizontal: 18, backgroundColor: 'rgba(255,255,255,0.98)', borderTopWidth: 1, borderTopColor: palette.line },
   brandRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   logo: { width: 34, height: 34, borderRadius: 9, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '-6deg' }] },
   logoText: { color: palette.white, fontWeight: '900', fontSize: 19 },
-  brandText: { fontSize: 20, color: palette.ink, fontWeight: '900', letterSpacing: -0.7 },
+  brandText: { fontSize: 20, color: palette.ink, fontWeight: '700', letterSpacing: -0.7 },
   pageHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingBottom: 20 },
-  back: { color: palette.ink, fontSize: 34, lineHeight: 34 },
-  h1: { color: palette.ink, fontWeight: '900', fontSize: 27, lineHeight: 32, letterSpacing: -0.7 },
-  subtitle: { color: palette.muted, fontSize: 14, lineHeight: 20, paddingTop: 5 },
-  button: { minHeight: 54, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
-  buttonText: { color: palette.white, fontWeight: '800', fontSize: 14 },
+  backButton: {width:44,minHeight:44,alignItems:'center',justifyContent:'center',borderRadius:12,backgroundColor:palette.white,borderWidth:1,borderColor:palette.line},
+  back: { color: palette.ink, fontSize: 30, lineHeight: 34 },
+  h1: { color: palette.ink, fontWeight: '700', fontSize: 30, lineHeight: 36, letterSpacing: -0.9 },
+  subtitle: { color: palette.muted, fontSize: 15, lineHeight: 23, paddingTop: 7 },
+  button: { minHeight: 56, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, paddingVertical:16 },
+  buttonText: { color: palette.white, fontWeight: '600', fontSize: 15, lineHeight:22, textAlign:'center', flexShrink:1 },
   buttonTextSecondary: { color: palette.blue },
-  secondaryButton: { backgroundColor: palette.white, borderWidth: 1, borderColor: '#B7D0FF' },
+  secondaryButton: { backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line },
   ghostButton: { minHeight: 44, backgroundColor: 'transparent' },
   darkButton: { backgroundColor: palette.navy2 },
   pressed: { opacity: 0.8, transform: [{ scale: 0.992 }] },
   disabled: { opacity: 0.5 },
-  label: { color: palette.ink, fontSize: 13, fontWeight: '700' },
-  fieldWrap: { minHeight: 52, flexDirection: 'row', alignItems: 'center', backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.sm, overflow: 'hidden' },
-  field: { flex: 1, minHeight: 50, color: palette.ink, fontSize: 15, paddingHorizontal: 14 },
+  label: { color: palette.ink, fontSize: 13, fontWeight: '600' },
+  fieldWrap: { minHeight: 56, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FAFBFC', borderWidth: 1, borderColor: palette.line, borderRadius: radius.sm, overflow: 'hidden' },
+  field: { flex: 1, minWidth:0, minHeight: 56, color: palette.ink, fontSize: 16, lineHeight:23, paddingHorizontal: 16, paddingVertical:14 },
   prefix: { color: palette.green, fontWeight: '800', paddingLeft: 14, paddingRight: 4 },
-  card: { backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.md, padding: 16, gap: 12, boxShadow: '0 6px 20px rgba(21, 63, 135, 0.055)' },
+  card: { backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, borderRadius: radius.md, padding: 22, gap: 16, boxShadow: '0 3px 12px rgba(20, 40, 56, 0.025)' },
   badge: { alignSelf: 'flex-start', borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 5 },
-  badgeText: { fontSize: 10, fontWeight: '800' },
+  badgeText: { fontSize: 11, fontWeight: '600',lineHeight:16 },
   choice: { minHeight: 58, borderWidth: 1, borderColor: palette.line, borderRadius: radius.sm, paddingHorizontal: 14, paddingVertical: 11, backgroundColor: palette.white, flexDirection: 'row', alignItems: 'center', gap: 12 },
   choiceSelected: { borderColor: palette.blue, backgroundColor: palette.sky },
   choiceIcon: { width: 30, fontSize: 20, textAlign: 'center' },
-  choiceLabel: { color: palette.ink, fontWeight: '700', fontSize: 14 },
-  choiceDetail: { color: palette.muted, fontSize: 11, paddingTop: 3 },
+  choiceLabel: { color: palette.ink, fontWeight: '600', fontSize: 15 },
+  choiceDetail: { color: palette.muted, fontSize: 13, lineHeight:20,paddingTop: 5 },
   check: { color: palette.blue, fontWeight: '900', fontSize: 17 },
   sectionTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 4 },
   sectionTitle: { color: palette.ink, fontWeight: '800', fontSize: 17 },
@@ -118,8 +122,8 @@ const styles = StyleSheet.create({
   stepDone: { backgroundColor: palette.green, borderColor: palette.green },
   stepActive: { borderColor: palette.blue, borderWidth: 5 },
   stepCheck: { color: palette.white, fontSize: 10, fontWeight: '900' },
-  error: { backgroundColor: palette.redBg, borderRadius: radius.sm, padding: 12, borderWidth: 1, borderColor: '#FFD5D5' },
-  errorText: { color: '#B4232A', fontSize: 13, lineHeight: 18, fontWeight: '600' },
+  error: { backgroundColor: palette.redBg, borderRadius: radius.sm, padding: 16, borderWidth: 1, borderColor: '#FFD5D5' },
+  errorText: { color: '#B4232A', fontSize: 14, lineHeight: 22, fontWeight: '500' },
 });
 
 export const uiStyles = styles;

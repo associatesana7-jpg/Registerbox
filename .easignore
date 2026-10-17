@@ -1,0 +1,72 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+example
+
+# generated native folders
+/ios
+/android
+
+# Local UI test artifacts
+.playwright-cli/
+output/
+
+# Customer-local Tally accounting journal
+.tally-connector/
+
+# Generated downloadable Windows connector artifacts
+downloads/*.exe
+downloads/*.zip
+downloads/*.png
+downloads/build-manifest.json
+downloads/SHA256SUMS.txt
+downloads/THIRD-PARTY-LICENSES.txt
+
+# Non-app artifacts excluded from cloud build uploads
+/videos/
+/brag-output/
+/registerbox-motion/
+/store-assets/
+/downloads/
+/docs/
+/.agents/
+/.codex/
+/registerbox-lighthouse-report.html
+/supabase/.temp/
+/supabase/.branches/

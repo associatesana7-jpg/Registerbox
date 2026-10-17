@@ -1,23 +1,11 @@
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { Text } from 'react-native';
 import { Button, Card, PageHeader, Screen } from '@/components/registerbox-ui';
+import { EmptyState } from '@/components/workspace-ui';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
-
-export default function ReviewScreen() {
-  const { compliances } = useApp();
-  const selected = compliances.filter((item) => item.status !== 'OPTIONAL');
-  return (
-    <Screen footer={<Button title="Proceed to Documents" icon="→" onPress={() => router.push('/onboarding/documents')} />}>
-      <PageHeader title="Review Your Plan" subtitle="Selected compliances and transparent pricing." back={() => router.back()} />
-      <Card>{selected.map((item) => <View key={item.id} style={styles.item}><Text style={styles.check}>✓</Text><Text selectable style={styles.name}>{item.name}</Text><Text selectable style={styles.price}>₹{item.fee.toLocaleString('en-IN')}</Text></View>)}<View style={styles.total}><Text style={styles.totalLabel}>Bundle total (inclusive of GST)</Text><Text style={styles.totalValue}>₹4,999</Text></View></Card>
-      <Card><Text selectable style={styles.featuresTitle}>What RegisterBox handles</Text>{['End-to-end filing', 'Document preparation', 'Government fee guidance', 'Application tracking', 'Query handling', '1 year compliance monitoring'].map((item) => <Text key={item} style={styles.feature}>✓  {item}</Text>)}</Card>
-      <Text style={styles.note}>Government fees, where applicable, are shown before payment and may vary by authority.</Text>
-    </Screen>
-  );
+export default function ReviewScreen(){
+  const {compliances}=useApp();
+  const selected=compliances.filter(item=>item.status!=='OPTIONAL');
+  return <Screen footer={<Button title="Choose the service to apply for" onPress={()=>router.push('/onboarding/intent')}/>}><PageHeader title="Review your plan" subtitle="Recommendations to review—not applications already filed." back={()=>router.back()}/>{selected.length?selected.map(item=><Card key={item.id}><Text style={{fontSize:19,lineHeight:26,fontWeight:'600',color:palette.ink}}>{item.name}</Text><Text style={{fontSize:14,lineHeight:22,color:palette.muted}}>{item.reason}</Text><Text style={{fontSize:12,lineHeight:19,color:palette.muted}}>Applicability and any service or government fee must be confirmed before payment.</Text></Card>):<EmptyState title="Start with your business details" detail="Choose a service to get the relevant questions and document checklist."/>}<Text style={{fontSize:13,lineHeight:21,color:palette.muted}}>An application is sent to the RegisterBox team only after you review and submit it. Government filing is a separate authorized step.</Text></Screen>;
 }
-
-const styles = StyleSheet.create({
-  item: { flexDirection: 'row', alignItems: 'center', gap: 9 }, check: { color: palette.green, fontWeight: '900' }, name: { flex: 1, color: palette.ink, fontSize: 12, fontWeight: '700' }, price: { color: palette.ink, fontSize: 11, fontWeight: '700' }, total: { borderTopWidth: 1, borderTopColor: palette.line, paddingTop: 14, marginTop: 4, flexDirection: 'row', justifyContent: 'space-between' }, totalLabel: { color: palette.ink, fontSize: 12, fontWeight: '800' }, totalValue: { color: palette.ink, fontWeight: '900', fontSize: 17 }, featuresTitle: { color: palette.ink, fontWeight: '900', fontSize: 14 }, feature: { color: palette.green, fontSize: 11, fontWeight: '700' }, note: { color: palette.muted, fontSize: 10, lineHeight: 15, paddingHorizontal: 8 },
-});

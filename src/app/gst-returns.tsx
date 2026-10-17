@@ -5,7 +5,8 @@ import { Redirect, Stack, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Badge, Button, Card, ErrorBanner, Field, Screen } from '@/components/registerbox-ui';
-import { FlowProgress, SoftNotice } from '@/components/experience';
+import { SoftNotice } from '@/components/experience';
+import { JourneyRail } from '@/components/workspace-ui';
 import { GstHeader } from '@/components/gst-ui';
 import { GstCheckbox } from '@/components/gst-checkbox';
 import { GstImsRecovery } from '@/components/gst-ims-recovery';
@@ -154,12 +155,11 @@ function Workspace({businessId}:{businessId:string}) {
     :!books||!itc||!prior?'Confirm the books, ITC and prior-return checks above.'
     :undefined;
   const heading={fontSize:15,fontWeight:'800' as const,color:palette.ink};
-  const muted={color:palette.muted,fontSize:12,lineHeight:18};
+  const muted={color:palette.muted,fontSize:14,lineHeight:22};
   const phases=[['start','Returns'],['prepare','Prepare'],['compare','Reconcile'],['payment','Payment'],['review','Review'],['authorize','Authorize']] as const;
   if(params.mode==='nil'||nil) return <GstNilReturn key={businessId+form+year+month} businessId={businessId} form={form} year={Number(year)} month={Number(month)}/>;
   return <Screen key={phase}><Stack.Screen options={{headerShown:false}}/><GstHeader title={phase==='start'?'Your GST Returns':phase==='authorize'?'Authorize Filing':phase==='review'?`Review ${form.toUpperCase()}`:phase==='compare'?'Reconciliation':phase==='payment'?'Payment & Setoff':payload.includes('"registerbox_nil": true')?'Nil Return Eligibility':`Prepare ${form.toUpperCase()}`} onBack={()=>phase==='start'?router.back():setPhase('start')}/><View style={{gap:16}}>
-    <FlowProgress current={Math.max(1,phases.findIndex(([key])=>key===phase)+1)} total={phases.length} labels={phases.map(([,label])=>label)} />
-    <View accessibilityRole="progressbar" style={{flexDirection:'row',flexWrap:'wrap',gap:7}}>{phases.map(([key,label],index)=>{const current=phases.findIndex(([value])=>value===phase),done=index<current,active=index===current;return <View key={key} style={{flexDirection:'row',alignItems:'center',gap:5,paddingVertical:7,paddingHorizontal:9,borderRadius:9,borderWidth:1,borderColor:active?palette.blue:done?palette.green:palette.line,backgroundColor:active?palette.sky:palette.white}}><Text style={{color:done?palette.green:active?palette.blue:palette.muted,fontSize:11,fontWeight:'900'}}>{done?'✓':index+1}</Text><Text style={{color:active?palette.blue:done?palette.ink:palette.muted,fontSize:10,fontWeight:'800'}}>{label}</Text></View>;})}</View>
+    <JourneyRail current={Math.max(0,phases.findIndex(([key])=>key===phase))} steps={phases.map(([,label])=>label)} completed={[]}/>
     {!writes?<SoftNotice title="Draft preparation only" detail="Live GST filing is release-locked pending provider acceptance testing. Saving figures here does not submit your return or meet a filing deadline."/>:null}
     <ErrorBanner message={error}/>
     {form==='gstr-3b'&&selected?.state!=='filed'&&phase!=='start'?<Card><Text style={heading}>{selected?.last_error?.includes('IMS002')?'GSTR-2B needs computation':'IMS & GSTR-2B'}</Text><Text style={muted}>Review supplier bills and compute GSTR-2B without leaving this return. Saving IMS actions does not file GSTR-3B.</Text><Button title="Open IMS dashboard →" variant="secondary" disabled={busy} onPress={()=>setImsOpen(true)}/><GstImsRecovery businessId={businessId} year={Number(year)} month={Number(month)} visible={imsOpen} onClose={()=>setImsOpen(false)} onComplete={()=>{setImsOpen(false);void run('resume_portal',true);}}/></Card>:null}

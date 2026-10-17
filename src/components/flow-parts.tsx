@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Badge, Card } from '@/components/registerbox-ui';
 import { palette } from '@/constants/design';
 import type { ComplianceItem } from '@/data/demo';
 
 export function Segmented({ options, selected, onSelect }: { options: string[]; selected: string; onSelect: (value: string) => void }) {
-  return <View style={styles.segmented}>{options.map((option) => <Text key={option} onPress={() => onSelect(option)} style={[styles.segment, selected === option && styles.segmentActive, selected === option && styles.segmentTextActive]}>{option}</Text>)}</View>;
+  return <View style={styles.segmented}>{options.map((option) => <Pressable key={option} accessibilityRole="button" accessibilityState={{selected:selected===option}} onPress={() => onSelect(option)} style={[styles.segmentButton, selected === option && styles.segmentActive]}><Text style={[styles.segment,selected === option && styles.segmentTextActive]}>{option}</Text></Pressable>)}</View>;
 }
 
 export function ComplianceCard({ item, compact = false }: { item: ComplianceItem; compact?: boolean }) {
@@ -29,10 +29,11 @@ export const flowStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  segmented: { backgroundColor: '#EAF1FB', borderRadius: 11, padding: 3, flexDirection: 'row' },
-  segment: { flex: 1, textAlign: 'center', paddingVertical: 10, borderRadius: 8, color: palette.muted, fontSize: 11, fontWeight: '700', overflow: 'hidden' },
-  segmentActive: { backgroundColor: palette.blue },
-  segmentTextActive: { color: palette.white },
+  segmented: { backgroundColor: '#EAEDF1', borderRadius: 16, padding: 4, flexDirection: 'row' },
+  segmentButton: {flex:1,minHeight:44,alignItems:'center',justifyContent:'center',borderRadius:8},
+  segment: { textAlign: 'center', paddingVertical: 10, paddingHorizontal:4, color: palette.muted, fontSize: 12, fontWeight: '600' },
+  segmentActive: { backgroundColor: palette.white },
+  segmentTextActive: { color: palette.blue },
   complianceRow: { flexDirection: 'row', alignItems: 'center', gap: 11 },
   iconBox: { width: 32, height: 32, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.sky },
   complianceName: { color: palette.ink, fontWeight: '800', fontSize: 14 },

@@ -43,6 +43,7 @@ function harness(saved,enabled=false){
   for(const [path,names] of Object.entries({
     '@/components/registerbox-ui':['Badge','Button','Card','ErrorBanner','Field','Screen'],
     '@/components/experience':['FlowProgress','SoftNotice'],
+    '@/components/workspace-ui':['JourneyRail'],
     '@/components/gst-ui':['GstHeader'],'@/components/gst-filing-history':['GstFilingHistory'],
     '@/components/gst-return-review':['GstReturnReview'],'@/components/gst-guided-editor':['GstGuidedEditor'],
     '@/components/gst-payment-review':['GstPaymentReview'],'@/components/gst-nil-return':['GstNilReturn'],

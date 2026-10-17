@@ -1,22 +1,24 @@
 export const palette = {
-  navy: '#071946',
-  navy2: '#12366E',
-  blue: '#0865F7',
-  blue2: '#357EFF',
-  sky: '#EAF3FF',
-  pale: '#F5F9FF',
+  navy: '#132B39',
+  navy2: '#203D50',
+  blue: '#3458DD',
+  blue2: '#4C6CEF',
+  sky: '#EEF2FF',
+  pale: '#F5F6F8',
   white: '#FFFFFF',
-  ink: '#0A1943',
-  muted: '#617399',
-  line: '#E0E9F7',
-  green: '#009D62',
-  greenBg: '#E6F8EE',
-  amber: '#DB8A10',
-  amberBg: '#FFF2D9',
+  ink: '#192D3A',
+  muted: '#647481',
+  line: '#E4E8ED',
+  green: '#147B58',
+  greenBg: '#EAF7F0',
+  amber: '#94621D',
+  amberBg: '#FFF5E5',
   red: '#D73B45',
   redBg: '#FFF0F1',
   purple: '#7A5AF8',
 } as const;
 
-export const radius = { sm: 12, md: 18, lg: 24, pill: 999 } as const;
-export const contentWidth = 440;
+export const radius = { sm: 14, md: 22, lg: 28, pill: 999 } as const;
+export const contentWidth = 520;
+export const spacing = { xs:4, sm:8, md:12, lg:20, xl:28, xxl:40 } as const;
+export const typography = { title:34, heading:22, section:18, body:15, label:13, caption:12 } as const;

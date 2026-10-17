@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import ts from 'typescript';
+function load(file,modules={}){const exports={};const source=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;vm.runInNewContext(source,{exports,Date,Object,Number,Boolean,require:name=>{if(name in modules)return modules[name];throw Error(name);}});return exports;}
+const categories=load('src/data/application-categories.ts');
+const address=load('src/data/india-address.ts');
+const {applicationResumeStep}=load('src/lib/application-resume.ts',{'@/data/application-categories':categories,'@/data/india-address':address});
+const {applicationStage,readWorkspaceDrafts}=load('src/lib/workspace-journey.ts');
+const answers={pincode:'560075',state:'Karnataka',district:'Bengaluru',city:'Bengaluru',address_line_1:'Synthetic street',address_confirmed:'Yes'};
+assert.equal(applicationResumeStep('gst_registration',{},''),0);
+assert.equal(applicationResumeStep('gst_registration',{},'Fixture business'),1);
+assert.equal(applicationResumeStep('gst_registration',answers,'Fixture business'),2);
+const complete={...answers,activity:'Software services',contact_mobile:'9876543210',contact_email:'fixture@example.invalid',premises:'Owned'};
+assert.equal(applicationResumeStep('gst_registration',complete,'Fixture business'),categories.questionsFor('gst_registration',complete).length+1,'Complete answers resume at documents, not a false submission');
+assert.equal(applicationResumeStep('gst_registration',{...complete,contact_mobile:'invalid'},'Fixture business'),3,'Invalid saved values must be corrected');
+assert.equal(applicationResumeStep('gst_registration',{...complete,address_confirmed:'No'},'Fixture business'),1,'Postal suggestion is not confirmation');
+assert.equal(applicationStage('NEEDS_CUSTOMER_INFO').label,'Action needed');
+assert.equal(applicationStage('WAITING_FOR_OTP').label,'Authorization needed');
+assert.equal(applicationStage('SUBMITTING').label,'Submission in progress');
+assert.equal(applicationStage('READY_FOR_REVIEW').index,1);
+assert.equal(applicationStage('APPROVED').index,3);
+assert.notEqual(applicationStage('unrecognized').label,'Completed');
+const drafts=readWorkspaceDrafts({application_drafts:{gst_registration:{answers:{activity:'Retail',invalid:123},updated_at:'2026-10-15'},company:{status:'submitted_to_registerbox',answers:{}},food:{application_id:'sent',answers:{}},unknown:{answers:{}}}},Object.keys(categories.applicationCategories));
+assert.equal(drafts.length,1);assert.equal(drafts[0].category,'gst_registration');assert.equal(drafts[0].answers.activity,'Retail');assert.equal(drafts[0].answers.invalid,undefined);
+console.log('Workspace journeys: conditional resume, invalid-address correction, safe application status and submitted-draft exclusion passed.');

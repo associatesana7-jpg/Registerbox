@@ -25,9 +25,9 @@ export default function LoginScreen() {
       <Brand compact />
       <View style={styles.hero}>
         <Image source={require('../../../assets/images/registerbox-app-icon.png')} contentFit="contain" accessibilityLabel="RegisterBox logo" style={styles.miniLogo} />
-        <Eyebrow>START YOUR BUSINESS JOURNEY</Eyebrow>
-        <Text selectable style={styles.title}>Welcome to{`\n`}Register<Text style={{ color: palette.blue }}>Box</Text></Text>
-        <Text selectable style={styles.sub}>Sign in to start or manage your business.</Text>
+        <Eyebrow>YOUR BUSINESS. CONNECTED.</Eyebrow>
+        <Text selectable style={styles.title}>Your next chapter.{`\n`}One clear <Text style={{ color: palette.blue }}>start.</Text></Text>
+        <Text selectable style={styles.sub}>Sign in to pick up where you left off.</Text>
       </View>
       <Card style={{ gap: 16 }}>
         <Field label="Email address" placeholder="you@business.com" keyboardType="email-address" textContentType="emailAddress" autoCapitalize="none" autoCorrect={false} value={email} onChangeText={setEmail} />
@@ -44,9 +44,9 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  hero: { alignItems: 'center', gap: 12, paddingTop: 74, paddingBottom: 36 },
-  miniLogo: { width: 86, height: 86, borderRadius: 20, backgroundColor: palette.white, marginBottom: 8 },
-  title: { color: palette.ink, fontSize: 31, fontWeight: '900', textAlign: 'center', lineHeight: 36, letterSpacing: -0.8 },
+  hero: { alignItems: 'center', gap: 16, paddingTop: 32, paddingBottom: 24 },
+  miniLogo: { width: 76, height: 76, borderRadius: 20, backgroundColor: palette.white, marginBottom: 8 },
+  title: { color: palette.ink, fontSize: 34, fontWeight: '600', textAlign: 'center', lineHeight: 40, letterSpacing: -1.1 },
   sub: { color: palette.muted, fontSize: 15, textAlign: 'center', lineHeight: 21 },
   legal: { textAlign: 'center', color: palette.muted, fontSize: 11, lineHeight: 17, paddingTop: 20 },
   link: { color: palette.blue, fontWeight: '700' },

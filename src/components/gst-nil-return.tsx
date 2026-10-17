@@ -4,7 +4,7 @@ import { Stack, router } from 'expo-router';
 import { Badge, Button, Card, ErrorBanner, Field, Screen } from './registerbox-ui';
 import { GstHeader } from './gst-ui';
 import { GstSignatorySelector } from './gst-signatory-selector';
-import { FlowProgress } from './experience';
+import { JourneyRail } from './workspace-ui';
 import { palette } from '@/constants/design';
 import { returnAction, type ReturnDraft } from '@/lib/gst-returns-api';
 import { nilNextStep } from '@/lib/gst-nil-flow';
@@ -15,7 +15,7 @@ import { GstCheckbox } from './gst-checkbox';
 import { useGstRefresh } from '@/hooks/use-gst-refresh';
 import { GstImsRecovery } from './gst-ims-recovery';
 
-const heading = { color: palette.ink, fontSize: 17, fontWeight: '800' as const };
+const heading = { color: palette.ink, fontSize: 20, lineHeight:27, fontWeight: '600' as const };
 const detail = { color: palette.muted, fontSize: 14, lineHeight: 21 };
 function Confirm({ checked, disabled, label, onPress }: { checked: boolean; disabled: boolean; label: string; onPress: () => void }) {
   return <GstCheckbox checked={checked} disabled={disabled} label={label} onPress={onPress}/>;
@@ -130,7 +130,7 @@ export function GstNilReturn({ businessId, form, year, month }: { businessId: st
     finally{running.current=false;if(mounted.current)setBusy('');}
   }
   return <Screen><Stack.Screen options={{ headerShown: false }}/><GstHeader title={`File Nil ${form.toUpperCase()}`} onBack={() => router.replace('/gst')}/>
-    <View style={{ gap: 16 }}><FlowProgress current={filed ? 3 : stage === 'otp' ? 2 : 1} total={3} labels={['Declaration', 'OTP & file', 'Receipt']}/>
+    <View style={{ gap: 20 }}><JourneyRail current={filed ? 2 : stage === 'otp' ? 1 : 0} steps={['Declaration', 'OTP & file', 'Receipt']}/>
       <Card><Text style={heading}>{form.toUpperCase()} · {periodLabel}</Text><Text selectable style={detail}>{gstin || 'Loading GST account…'}</Text><Text style={detail}>Monthly return · Nil declaration</Text></Card>
       <ErrorBanner message={error}/>
       {form==='gstr-3b'?<GstImsRecovery businessId={businessId} year={year} month={month} visible={imsOpen} onClose={()=>setImsOpen(false)} onComplete={()=>{setImsOpen(false);void (async()=>{setBusy('Refreshing return after IMS…');try{if(stage==='ims')await act('recover_ims',draft);else await reload();}catch(cause){setError(cause instanceof Error?cause.message:'Refresh GST status to continue.');}finally{setBusy('');}})();}}/>:null}

@@ -3,15 +3,18 @@ import { router } from 'expo-router';
 import { GstAiWorkspace } from '@/components/gst-ai-workspace';
 import { GstAiNilLauncher } from '@/components/gst-ai-nil-launcher';
 import {GST_WORKFLOWS,GST_KNOWLEDGE_VERSION,isNilFilingRequest,safeGstActions,type GstAiAction} from '../../../supabase/functions/_shared/gst-assistant-knowledge';
-import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { GstBillReview } from '@/components/gst-bill-review';
-import { Button, ErrorBanner, PageHeader, Screen } from '@/components/registerbox-ui';
+import { Button, Card, ErrorBanner, Screen } from '@/components/registerbox-ui';
+import { ActionRow, Disclosure, WorkspaceHeading } from '@/components/workspace-ui';
+import { GstCheckbox } from '@/components/gst-checkbox';
+import { AppIcon } from '@/components/app-icon';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { addExtractedBillToBooks, askRegisterBoxAi, chooseAndExtractGstBill, type BillExtraction } from '@/lib/registerbox-api';
 
-const prompts = ['File my nil return', 'Do I need an FSSAI licence for a cloud kitchen?', 'Can I open another branch in Mysore?', 'Explain this GST notice', 'What licences do I need for a food truck?', 'Help me renew my trade licence'];
+const prompts = ['File my nil return', 'What documents do I need for GST registration?', 'Do I need an FSSAI licence for a cloud kitchen?', 'Help me understand my next business step'];
 
 export default function AiScreen() {
   const {business,session}=useApp();
@@ -24,7 +27,7 @@ function AiContent() {
   const [workspace,setWorkspace]=useState<'platform'|'tcs'|'nil'|null>(null);
   const [knowledgeVersion,setKnowledgeVersion]=useState(GST_KNOWLEDGE_VERSION);
   const [answerSource,setAnswerSource]=useState('');
-  const account=useRef(business.id);account.current=business.id;
+  const account=useRef(business.id);
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
 
@@ -34,7 +37,7 @@ function AiContent() {
   const [providerConsent,setProviderConsent]=useState(false);
   const [bill,setBill]=useState<BillExtraction|null>(null);
   const [billBusy,setBillBusy]=useState(false);
-  useEffect(()=>()=>{account.current='';},[]);
+  useEffect(()=>{account.current=business.id;return()=>{account.current='';};},[business.id]);
   function workflow(action:GstAiAction){
     if(!business.id){setError('Select a business profile first.');return;}
     if(action==='file_nil'){setWorkspace('nil');return;}
@@ -65,26 +68,24 @@ function AiContent() {
       setActions(safeGstActions(result.actions));setKnowledgeVersion(result.knowledgeVersion);setAnswerSource(result.source);
       setAnswer(result.answer); setMissingFacts(result.missingFacts);
     } catch (caught) { if(account.current===businessId)setError(caught instanceof Error ? caught.message : 'RegisterBox AI is unavailable.'); }
-    finally { setLoading(false); }
+    finally { if(account.current===businessId)setLoading(false); }
   }
   async function uploadBill(){const businessId=business.id;if(!businessId){setError('Select or create a GST business profile before uploading a bill.');return;}setBillBusy(true);setError('');try{const result=await chooseAndExtractGstBill(businessId);if(account.current!==businessId)return;if(result){setBill(result);setAnswer('I extracted the bill into a reviewable GST purchase draft. Check every field against the image before approving it.');}}catch(caught){setError(caught instanceof Error?caught.message:'Could not extract this bill.');}finally{setBillBusy(false);}}
   async function addBill(purchase:Parameters<typeof addExtractedBillToBooks>[4],year:number,month:number){if(!business.id||!bill)return;setBillBusy(true);setError('');try{await addExtractedBillToBooks(business.id,bill.extractionId,year,month,purchase);setAnswer(`Bill ${purchase.number} was added to ${String(month).padStart(2,'0')}/${year} purchase books. It has not been filed with GST.`);setBill(null);}catch(caught){setError(caught instanceof Error?caught.message:'Could not add the bill.');}finally{setBillBusy(false);}}
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={process.env.EXPO_OS === 'ios' ? 'padding' : undefined}>
-      <Screen footer={<View style={styles.inputRow}><TextInput value={question} onChangeText={setQuestion} onSubmitEditing={() => ask()} placeholder="Type your question..." placeholderTextColor="#97A4BF" style={styles.input} /><Pressable onPress={() => ask()} style={styles.send}><Text style={styles.sendText}>↑</Text></Pressable></View>}>
-        <PageHeader title="Ask RegisterBox AI" subtitle="Guidance and actions for your selected business." />
-        <Button title="Privacy Centre: read notices / manage AI permission" variant="ghost" onPress={()=>router.push('/privacy')}/>
+      <Screen footer={<View style={styles.inputRow}><TextInput accessibilityLabel="Your question for RegisterBox AI" value={question} onChangeText={setQuestion} onSubmitEditing={() => ask()} placeholder="Ask about your business…" placeholderTextColor={palette.muted} style={styles.input} /><Pressable accessibilityRole="button" accessibilityLabel="Send question" accessibilityState={{disabled:!question.trim()||loading,busy:loading}} disabled={!question.trim()||loading} onPress={() => ask()} style={[styles.send,(!question.trim()||loading)&&{opacity:0.45}]}><AppIcon name="arrow" color={palette.white}/></Pressable></View>}>
+        <WorkspaceHeading eyebrow="REGISTERBOX AI" title="A clearer way forward." detail={business.id?`Guidance for ${business.tradeName||business.legalName}. You stay in control of every action.`:'Ask a question, or choose a business on Home to work with its records.'}/>
         <ErrorBanner message={error} />
-        <Pressable accessibilityRole="checkbox" accessibilityState={{checked:providerConsent}} onPress={()=>setProviderConsent(!providerConsent)} style={styles.consentRow}><Text style={styles.consentTick}>{providerConsent?'☑':'☐'}</Text><Text style={styles.consentText}>Send my redacted question and limited GST workflow status to Groq for this answer. PAN, GSTIN, Aadhaar, email and phone are removed first.</Text></Pressable>
-        <View style={styles.billCard}><Text style={styles.answerLabel}>GST ACTIONS</Text><Text style={styles.answerText}>Upload reports here, then review and authorize filing in the GST workspace.</Text><Button title="Upload platform / POS CSV" variant="secondary" onPress={()=>workflow('upload_platform')}/><Button title="Review & file GST return" onPress={()=>workflow('open_gst')}/><Button title="GSTR-8 / TCS workpaper" variant="ghost" onPress={()=>workflow('review_tcs')}/></View>
+        <Card><GstCheckbox checked={providerConsent} onPress={()=>setProviderConsent(!providerConsent)} label="Allow Groq to answer using my redacted question and limited GST workflow status. PAN, GSTIN, Aadhaar, email and phone are removed first."/><Button title="Review AI privacy & permissions" variant="ghost" onPress={()=>router.push('/privacy')}/></Card>
+        <ActionRow icon="receipt" title={billBusy?'Reading your bill…':'Turn a bill into a reviewed draft'} detail="Upload a photo. Check the extracted fields before adding it to purchase books. Nothing is filed automatically." onPress={()=>{if(!billBusy)void uploadBill();}}/>
         {workspace==='nil'&&business.id?<GstAiNilLauncher key={business.id+'nil'+nilForm} initialForm={nilForm}/>:workspace&&business.id?<GstAiWorkspace key={business.id+workspace} businessId={business.id} operator={workspace==='tcs'}/>:null}
-        <View style={styles.billCard}><Text style={styles.answerLabel}>BILL TO GST BOOKS</Text><Text style={styles.answerText}>Upload a bill photo. Groq extracts a draft; you review and approve before it enters purchase books.</Text><Button title="Upload bill photo" variant="secondary" loading={billBusy} onPress={uploadBill}/></View>
-        {loading ? <View style={styles.answer}><Text style={styles.answerLabel}>RegisterBox AI</Text><Text style={styles.answerText}>Checking your saved business profile and rule-backed compliance results…</Text></View> : answer ? <View style={styles.answer}><Text selectable style={styles.answerLabel}>RegisterBox AI</Text><Text selectable style={styles.answerText}>{answer}</Text>{missingFacts.length > 0 && <Text selectable style={styles.missing}>Still needed: {missingFacts.join(', ')}</Text>}<Text style={styles.confidence}>{answerSource==='workflow_guide'?'RegisterBox workflow guide':'AI guidance'} · Knowledge {knowledgeVersion}</Text></View> : <View style={styles.stack}>{prompts.map((prompt) => <Pressable key={prompt} onPress={() => ask(prompt)} style={styles.prompt}><Text style={styles.bubble}>◉</Text><Text selectable style={styles.promptText}>{prompt}</Text></Pressable>)}</View>}
+        {loading ? <View style={styles.answer}><Text style={styles.answerLabel}>RegisterBox AI</Text><Text style={styles.answerText}>Checking your saved business profile and rule-backed compliance results…</Text></View> : answer ? <View style={styles.answer}><Text selectable style={styles.answerLabel}>RegisterBox AI</Text><Text selectable style={styles.answerText}>{answer}</Text>{missingFacts.length > 0 && <Text selectable style={styles.missing}>Still needed: {missingFacts.join(', ')}</Text>}<Text style={styles.confidence}>{answerSource==='workflow_guide'?'RegisterBox workflow guide':'AI guidance'} · Knowledge {knowledgeVersion}</Text></View> : <View style={styles.stack}>{prompts.map((prompt) => <Pressable key={prompt} accessibilityRole="button" onPress={() => ask(prompt)} style={styles.prompt}><Text style={styles.bubble}>◉</Text><Text selectable style={styles.promptText}>{prompt}</Text></Pressable>)}</View>}
         {actions.map(action=><Button key={action} title={GST_WORKFLOWS[action].label} variant="secondary" onPress={()=>workflow(action)}/>)}
         {bill?<GstBillReview key={bill.extractionId} bill={bill} busy={billBusy} onApprove={addBill}/>:null}
+        <Card><Disclosure title="More GST tools" detail="Filing, marketplace reports and TCS workpapers"><Button title="Open GST workspace" variant="secondary" onPress={()=>workflow('open_gst')}/><Button title="Upload platform / POS CSV" variant="secondary" onPress={()=>workflow('upload_platform')}/><Button title="GSTR-8 / TCS workpaper" variant="ghost" onPress={()=>workflow('review_tcs')}/></Disclosure></Card>
+        <Text style={{fontSize:12,lineHeight:19,color:palette.muted}}>AI can make mistakes. Review important advice and every extracted amount before taking action.</Text>
       </Screen>
-    </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({ stack: { gap: 11 }, consentRow:{flexDirection:'row',gap:9,alignItems:'flex-start',backgroundColor:palette.white,borderWidth:1,borderColor:palette.line,borderRadius:14,padding:13},consentTick:{color:palette.blue,fontSize:20},consentText:{flex:1,color:palette.muted,fontSize:11,lineHeight:17,fontWeight:'700'}, billCard:{backgroundColor:palette.white,borderWidth:1,borderColor:palette.line,borderRadius:16,padding:16,gap:10}, prompt: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: palette.white, borderWidth: 1, borderColor: palette.line, padding: 14, borderRadius: 13 }, bubble: { color: palette.blue }, promptText: { color: palette.muted, fontSize: 12, fontWeight: '700' }, inputRow: { flexDirection: 'row', gap: 8, alignItems: 'center' }, input: { flex: 1, height: 48, borderWidth: 1, borderColor: palette.line, borderRadius: 24, backgroundColor: palette.white, paddingHorizontal: 17, color: palette.ink }, send: { width: 46, height: 46, borderRadius: 23, backgroundColor: palette.blue, alignItems: 'center', justifyContent: 'center' }, sendText: { color: palette.white, fontWeight: '900', fontSize: 20 }, answer: { backgroundColor: palette.sky, borderRadius: 16, padding: 18, gap: 9 }, answerLabel: { color: palette.blue, fontWeight: '900', fontSize: 12 }, answerText: { color: palette.ink, fontSize: 14, lineHeight: 22 }, missing: { color: palette.amber, fontSize: 11, lineHeight: 17, fontWeight: '700' }, confidence: { color: palette.muted, fontSize: 9 } });
+const styles = StyleSheet.create({stack:{gap:10},prompt:{flexDirection:'row',alignItems:'center',gap:12,backgroundColor:palette.white,borderWidth:1,borderColor:palette.line,minHeight:60,padding:17,borderRadius:18},bubble:{color:palette.blue},promptText:{flex:1,color:palette.ink,fontSize:14,lineHeight:21,fontWeight:'500'},inputRow:{flexDirection:'row',gap:10,alignItems:'center'},input:{flex:1,minWidth:0,height:54,borderWidth:1,borderColor:palette.line,borderRadius:18,backgroundColor:'#FAFBFC',paddingHorizontal:16,color:palette.ink,fontSize:16},send:{width:50,height:50,borderRadius:16,backgroundColor:palette.blue,alignItems:'center',justifyContent:'center'},answer:{backgroundColor:palette.sky,borderRadius:22,padding:22,gap:14},answerLabel:{color:palette.blue,fontWeight:'700',fontSize:12,letterSpacing:0.6},answerText:{color:palette.ink,fontSize:15,lineHeight:25},missing:{color:palette.amber,fontSize:14,lineHeight:22,fontWeight:'600'},confidence:{color:palette.muted,fontSize:11,lineHeight:17}});
