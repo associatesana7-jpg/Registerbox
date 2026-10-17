@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { GstCheckbox } from './gst-checkbox';
 
 import { Button, ErrorBanner, Field } from '@/components/registerbox-ui';
 import { GstSelect, gstStyles } from '@/components/gst-ui';
@@ -35,7 +36,7 @@ export function GstBillReview({ bill, busy, onApprove }: { bill: BillExtraction;
     <Field label="Document date · DD-MM-YYYY" value={draft.date} editable={!busy} onChangeText={value=>{setDraft({...draft,date:value});setConsent(false);}}/>
     {amountKeys.map(key=><Field key={key} label={`${key==='taxable'?'Taxable value':key.toUpperCase()} ₹`} value={draft[key]} editable={!busy} keyboardType="decimal-pad" onChangeText={value=>{setDraft({...draft,[key]:value});setConsent(false);}}/>)}
     <View style={styles.period}><View style={{flex:1}}><Field label="Books month · MM" value={periodMonth} editable={!busy} keyboardType="number-pad" onChangeText={value=>{setPeriodMonth(value);setConsent(false);}}/></View><View style={{flex:1}}><Field label="Books year · YYYY" value={periodYear} editable={!busy} keyboardType="number-pad" onChangeText={value=>{setPeriodYear(value);setConsent(false);}}/></View></View>
-    <Pressable accessibilityRole="checkbox" accessibilityState={{checked:consent}} disabled={busy} onPress={()=>setConsent(!consent)} style={styles.checkbox}><Text style={styles.tick}>{consent?'☑':'☐'}</Text><Text style={styles.consent}>I reviewed this bill and approve adding it to GST purchase books.</Text></Pressable>
+    <GstCheckbox checked={consent} disabled={busy} onPress={()=>setConsent(!consent)} label="I reviewed this bill and approve adding it to GST purchase books."/>
     <Button title="Add reviewed bill to GST books" loading={busy} disabled={!consent} onPress={approve}/>
   </View>;
 }

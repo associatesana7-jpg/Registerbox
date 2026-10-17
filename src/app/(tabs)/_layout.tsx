@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Image, type ImageSourcePropType } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { palette } from '@/constants/design';
 
@@ -12,12 +13,14 @@ const icons: Record<string, ImageSourcePropType> = {
 };
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+  const bottom = Math.max(insets.bottom, 10);
   return (
     <Tabs screenOptions={({ route }) => ({
       headerShown: false,
       tabBarActiveTintColor: palette.blue,
       tabBarInactiveTintColor: palette.muted,
-      tabBarStyle: { height: 72, paddingTop: 7, paddingBottom: 9, borderTopColor: palette.line, backgroundColor: palette.white },
+      tabBarStyle: { height: 62 + bottom, paddingTop: 8, paddingBottom: bottom, borderTopColor: palette.line, backgroundColor: palette.white },
       tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
       tabBarIcon: ({ color }) => <Image source={icons[route.name] ?? icons.index} resizeMode="contain" style={{width:24,height:24,tintColor:color}} />,
     })}>

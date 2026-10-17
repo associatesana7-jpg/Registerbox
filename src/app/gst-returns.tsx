@@ -3,10 +3,13 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import { Redirect, Stack, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Badge, Button, Card, ErrorBanner, Field, Screen } from '@/components/registerbox-ui';
 import { FlowProgress, SoftNotice } from '@/components/experience';
 import { GstHeader } from '@/components/gst-ui';
+import { GstCheckbox } from '@/components/gst-checkbox';
+import { GstImsRecovery } from '@/components/gst-ims-recovery';
+import { useGstRefresh } from '@/hooks/use-gst-refresh';
 import { GstFilingHistory } from '@/components/gst-filing-history';
 import type { FilingHistory } from '../../supabase/functions/_shared/gst-filing-history';
 import { GstReturnReview } from '@/components/gst-return-review';
@@ -39,7 +42,7 @@ const declarations: Record<string,string> = {
   file:'I am authorized to file. I confirm this exact GSTIN, period and return snapshot are complete and correct and authorize filing using this OTP.',
 };
 function Check({label,checked,onPress,disabled=false}:{label:string;checked:boolean;onPress:()=>void;disabled?:boolean}) {
-  return <Pressable accessibilityRole="checkbox" accessibilityState={{checked,disabled}} disabled={disabled} onPress={onPress} style={{flexDirection:'row',gap:9,paddingVertical:9}}><Text style={{color:palette.blue,fontSize:18}}>{checked?'☑':'☐'}</Text><Text style={{flex:1,color:palette.ink,fontSize:12,lineHeight:18}}>{label}</Text></Pressable>;
+  return <GstCheckbox checked={checked} disabled={disabled} onPress={onPress} label={label}/>;
 }
 export default function ReturnScreen() {
   const {business,session,loadingSession,demoMode}=useApp();
@@ -68,6 +71,13 @@ function Workspace({businessId}:{businessId:string}) {
   const [writes,setWrites]=useState(false), [books,setBooks]=useState(false), [itc,setItc]=useState(false), [prior,setPrior]=useState(false);
   const [evidence,setEvidence]=useState<unknown>(null);
   const active=useRef(true), running=useRef(false);
+  const [imsOpen,setImsOpen]=useState(false);
+  async function refreshSaved(){
+    if(running.current||!selected)return;
+    try{const data=await returnAction(businessId,'list');const next=data.drafts?.find(row=>row.id===selected.id);if(active.current&&next){setSelected(next);setDrafts(data.drafts||[]);setWrites(data.writesEnabled);}}
+    catch(cause){if(active.current)setError(cause instanceof Error?cause.message:'Could not refresh GST status.');}
+  }
+  useGstRefresh(()=>{void refreshSaved();});
   useEffect(()=>{
     active.current=true;
     returnAction(businessId,'list').then(data=>{if(active.current){setDrafts(data.drafts||[]);setWrites(data.writesEnabled);setGstin(data.gstin||'');const input=initialParams.current;const period=(input.month||'').padStart(2,'0')+(input.year||'');
@@ -91,11 +101,11 @@ function Workspace({businessId}:{businessId:string}) {
       setApproved('');
     }catch(cause){setError(cause instanceof Error?cause.message:'Import failed.');}
   }
-  async function run(action:string){
+  async function run(action:string,portalReadApproved=false){
     if(running.current)return;running.current=true;setBusy(true);setError('');
     try{
       if(['preview_offset','offset'].includes(action)&&(!/^\d+(\.\d{1,2})?$/.test(minimumCash)||Object.values(choices).some(v=>!/^\d+(\.\d{1,2})?$/.test(v))))throw new Error('Complete every credit amount and the minimum cash requirement. Enter 0 where applicable.');
-      const data=await returnAction(businessId,action,{consent:approved===action,draftId:selected?.id,revision:selected?.revision,approvedHash:['evc','file'].includes(action)?selected?.snapshot_hash:selected?.payload_hash,
+      const data=await returnAction(businessId,action,{consent:approved===action||(action==='resume_portal'&&portalReadApproved),draftId:selected?.id,revision:selected?.revision,approvedHash:['evc','file'].includes(action)?selected?.snapshot_hash:selected?.payload_hash,
         ...(action==='draft'?{form,year:Number(year),month:Number(month),payload:JSON.parse(payload)}:{}),
         ...(['offset','preview_offset'].includes(action)?{paymentChoices:Object.fromEntries(Object.entries(choices).map(([k,v])=>[k,Number(v)])),minimumCash:Number(minimumCash),paymentRulesReviewed:paymentRules,allocationHash}:{}),pan,otp,booksReviewed:books,itcReviewed:itc,priorReturnsReviewed:prior});
       if(!active.current)return;
@@ -113,7 +123,7 @@ function Workspace({businessId}:{businessId:string}) {
       if(action==='resume_portal'){resetPayment();setBooks(false);setItc(false);setPrior(false);setPhase(data.draft?.state==='prepared'?'review':'compare');}
       if(action==='offset')setPhase('compare');
       if(action==='evc'||action==='file')setPhase('authorize');
-    }catch(cause){if(active.current)setError(cause instanceof Error?cause.message:'Operation failed.');}
+    }catch(cause){if(active.current){try{const latest=await returnAction(businessId,'list');const next=latest.drafts?.find(row=>row.id===selected?.id);if(next){setSelected(next);setDrafts(latest.drafts||[]);}}catch{/* Keep original operation error; no write is retried. */}setError(cause instanceof Error?cause.message:'Operation failed.');}}
     finally{running.current=false;if(active.current)setBusy(false);}
   }
   const amendmentEvidence=selected?.source_evidence&&'links' in selected.source_evidence?selected.source_evidence:null;
@@ -128,7 +138,7 @@ function Workspace({businessId}:{businessId:string}) {
     return <View key={name} style={{gap:6}}>
       <Check disabled={busy} checked={approved===name} onPress={()=>setApproved(approved===name?'':name)} label={declarations[name]}/>
       {blocked?<Text accessibilityRole="alert" style={{color:palette.muted,fontSize:13,lineHeight:19}}>{historyReason||(dirty&&name!=='draft'?'Save your changed draft before continuing.':reason||'Complete the earlier GST steps before continuing.')}</Text>:null}
-      <Button title={labels[name]} loading={busy&&approved===name} disabled={busy||blocked||approved!==name} onPress={()=>run(name)}/>
+      <Button title={name==='evc'&&selected?.otp_sent_at?'Resend OTP':labels[name]} loading={busy&&approved===name} disabled={busy||blocked||approved!==name} onPress={()=>run(name)}/>
     </View>;
   }
   const otpBlockReason=periodOpen?`The ${selected?.month}/${selected?.year} tax period is still open. Filing can start from ${nextPeriodStart}.`
@@ -152,6 +162,7 @@ function Workspace({businessId}:{businessId:string}) {
     <View accessibilityRole="progressbar" style={{flexDirection:'row',flexWrap:'wrap',gap:7}}>{phases.map(([key,label],index)=>{const current=phases.findIndex(([value])=>value===phase),done=index<current,active=index===current;return <View key={key} style={{flexDirection:'row',alignItems:'center',gap:5,paddingVertical:7,paddingHorizontal:9,borderRadius:9,borderWidth:1,borderColor:active?palette.blue:done?palette.green:palette.line,backgroundColor:active?palette.sky:palette.white}}><Text style={{color:done?palette.green:active?palette.blue:palette.muted,fontSize:11,fontWeight:'900'}}>{done?'✓':index+1}</Text><Text style={{color:active?palette.blue:done?palette.ink:palette.muted,fontSize:10,fontWeight:'800'}}>{label}</Text></View>;})}</View>
     {!writes?<SoftNotice title="Draft preparation only" detail="Live GST filing is release-locked pending provider acceptance testing. Saving figures here does not submit your return or meet a filing deadline."/>:null}
     <ErrorBanner message={error}/>
+    {form==='gstr-3b'&&selected?.state!=='filed'&&phase!=='start'?<Card><Text style={heading}>{selected?.last_error?.includes('IMS002')?'GSTR-2B needs computation':'IMS & GSTR-2B'}</Text><Text style={muted}>Review supplier bills and compute GSTR-2B without leaving this return. Saving IMS actions does not file GSTR-3B.</Text><Button title="Open IMS dashboard →" variant="secondary" disabled={busy} onPress={()=>setImsOpen(true)}/><GstImsRecovery businessId={businessId} year={Number(year)} month={Number(month)} visible={imsOpen} onClose={()=>setImsOpen(false)} onComplete={()=>{setImsOpen(false);void run('resume_portal',true);}}/></Card>:null}
     {selected?.form==='gstr-3b'&&phase!=='start'&&['draft','saved','prepared','blocked'].includes(selected.state)?<Card><Text style={heading}>{portalEvidence?'Saved GST portal return':'Already prepared or paid on GST?'}</Text><Text style={muted}>Load the latest saved return and payment status to continue here. Review the fetched figures before authorizing filing.</Text>{action('resume_portal',false)}</Card>:null}
     {phase!=='start'&&amendmentEvidence?<Card><Text style={{fontWeight:'700'}}>Amendment original links</Text><Text>{amendmentEvidence.matched?'Original records linked to acknowledged filed archives. Review each change below.':'Original linkage is incomplete. This draft cannot be submitted.'}</Text>{amendmentEvidence.issues.map((issue,index)=><Text key={index} style={{color:palette.red}}>{issue}</Text>)}{amendmentEvidence.links.map((link,index)=><View key={index} style={{gap:4}}><Text>{link.section.toUpperCase()} · {link.reference} · original period {link.originalPeriod}</Text><Text>Taxable value: ₹{link.original.txval.toFixed(2)} → ₹{link.revised.txval.toFixed(2)}. Change: ₹{link.delta.txval.toFixed(2)}.</Text><Text>Tax change: IGST ₹{link.delta.iamt.toFixed(2)}, CGST ₹{link.delta.camt.toFixed(2)}, SGST ₹{link.delta.samt.toFixed(2)}, cess ₹{link.delta.csamt.toFixed(2)}.</Text></View>)}<Text>Linked against app filing archives only. GST amendment history verification is still pending. These changes have not been added automatically to GSTR-3B.</Text></Card>:null}
 

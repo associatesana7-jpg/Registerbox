@@ -16,6 +16,7 @@ assert.equal(nilNextStep({...checked,state:'unknown'}),'blocked');
 assert.equal(nilNextStep({...draft,form:'gstr-3b'}),'review');
 assert.equal(nilNextStep({...draft,state:'prepared',snapshot_at:'invalid'}),'review');
 assert.equal(nilNextStep({...draft,state:'blocked'}),'blocked');
+assert.equal(nilNextStep({...draft,form:'gstr-3b',state:'blocked',last_error:'GST rejected (IMS002_CD): compute GSTR-2B'}),'ims');
 assert.equal(nilNextStep({...draft,form:'gstr-3b',state:'blocked',last_error:'GST rejected (RT-3BAS1079): Please do offset'}),'portal');
 assert.equal(nilNextStep({...draft,form:'gstr-3b',state:'unknown',last_error:'GST rejected (RT-3BAS1079)'}),'blocked');
 assert.equal(nilNextStep({...draft,state:'blocked',last_error:'GST rejected (RET00003)'}),'recover');

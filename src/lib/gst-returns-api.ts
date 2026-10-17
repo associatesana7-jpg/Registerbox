@@ -10,11 +10,12 @@ export type ReturnDraft = {
   source_evidence?: import('../../supabase/functions/_shared/gst-amendment-links').AmendmentEvidence|import('../../supabase/functions/_shared/gst-portal-resume').PortalResumeEvidence|null;
   acknowledgement: string|null; last_error: string|null; reference_id: string|null;
   signatory_pan: string|null;
+  otp_sent_at?: string|null;
 };
 export type SavedSignatory = {id:string;name:string;pan:string};
 export type ReturnResponse = {paymentState?:'settled'|'payable'|'unconfirmed';signatories?:SavedSignatory[];history?:FilingHistory;paymentContext?:PaymentContext; paymentReview?:ReturnType<typeof preparePayment>; gstin?:string; draft?:ReturnDraft; drafts?:ReturnDraft[]; writesEnabled:boolean; allocation?:Record<string,unknown>; allocationHash?:string; ledger?:unknown; providerStatus?:unknown};
 export async function returnAction(businessId: string, action: string, input: Record<string,unknown> = {}): Promise<ReturnResponse> {
-  const {data,error} = await supabase.functions.invoke('gst-returns',{body:{...input,businessId,action,consentAction:action,consentVersion:'gst-returns-v1'}});
+  const {data,error} = await supabase.functions.invoke('gst-returns',{timeout:['list','history','signatories'].includes(action)?30000:90000,body:{...input,businessId,action,consentAction:action,consentVersion:'gst-returns-v1'}});
   if (error) {
     let message = 'Could not reach the return service. Reload and check status before retrying.';
     const context = error.context;

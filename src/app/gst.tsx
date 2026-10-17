@@ -11,9 +11,10 @@ import { gstAction, type GstConnection, type GstReturn } from '@/lib/gst-api';
 import { BusinessProfilePicker } from '@/components/business-profile-picker';
 import type { FilingHistory } from '../../supabase/functions/_shared/gst-filing-history';
 import { classifyPortalStatus, GST_RETURN_COVERAGE, portalStateCopy } from '@/lib/gst-filing-workflow';
+import { GstCheckbox } from '@/components/gst-checkbox';
 
 function Consent({checked,label,onChange,disabled=false}:{checked:boolean;label:string;onChange:()=>void;disabled?:boolean}) {
-  return <Pressable accessibilityRole="checkbox" accessibilityState={{checked,disabled}} disabled={disabled} onPress={onChange} style={{flexDirection:'row',gap:9,paddingVertical:8,alignItems:'flex-start'}}><View style={{width:19,height:19,borderRadius:4,borderWidth:1.5,borderColor:palette.blue,backgroundColor:checked?palette.blue:palette.white,alignItems:'center',justifyContent:'center'}}><Text style={{color:palette.white,fontSize:12}}>{checked?'✓':''}</Text></View><Text style={{flex:1,fontSize:11,lineHeight:17,color:palette.muted}}>{label}</Text></Pressable>;
+  return <GstCheckbox checked={checked} label={label} disabled={disabled} onPress={onChange}/>;
 }
 export default function GstScreen() {
   const {session,loadingSession,business,demoMode}=useApp();
@@ -68,7 +69,7 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
       <ErrorBanner message={error}/>
       {page==='summary'&&result?<GstReturnReview result={result} onContinue={()=>prepare()}/>:null}
       {page==='period'?<>
-        <GstTabs items={['GSTR-1','GSTR-3B','ITC/2B','Ledgers']} value={section} onChange={value=>{setSection(value);setReadConsent(false);setResult(null);setFilingHistory(null);}}/>
+        <GstTabs items={['GSTR-1','GSTR-3B','ITC/2B','Ledgers']} value={section} onChange={value=>{setSection(value);setReadConsent(false);setResult(null);}}/>
         <Pressable onPress={()=>setPage('connection')} accessibilityRole="button" style={{flexDirection:'row',alignItems:'center',gap:9,padding:11,borderRadius:10,backgroundColor:palette.white,borderWidth:1,borderColor:palette.line}}><Text style={{fontSize:18,color:palette.blue}}>▣</Text><View style={{flex:1,gap:2}}><Text style={{fontSize:12,fontWeight:'800',color:palette.ink}}>{name||'Your business'}</Text><Text style={{fontSize:10,color:palette.muted}}>{gstin||'Connect your GST account'}</Text></View><Text style={{color:linked?palette.green:palette.amber,fontSize:10,fontWeight:'800'}}>{busy?'Checking':linked?'Connected':'Connect'}</Text><Text style={{color:palette.muted}}>›</Text></Pressable>
         {section==='ITC/2B'?<View style={s.card}><Text style={s.title}>Purchase reconciliation</Text><Text style={s.caption}>Add or upload purchase books, fetch GSTR-2B, and review matched, missing and different documents.</Text><GstSelect label="Financial Year" value={String(financialYear)} options={yearOptions} onChange={value=>{const fy=Number(value);setFinancialYear(fy);setYear(String(Number(month)<4?fy+1:fy));}}/><GstSelect label="Tax Period" value={month+year} options={periodOptions} onChange={value=>{setMonth(value.slice(0,2));setYear(value.slice(2));}}/><Button title="Open purchase reconciliation" onPress={()=>router.push({pathname:'/gst-purchases',params:{year,month}})}/></View>:section==='Ledgers'?<View style={s.card}><Text style={s.title}>Cash & credit ledgers</Text><Text style={s.caption}>Open a regular GSTR-3B draft to fetch ledger balances and review your payment allocation.</Text><Button title="Open payment workspace" onPress={()=>prepare('payment')}/></View>:<View style={s.card}>
           <Text style={s.title}>Select Return Period</Text>

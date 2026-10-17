@@ -5,12 +5,14 @@ import { returnAction } from '@/lib/gst-returns-api';
 import type { FilingHistory } from '../../supabase/functions/_shared/gst-filing-history';
 import { palette } from '@/constants/design';
 import { classifyPortalStatus, portalStateCopy } from '@/lib/gst-filing-workflow';
+import { useGstRefresh } from '@/hooks/use-gst-refresh';
 
 export function GstFilingHistory({businessId,year,month,onStatus}:{businessId:string;year:string;month:string;onStatus?:(history:FilingHistory|null)=>void}) {
   const [result,setResult]=useState<FilingHistory|null>(null);
   const [error,setError]=useState(''),[loading,setLoading]=useState(false),[revision,setRevision]=useState(0);
   const period=month.padStart(2,'0')+year;
   const valid=/^\d{4}$/.test(year)&&Number(month)>=1&&Number(month)<=12;
+  useGstRefresh(()=>setRevision(value=>value+1));
   useEffect(()=>{
     let active=true;
     const timer=setTimeout(()=>{

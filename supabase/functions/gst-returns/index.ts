@@ -7,6 +7,7 @@ import { isNil, reviewNil, nilFilingPayload } from './nil.ts';
 import { paymentContext, preparePayment } from '../_shared/gst-payment.ts';
 import {fetchFilingHistory,filingBlock} from '../_shared/gst-filing-history.ts';
 import { validFilingOtp } from '../_shared/gst-filing-otp.ts';
+import { unpack2b } from '../_shared/gst-purchases.ts';
 import { portal3bPaymentState, portal3bPreparation, portal3bHasZeroEcommerce, portal3bHasPayments } from '../_shared/gst-portal-resume.ts';
 
 class SafeError extends Error {}
@@ -14,7 +15,7 @@ class Rejected extends SafeError {
   constructor(message: string, readonly providerCode?: string) { super(message); }
 }
 const writeActions = ['save','proceed','offset','evc','file'];
-const knownActions = ['signatories','save_signatory','remove_signatory','list','history','draft','save','proceed','poll','reconcile','recover_nil','resume_portal','ledger','preview_offset','offset','evc','file'];
+const knownActions = ['signatories','save_signatory','remove_signatory','list','history','draft','save','proceed','poll','reconcile','recover_nil','recover_ims','resume_portal','ledger','preview_offset','offset','evc','file'];
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') return new Response('ok',{headers:corsHeaders});
   if (request.method !== 'POST') return json({error:'Method not allowed.'},405);
@@ -138,7 +139,7 @@ Deno.serve(async (request) => {
       if(!draft.source_evidence?.matched||await hash(linked.links)!==await hash(draft.source_evidence.links))throw new SafeError('Amendment evidence changed. Save and review this draft again.');
       if(!linked.portalHistoryVerified)throw new SafeError('Original amounts are linked to app archives. Complete GST amendment history verification is still required before portal submission.');
     }
-    if(writeActions.includes(action)||['recover_nil','resume_portal'].includes(action)){
+    if(writeActions.includes(action)||['recover_nil','recover_ims','resume_portal'].includes(action)){
       let history;try{history=await fetchFilingHistory(env,locked,auth.user.id+':'+business.id,draft.year,draft.month);}catch{throw new SafeError('Cannot verify portal filing status. No GST write was sent. Reconnect and check history.');}
       const blocked=filingBlock(history,draft.form);
       if(blocked){
@@ -197,6 +198,12 @@ Deno.serve(async (request) => {
       if (typeof data.reference_id !== 'string' || !data.reference_id) throw new SafeError('No GST tracking reference returned. Do not repeat this operation.');
       return data.reference_id;
     };
+    if(action==='recover_ims'){
+      if(draft.form!=='gstr-3b'||!isNil(draft.payload)||draft.state!=='blocked'||!String(draft.last_error).includes('(IMS002_CD)'))throw new SafeError('This nil return does not have a GSTR-2B generation rejection. Refresh its status.');
+      try{unpack2b(await provider('/gst/compliance/tax-payer/gstrs/gstr-2b/'+draft.year+'/'+String(draft.month).padStart(2,'0')),draft.gstin,period);}catch{throw new SafeError('GSTR-2B is not available for this period yet. Complete IMS computation, then refresh.');}
+      await update({state:'prepared',last_error:null,otp_sent_at:null,signatory_pan:null});
+      return await done();
+    }
     if(action==='resume_portal'){
       if(draft.form!=='gstr-3b'||!periodIsClosed(draft.year,draft.month))throw new SafeError('Choose a closed GSTR-3B period.');
       if(!['draft','saved','prepared','otp_sent','blocked'].includes(draft.state))throw new SafeError('The previous GST operation is still processing or its outcome is unknown. Check that operation before importing portal data.');

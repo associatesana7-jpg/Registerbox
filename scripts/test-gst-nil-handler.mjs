@@ -6,6 +6,7 @@ import * as amendmentLinks from '../supabase/functions/_shared/gst-amendment-lin
 import * as validation from '../supabase/functions/gst-returns/validation.ts';
 import * as nil from '../supabase/functions/gst-returns/nil.ts';
 import * as portalResume from '../supabase/functions/_shared/gst-portal-resume.ts';
+import * as purchases from '../supabase/functions/_shared/gst-purchases.ts';
 import { filingBlock } from '../supabase/functions/_shared/gst-filing-history.ts';
 import { validFilingOtp } from '../supabase/functions/_shared/gst-filing-otp.ts';
 import { periodIsClosed, validPeriod } from '../supabase/functions/gst-workspace/domain.ts';
@@ -39,6 +40,7 @@ function query(table) {
 }
 const client = { auth: { getUser: async () => ({ data: { user: { id: 'owner' } } }) }, from: query };
 const modules = {
+  '../_shared/gst-purchases.ts':purchases,
   '../_shared/gst-amendment-links.ts': amendmentLinks,
   'npm:@supabase/supabase-js@2.117.1': { createClient: () => client },
   '../_shared/http.ts': { corsHeaders: {}, json: (value, status = 200) => new Response(JSON.stringify(value), { status }) },
@@ -58,6 +60,7 @@ new Function('require', 'exports', 'Deno', 'fetch', source)(name => modules[name
   if (url.includes('?summary_type=long') && readySummary) return Response.json({data:{status_cd:'1',data:readySummary}});
   if (url.includes('/status?')) return Response.json({ data: { status_cd: '1', data: { status_cd: 'P' } } });
   if (url.includes('/evc/otp')) return Response.json({ data: { status_cd: '1' } });
+  if (url.includes('/gstr-2b/')) return Response.json({data:{status_cd:'1',data:{gstin,rtnprd:'082026',docdata:{}}}});
   if (url.includes('/file?')) return Response.json(rejectFile ? {code:200,data:{status_cd:'0',error:{error_cd:'RET13506',message:'OTP is either expired or incorrect'}}} : { data: { status_cd: '1', data: { ack_num: 'TEST-ARN' } } });
   throw Error('Unexpected provider request (including forbidden nil summary fetch): ' + url);
 });
@@ -156,6 +159,11 @@ assert.equal((await act('remove_signatory',{gstin,signatoryId:'saved-id'})).stat
 assert.equal(signatories.length,0);
 assert.equal(calls.length,0,'Saved details never contact GST or send OTP');
 console.log('Saved signatories: normalized, deduplicated, scoped, consented, removable; owner and GSTIN isolation enforced.');
+
+await reset('gstr-3b');draft.state='blocked';draft.last_error='GST rejected (IMS002_CD): GSTR-2B not generated';
+assert.equal((await act('recover_ims')).status,200);assert.equal(draft.state,'prepared');assert.equal(draft.last_error,null);assert.equal(calls.length,1);assert.equal(calls[0].method,'GET');
+await reset('gstr-3b');draft.state='unknown';draft.last_error='IMS002_CD';assert.notEqual((await act('recover_ims')).status,200);assert.equal(calls.length,0);
+console.log('IMS recovery verified: generated 2B checked by account and period, known rejection resumed, unknown outcomes never reset.');
 
 // Ecommerce release gate must stop every portal mutation before any provider call.
 for(const section of ['ecom','ecoma','supeco','supecoa','eco_dtls']) {

@@ -12,6 +12,7 @@ export type GstReturn = {
 };
 export async function gstAction<T>(businessId: string, action: string, input: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.functions.invoke('gst-workspace', {
+    timeout: 90000,
     body: { ...input, businessId, action, consentVersion: GST_CONSENT_VERSION },
   });
   if (error) {

@@ -4,6 +4,7 @@ import { additionalSections, validateAdditional, sectionFingerprint } from '../_
 export type JsonObject = Record<string, unknown>;
 export const VERSION = 'gst-returns-v1';
 export const DECLARATIONS: Record<string,string> = {
+  recover_ims:'Check that GSTR-2B is available and resume this previously rejected nil return without filing it.',
   draft: 'Save this reviewed draft privately in RegisterBox. Do not send it to GST.',
   save: 'I reviewed this complete return against my books and approve saving this version to the GST portal. This is not filing.',
   proceed: 'I approve preparing this saved GSTR-1 for filing on the GST portal.',

@@ -7,6 +7,7 @@ import * as validation from '../supabase/functions/gst-returns/validation.ts';
 import * as nil from '../supabase/functions/gst-returns/nil.ts';
 import * as payment from '../supabase/functions/_shared/gst-payment.ts';
 import * as portalResume from '../supabase/functions/_shared/gst-portal-resume.ts';
+import * as purchases from '../supabase/functions/_shared/gst-purchases.ts';
 import * as amendmentLinks from '../supabase/functions/_shared/gst-amendment-links.ts';
 import { filingBlock } from '../supabase/functions/_shared/gst-filing-history.ts';
 import { validFilingOtp } from '../supabase/functions/_shared/gst-filing-otp.ts';
@@ -40,6 +41,7 @@ function query(table) {
 }
 const client={auth:{getUser:async()=>({data:{user:{id:'owner'}}})},from:query};
 const modules={
+  '../_shared/gst-purchases.ts':purchases,
   'npm:@supabase/supabase-js@2.117.1':{createClient:()=>client},
   '../_shared/http.ts':{corsHeaders:{},json:(data,status=200)=>Response.json(data,{status})},
   '../gst-workspace/domain.ts':{validPeriod,periodIsClosed,decryptToken:async()=>'test-token'},
