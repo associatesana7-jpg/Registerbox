@@ -31,33 +31,28 @@ assert.equal(shell.type, 'WebShell');
 assert.equal(shell.props.children, 'screen-content');
 
 let requested, account = { session: null, loadingSession: false };
-const replacements = [];
+
 const modules = {
-  'expo-router': { Redirect: 'Redirect', router: { replace: href => replacements.push(href) },
+  'expo-router': { Redirect: 'Redirect',
     useLocalSearchParams: () => ({ next: requested }) },
   react: { useRef: value => ({ current: value }), useState: value => [value, () => {}] },
   'react-native': { Text: 'Text' },
   '@/components/registerbox-ui': Object.fromEntries(['Button', 'Card', 'ErrorBanner', 'Field', 'PageHeader', 'Screen'].map(key => [key, key])),
   '@/hooks/use-app': { useApp: () => account },
-  '@/lib/password-sign-in': {},
+  '@/hooks/use-auth-captcha': { useAuthCaptcha: () => ({ verify: async () => 'fixture-token', challenge: null }) },
   '@/components/website/content': content,
 };
 const password = load('src/app/auth/password.tsx', modules).default;
-function nodes(tree) {
-  if (Array.isArray(tree)) return tree.flatMap(nodes);
-  return tree && typeof tree === 'object' ? [tree, ...nodes(tree.props?.children)] : [];
-}
 for (const service of content.services) {
   requested = content.servicePath(service.category);
   assert.equal(content.safeNext(requested), requested);
-  account = { session: { user: { id: 'fixture' } }, loadingSession: false };
-  assert.equal(password().props.href, requested, `${service.category} must survive signed-in password redirect`);
-  account = { session: null, loadingSession: false };
-  const tree = password();
-  const emailButton = nodes(tree).find(node => node.type === 'Button' && node.props.title === 'Use email code instead');
-  emailButton.props.onPress();
-  assert.equal(replacements.at(-1).pathname, '/auth');
-  assert.equal(replacements.at(-1).params.next, requested);
+  for (const session of [null, { user: { id: 'fixture' } }]) {
+    account = { session, loadingSession: false };
+    const tree = password();
+    assert.equal(tree.type, 'Redirect');
+    assert.equal(tree.props.href.pathname, '/auth');
+    assert.equal(tree.props.href.params.next, requested);
+  }
 }
 for (const unsafe of ['https://example.com', '//example.com', '/auth', '/control-center', '/onboarding/application?category=unknown']) {
   assert.equal(content.safeNext(unsafe), '/dashboard');
@@ -65,4 +60,4 @@ for (const unsafe of ['https://example.com', '//example.com', '/auth', '/control
 for (const next of ['/gst-returns?form=gstr-3b&year=2026&month=09&mode=nil','/gst-purchases?year=2026&month=10','/onboarding/welcome','/onboarding/intent','/onboarding/report']) assert.equal(content.safeNext(next),next);
 assert.equal(content.safeNext('/(tabs)/documents'),'/documents');
 for(const unsafe of ['/gst-returns?mode=javascript:alert(1)','/gst-returns?next=https://example.com','/gst-purchases?month=99','/\\example.com','/privacy-operations','/onboarding/application?category=company&next=https://example.com']) assert.equal(content.safeNext(unsafe),'/dashboard');
-console.log('Passed: navigator remains mounted; all 11 service destinations survive password/email transitions; unsafe redirects rejected.');
+console.log('Passed: navigator remains mounted; all 11 service destinations survive legacy-link/email OTP transitions; unsafe redirects rejected.');

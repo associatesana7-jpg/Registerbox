@@ -1,5 +1,6 @@
 import { normalizeEmail } from '@/lib/registerbox-api';
 import { supabase } from '@/lib/supabase';
+import { adaptiveAuthRequest, rememberAuthenticatedDevice, type AuthCaptchaVerifier } from '@/lib/auth-gateway';
 
 export type ControlCenterStaff = {
   email: string;
@@ -63,9 +64,11 @@ export type ControlCenterDirectory = {
   generatedAt: string;
 };
 
-export async function sendControlCenterOtp(email: string) {
+export async function sendControlCenterOtp(email: string, verifyCaptcha?: AuthCaptchaVerifier) {
+  const normalized = normalizeEmail(email);
+  if (await adaptiveAuthRequest('admin_email', normalized, verifyCaptcha)) return;
   const { error } = await supabase.auth.signInWithOtp({
-    email: normalizeEmail(email),
+    email: normalized,
     options: { shouldCreateUser: false },
   });
   if (error) throw error;
@@ -80,6 +83,7 @@ export async function verifyControlCenterOtp(email: string, token: string) {
   });
   if (error) throw error;
   if (!data.session) throw new Error('The code could not be verified. Request a new one.');
+  await rememberAuthenticatedDevice(data.session.access_token);
   return data.session;
 }
 

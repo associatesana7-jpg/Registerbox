@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4.151.1/config-schema.json",
+  "name": "registerbox-auth-gateway",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "durable_objects": { "bindings": [{ "name": "AUTH_RISK", "class_name": "AuthRiskBucket" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AuthRiskBucket"] }],
+  "vars": {
+    "AUTH_GATEWAY_ACTIVE": "false",
+    "AUTH_CAPTCHA_BACKSTOP_VERIFIED": "false",
+    "SUPABASE_URL": "https://qbubmmwtycupfqbbmqpu.supabase.co",
+    "TURNSTILE_HOSTNAMES": "registerbox.in,www.registerbox.in,admin.registerbox.in"
+  },
+  "observability": { "enabled": false }
+}

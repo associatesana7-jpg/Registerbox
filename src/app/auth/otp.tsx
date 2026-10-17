@@ -7,8 +7,10 @@ import { ErrorBanner, PageHeader, Screen } from '@/components/registerbox-ui';
 import { useApp } from '@/hooks/use-app';
 import { useOtpFeedback } from '@/hooks/use-otp-feedback';
 import { sendEmailOtp, verifyEmailOtp } from '@/lib/registerbox-api';
+import { useAuthCaptcha } from '@/hooks/use-auth-captcha';
 
 export default function OtpScreen() {
+  const captcha = useAuthCaptcha();
   const { email, refreshAccount } = useApp();
   const feedback = useOtpFeedback();
   const [otp, setOtp] = useState('');
@@ -80,7 +82,7 @@ export default function OtpScreen() {
     setOtp('');
     orbit.current?.reset();
     try {
-      await sendEmailOtp(email);
+      await sendEmailOtp(email, captcha.verify);
       if (!mounted.current) return;
       setSeconds(20);
       input.current?.focus();
@@ -105,6 +107,7 @@ export default function OtpScreen() {
 
   return (
     <Screen>
+      {captcha.challenge}
       <PageHeader title="Enter OTP" subtitle={`We sent a 6-digit code to ${email || 'your email'}.`} back={() => router.back()} />
       <View style={styles.panel}>
         <Text style={styles.eyebrow}>EMAIL VERIFICATION</Text>

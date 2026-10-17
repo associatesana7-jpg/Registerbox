@@ -4,6 +4,7 @@ import { File } from 'expo-file-system';
 import type { ComplianceItem } from '@/data/demo';
 import { supabase } from '@/lib/supabase';
 import { requirePrivacyPurpose } from '@/lib/privacy-center';
+import { adaptiveAuthRequest, rememberAuthenticatedDevice, type AuthCaptchaVerifier } from '@/lib/auth-gateway';
 
 export function normalizeEmail(value: string) {
   const email = value.trim().toLowerCase();
@@ -11,9 +12,11 @@ export function normalizeEmail(value: string) {
   return email;
 }
 
-export async function sendEmailOtp(email: string) {
+export async function sendEmailOtp(email: string, verifyCaptcha?: AuthCaptchaVerifier) {
+  const normalized = normalizeEmail(email);
+  if (await adaptiveAuthRequest('customer_email', normalized, verifyCaptcha)) return;
   const { error } = await supabase.auth.signInWithOtp({
-    email: normalizeEmail(email),
+    email: normalized,
     options: { shouldCreateUser: true },
   });
   if (error) throw error;
@@ -27,6 +30,7 @@ export async function verifyEmailOtp(email: string, token: string) {
   if (!data.user) throw new Error('We could not verify this code. Please request a new one.');
   const { error: profileError } = await supabase.from('profiles').upsert({ id: data.user.id, email: normalizedEmail });
   if (profileError) throw profileError;
+  if (data.session) await rememberAuthenticatedDevice(data.session.access_token);
   return data;
 }
 

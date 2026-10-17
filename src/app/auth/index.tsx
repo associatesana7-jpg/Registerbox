@@ -8,20 +8,23 @@ import { Eyebrow, SoftNotice } from '@/components/experience';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { sendEmailOtp } from '@/lib/registerbox-api';
+import { useAuthCaptcha } from '@/hooks/use-auth-captcha';
 
 export default function LoginScreen() {
+  const captcha = useAuthCaptcha();
   const { email, setEmail, setDemoMode } = useApp();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function send() {
-    try { setLoading(true); setError(''); setDemoMode(false); await sendEmailOtp(email); router.push('/auth/otp'); }
+    try { setLoading(true); setError(''); setDemoMode(false); await sendEmailOtp(email, captcha.verify); router.push('/auth/otp'); }
     catch (cause) { setError(cause instanceof Error ? cause.message : 'We could not send the OTP. Please try again.'); }
     finally { setLoading(false); }
   }
 
   return (
     <Screen>
+      {captcha.challenge}
       <Brand compact />
       <View style={styles.hero}>
         <Image source={require('../../../assets/images/registerbox-app-icon.png')} contentFit="contain" accessibilityLabel="RegisterBox logo" style={styles.miniLogo} />
@@ -35,7 +38,6 @@ export default function LoginScreen() {
         <Button title="Send 6-digit code" icon="→" onPress={send} loading={loading} disabled={!email.includes('@')} />
       </Card>
       <SoftNotice title="One account, every business step" detail="We email a secure sign-in code. Your saved business profile will be here when you return." icon="✉" />
-      <Button title="Use an existing password account" variant="ghost" onPress={() => router.push('/auth/password')} />
       <Button title="Preview sample business" variant="ghost" onPress={() => { setDemoMode(true); router.replace('/onboarding/identify'); }} />
       <Text selectable style={styles.legal}>Your email is used for sign-in and account security. Optional AI permission is separate. Under-18 and lawful-guardian processing needs verified authority before personal information is provided.</Text>
       <Link href="/privacy" style={styles.link}>Read the privacy notice and manage your choices</Link>

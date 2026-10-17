@@ -31,6 +31,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { AdminFilingWorkspace } from '@/components/admin-filing-workspace';
 import { Link } from 'expo-router';
+import { useAuthCaptcha } from '@/hooks/use-auth-captcha';
 
 const ADMIN_EMAIL = 'fekupsony@gmail.com';
 
@@ -265,6 +266,7 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
 }
 
 export function ControlCenter() {
+  const { verify: verifyCaptcha, challenge } = useAuthCaptcha();
   const [step,setStep]=useState<AuthStep>('checking');
   const [email,setEmail]=useState(ADMIN_EMAIL);
   const [otp,setOtp]=useState('');
@@ -276,12 +278,12 @@ export function ControlCenter() {
 
   useEffect(()=>{supabase.auth.getSession().then(({data})=>{if(data.session)void loadDashboard();else setStep('email')})},[loadDashboard]);
 
-  const send=useCallback(async()=>{setBusy(true);setError('');try{await sendControlCenterOtp(email);setStep('otp');}catch(cause){setError(cause instanceof Error?cause.message:'The sign-in code could not be sent.');}finally{setBusy(false)}},[email]);
+  const send=useCallback(async()=>{setBusy(true);setError('');try{await sendControlCenterOtp(email,verifyCaptcha);setStep('otp');}catch(cause){setError(cause instanceof Error?cause.message:'The sign-in code could not be sent.');}finally{setBusy(false)}},[email,verifyCaptcha]);
   const verify=useCallback(async()=>{setBusy(true);setError('');try{await verifyControlCenterOtp(email,otp);const me=await controlCenterRequest<{staff:ControlCenterStaff}>('me');if(!me.staff.roles.length)throw new Error('No active Control Center role is assigned.');await loadDashboard();}catch(cause){await supabase.auth.signOut();setStep('otp');setError(cause instanceof Error?cause.message:'The code could not be verified.');}finally{setBusy(false)}},[email,otp,loadDashboard]);
   const signOut=useCallback(async()=>{setBusy(true);try{await signOutControlCenter();setDashboard(null);setOtp('');setStep('email');setError('');}finally{setBusy(false)}},[]);
 
   const content=useMemo(()=>step==='dashboard'&&dashboard?<Dashboard data={dashboard} loading={busy} error={error} onRefresh={loadDashboard} onSignOut={signOut}/>:<AuthCard step={step} email={email} otp={otp} busy={busy||step==='checking'} error={error} onEmail={setEmail} onOtp={setOtp} onSend={send} onVerify={verify}/>,[step,dashboard,busy,error,email,otp,loadDashboard,signOut,send,verify]);
-  return content;
+  return <>{content}{challenge}</>;
 }
 
 const styles=StyleSheet.create({

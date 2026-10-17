@@ -18,7 +18,7 @@
       const parameters = new URLSearchParams(location.search);
       const action = parameters.get('action');
       const request = parameters.get('request');
-      const actions = ['customer_email', 'customer_password', 'admin_email'];
+      const actions = ['customer_email', 'admin_email'];
       const status = document.getElementById('status');
       const retry = document.getElementById('retry');
       let widget, complete = false;
