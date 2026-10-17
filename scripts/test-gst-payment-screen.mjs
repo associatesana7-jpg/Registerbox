@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import ts from 'typescript';
+import * as payment from '../supabase/functions/_shared/gst-payment.ts';
+const code=ts.transpileModule(fs.readFileSync('src/components/gst-payment-review.tsx','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
+const jsx=(type,props)=>({type,props});
+const modules={react:{useState:initial=>[initial,()=>{}]},'react/jsx-runtime':{jsx,jsxs:jsx},'react-native':{Text:'Text',View:'View'},'expo-web-browser':{},'@/components/registerbox-ui':{Button:'Button',Field:'Field'},'./gst-checkbox':{GstCheckbox:'GstCheckbox'},'@/constants/design':{palette:{}},'../../supabase/functions/_shared/gst-payment':payment};
+const exports={};new Function('require','exports',code)(name=>modules[name]??assert.fail(name),exports);
+const charges=()=>Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]));
+const context={gstin:'29ABCDE1234F1Z5',liabilities:[{liab_ldg_id:0,trans_typ:30002,charges:charges()}],cash:charges(),credit:{igst:73.04,cgst:1080,sgst:1080,cess:0},blockedCredit:{igst:0,cgst:0,sgst:0,cess:0}};
+const args={context,review:null,choices:Object.fromEntries(Object.entries(payment.emptyCredit()).map(([k,v])=>[k,String(v)])),onChoices(){},minimumCash:'',onMinimumCash(){},rulesReviewed:false,onRulesReviewed(){},disabled:false};
+function nodes(tree){return Array.isArray(tree)?tree.flatMap(nodes):tree&&typeof tree==='object'?[tree,...nodes(tree.props?.children)]:[];}
+const zero=nodes(exports.GstPaymentReview(args));
+assert.equal(zero.filter(n=>n.type==='Field').length,1,'Zero tax must not require eight meaningless credit inputs');
+assert.ok(zero.some(n=>n.type==='GstCheckbox'),'Use an accessible real checkbox for allocation review');
+assert.ok(JSON.stringify(zero).includes('zero-value offset / credit-posting'));
+assert.ok(JSON.stringify(zero).includes('saved ITC claim is preserved'));
+const allocation=payment.preparePayment(context,payment.emptyCredit(),0);
+assert.equal(allocation.ready,true);assert.equal(allocation.totalShortfall,0);assert.equal(allocation.allocation.pdcash[0].ipd,0);
+const payable=structuredClone(context);payable.liabilities[0].charges.igst.tx=100;
+assert.equal(nodes(exports.GstPaymentReview({...args,context:payable})).filter(n=>n.type==='Field').length,9,'Positive tax still exposes exact allocation choices');
+assert.equal(nodes(exports.GstPaymentReview({...args,choices:{...args.choices,i_pdi:'5'}})).filter(n=>n.type==='Field').length,9,'Never hide a stale nonzero allocation');
+console.log('Payment screen: zero-payable ITC journey, explicit zero offset preview, preserved figures, accessible consent and positive-liability allocation verified. No funds or GST writes.');

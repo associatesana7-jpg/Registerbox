@@ -1,8 +1,12 @@
 import { filingBlock, type FilingHistory } from '../../supabase/functions/_shared/gst-filing-history.ts';
 import type { ReturnDraft } from './gst-returns-api';
 
-export function returnPhase(draft: Pick<ReturnDraft, 'state'>) {
+export function returnPhase(draft: Pick<ReturnDraft, 'state'> & Partial<Pick<ReturnDraft, 'form'|'payload'|'reconciliation'>>) {
   if (['filed', 'otp_sent'].includes(draft.state)) return 'authorize' as const;
+  if (draft.form === 'gstr-3b' && draft.payload?.registerbox_nil !== true && draft.reconciliation?.matched) {
+    if (draft.state === 'saved') return 'payment' as const;
+    if (draft.state === 'prepared') return 'review' as const;
+  }
   if (['draft', 'blocked'].includes(draft.state)) return 'prepare' as const;
   return 'compare' as const;
 }

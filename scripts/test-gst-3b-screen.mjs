@@ -79,7 +79,9 @@ const button=(tree,title)=>find(tree,n=>n.type==='Button'&&n.props.title===title
 // Resume processing at comparison, not a new draft or editable preparation.
 for(const state of ['saved','save_pending','offset_pending','prepared']){
   const app=harness({...fixture,state,reference_id:'synthetic-reference'});await flush();const tree=app.render();
-  assert.ok(button(tree,'Fetch & reconcile'));assert.equal(find(tree,n=>n.type==='GstGuidedEditor'),undefined);
+  if(state.endsWith('_pending'))assert.equal(button(tree,'Fetch & reconcile'),undefined,'Do not offer reconciliation before processing finishes');
+  else assert.ok(button(tree,'Fetch & reconcile'));
+  assert.equal(find(tree,n=>n.type==='GstGuidedEditor'),undefined);
   if(state.endsWith('_pending'))assert.equal(button(tree,'Check processing status').props.disabled,true,'Polling still requires explicit consent');
 }
 // Filed return opens immutable acknowledgement; no duplicate editor or filing button.
@@ -96,7 +98,7 @@ for(const state of ['saved','save_pending','offset_pending','prepared']){
 }
 console.log('Shared mobile/web GSTR-3B screen verified: existing draft/revision restored, Not filed allowed, release lock visible, pending/saved returns resumed safely, filed archive immutable and new amounts remain blank. No live API calls.');
 {
-  const app=harness({...fixture,state:'prepared',source_evidence:{version:'gst-portal-resume-v1',scope:'gst_portal',checkedAt:new Date().toISOString(),paymentState:'settled',previousDraft:{payload:{registerbox_nil:true}}}},true);
+  const app=harness({...fixture,state:'prepared',reconciliation:{matched:true,differences:[],scope:'saved GST return'},source_evidence:{version:'gst-portal-resume-v1',scope:'gst_portal',checkedAt:new Date().toISOString(),paymentState:'settled',previousDraft:{payload:{registerbox_nil:true}}}},true);
   await flush();let tree=app.render();
   assert.ok(button(tree,'Continue from GST portal'));
   assert.equal(find(tree,n=>n.type==='GstNilReturn'),undefined,'Imported portal return must leave the rejected nil screen');
@@ -107,3 +109,16 @@ console.log('Shared mobile/web GSTR-3B screen verified: existing draft/revision 
   tree=app.render();assert.ok(button(tree,'Proceed to Authorize'),'Resumed paid return proceeds to human review');
 }
 console.log('Portal recovery screen verified: explicit import consent, regular return routing, original declaration evidence handled and review before OTP.');
+// A matched imported return goes straight to its next real step after reload.
+{
+  const app=harness({...fixture,state:'saved',reconciliation:{matched:true,differences:[],scope:'saved GST return'}},true);
+  await flush();const tree=app.render();
+  assert.ok(button(tree,'Fetch ledger balances'),'Saved return must expose in-app payment immediately');
+  assert.equal(button(tree,'Authorize liability offset'),undefined,'Offset stays hidden until an allocation is reviewed');
+  assert.equal(button(tree,'Fetch & reconcile'),undefined,'No redundant compare loop after importing matching portal figures');
+}
+{
+  const app=harness({...fixture,state:'prepared',reconciliation:{matched:true,differences:[],scope:'saved GST return'}},true);
+  await flush();const tree=app.render();
+  assert.ok(button(tree,'Proceed to Authorize'),'Confirmed post-offset return resumes final review');
+}
