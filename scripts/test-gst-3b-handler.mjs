@@ -187,10 +187,14 @@ const nilPayload={gstin,ret_period:period,registerbox_nil:true,declarations:{noS
 draft={...draft,payload:nilPayload,payload_hash:await validation.hash(nilPayload),state:'blocked',last_error:'GST rejected (RT-3BAS1079): Please do offset',otp_sent_at:new Date().toISOString(),signatory_pan:'ABCDE1234F'};
 portal.tx_pmt.tx_py=portal.tx_pmt.net_tax_pay.map(row=>({...row,...Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]))}));
 portal.tx_pmt.pdcash=[{trans_typ:30002,liab_ldg_id:1,ipd:140}];
+// Matches the provider's documented post-offset shape: optional inward_sup
+// can be absent. It must remain absent all the way through the filing body.
+delete portal.inward_sup;
 portal.eco_dtls={eco_sup:{txval:0,iamt:0,camt:0,samt:0,csamt:0},eco_reg_sup:{txval:0}};
 const resumed=await act('resume_portal');
 assert.equal(resumed.status,200);assert.equal(resumed.body.paymentState,'settled');assert.equal(draft.state,'prepared');assert.equal(draft.revision,2);
 assert.equal(draft.payload.registerbox_nil,undefined);assert.equal(draft.payload.tx_pmt,undefined);assert.equal(draft.snapshot.tx_pmt.pdcash[0].ipd,140);
+assert.equal(draft.payload.inward_sup,undefined);
 assert.equal(draft.last_error,null);assert.equal(draft.otp_sent_at,null);assert.equal(draft.signatory_pan,null);
 assert.equal(draft.source_evidence.previousDraft.payload.registerbox_nil,true);assert.ok(calls.every(c=>c.method==='GET'));
 assert.equal((await act('evc',{pan:'ABCDE1234F'})).status,200);

@@ -26,8 +26,14 @@ export function portal3bPreparation(snapshot:Obj):Obj {
   // Only the payment table is separate from the private preparation payload.
   const {tx_pmt:_payment,...payload}=snapshot;
   if(snapshot.registerbox_nil!==undefined)throw Error('GST returned unexpected private declaration fields.');
-  for(const key of ['sup_details','itc_elg','inward_sup','inter_sup','intr_ltfee']){
+  for(const key of ['sup_details','itc_elg','intr_ltfee']){
     if(!Object.keys(obj(payload[key])).length)throw Error(`GST did not return complete ${key} details. Refresh again after portal processing completes.`);
+  }
+  // Sandbox's documented post-offset response can omit inward_sup. Preserve
+  // optional sections exactly; absent/empty is not a fabricated zero amount.
+  for(const key of ['inward_sup','inter_sup']){
+    const value=payload[key];
+    if(value!==undefined&&(!value||typeof value!=='object'||Array.isArray(value)))throw Error(`GST returned invalid ${key} details. Refresh the saved return.`);
   }
   return payload;
 }

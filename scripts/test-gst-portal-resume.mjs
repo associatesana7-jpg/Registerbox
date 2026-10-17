@@ -13,4 +13,8 @@ assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[remaining,remainin
 const prepared=portal3bPreparation(snapshot);
 assert.equal(prepared.tx_pmt,undefined);assert.deepEqual(prepared.intr_ltfee,snapshot.intr_ltfee);
 assert.throws(()=>portal3bPreparation({...snapshot,sup_details:{}}),/complete/);
+const withoutInward=structuredClone(snapshot);delete withoutInward.inward_sup;
+assert.equal(portal3bPreparation(withoutInward).inward_sup,undefined,'Documented post-offset response may omit inward supplies; do not fabricate zeros');
+assert.deepEqual(portal3bPreparation({...snapshot,inter_sup:{}}).inter_sup,{});
+assert.throws(()=>portal3bPreparation({...snapshot,inward_sup:[]}),/invalid/);
 console.log('Portal recovery: actual payable versus historical/payment data, unknown data, duplicate rows, full section preservation and missing sections verified.');
