@@ -1,0 +1,243 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "RegisterBox business guides",
+  "home_page_url": "https://www.registerbox.in/blog",
+  "feed_url": "https://www.registerbox.in/blog-feed.json",
+  "language": "en-IN",
+  "items": [
+    {
+      "id": "https://www.registerbox.in/blog/gst-registration-documents-and-address-proof",
+      "url": "https://www.registerbox.in/blog/gst-registration-documents-and-address-proof",
+      "title": "GST registration documents: getting your address proof right",
+      "summary": "A practical GST registration checklist for owned, rented and family premises, with ways to resolve name and address mismatches before you apply.",
+      "content_text": "For an ordinary GST registration, prepare the applicant’s PAN and business details, the relevant identity and constitution documents, signatory authority, and evidence for the actual business premises. The right address documents depend on whether you own, rent or use the property with permission. Start with that question before collecting a folder of unrelated proofs.\n\nA useful application tells one consistent story: who is applying, what the business does, where it operates and who can act for it. This guide explains how to organise that story and spot problems while there is still time to fix them.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/gstr-1-vs-gstr-3b",
+      "url": "https://www.registerbox.in/blog/gstr-1-vs-gstr-3b",
+      "title": "GSTR-1 vs GSTR-3B: what each return does and what to check",
+      "summary": "Understand the difference between GSTR-1 and GSTR-3B, how to compare records and input credit, and what proves that filing is complete.",
+      "content_text": "GSTR-1 reports outward supplies, including the relevant sales and invoice details. GSTR-3B brings together summary liabilities, input tax credit and tax payment for the period. Filing one does not complete the other. Start by checking which forms and filing frequency apply to your GSTIN.\n\nThe practical question is whether your invoices, books, portal statements and payment records tell the same story. A total that looks reasonable can still contain the wrong customer GSTIN, a missing credit note or an unsupported input-credit claim.",
+      "image": "https://www.registerbox.in/images/blog/records-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "GST & records"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/no-sales-nil-gstr-3b",
+      "url": "https://www.registerbox.in/blog/no-sales-nil-gstr-3b",
+      "title": "No sales this month: can I file a nil GSTR-3B?",
+      "summary": "No sales does not automatically mean a nil GST return. Check purchases, input credit, reverse charge, adjustments and outstanding charges first.",
+      "content_text": "No sales does not automatically make GSTR-3B a nil return. You must also check inward supplies, credit activity, reverse charge, adjustments and any liability that belongs in the return. Decide from complete records for the selected period, rather than the balance in your bank account or an empty sales screen.\n\nThis matters for a newly registered business, a seasonal shop and a company that has temporarily stopped trading. A quiet sales month can still include rent, stock purchases, professional services or earlier-period work that needs attention.",
+      "image": "https://www.registerbox.in/images/blog/records-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "GST & records"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/fssai-home-kitchen-cloud-kitchen",
+      "url": "https://www.registerbox.in/blog/fssai-home-kitchen-cloud-kitchen",
+      "title": "FSSAI for a home kitchen or cloud kitchen: where to start in 2026",
+      "summary": "Check the current FSSAI route for a home food business or cloud kitchen, including the April 2026 thresholds, activity classification and documents.",
+      "content_text": "A food business does not become exempt from FSSAI registration or licensing because it runs from home or has no seating. FSSAI explicitly includes cloud kitchens. Start with the actual kitchen activity, premises and current FoSCoS eligibility criteria, then prepare the documents for that route.\n\nUse current guidance when comparing articles. FSSAI revised turnover thresholds from 1 April 2026, so an older guide using ₹12 lakh as the general registration threshold can send a new applicant in the wrong direction. Activity-specific categories still matter.",
+      "image": "https://www.registerbox.in/images/blog/food-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/private-limited-company-registration-documents",
+      "url": "https://www.registerbox.in/blog/private-limited-company-registration-documents",
+      "title": "Private limited company registration: what founders should decide before filing",
+      "summary": "A practical company registration guide covering ownership, director and office documents, SPICe+, costs and the work that follows incorporation.",
+      "content_text": "To register a private limited company, first settle who owns it, who manages it, what it will do and where its registered office will be. Those decisions shape the incorporation application. Collecting identity documents before agreeing the ownership plan often creates work that has to be done twice.\n\nA company can make sense when founders want share ownership and expect to bring in investors. It also creates an ongoing responsibility to keep company records and complete filings. Here is how to prepare a useful brief before starting the MCA process.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Start a business"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/llp-registration-partner-agreement",
+      "url": "https://www.registerbox.in/blog/llp-registration-partner-agreement",
+      "title": "LLP registration: the partner decisions that matter before the forms",
+      "summary": "Understand LLP registration, partner contributions, profit sharing, the LLP agreement, FiLLiP and the records needed to start with a clear arrangement.",
+      "content_text": "An LLP is a separate business entity organised around its partners and their agreement. Registering one involves more than choosing a name: partners should agree on contributions, profit sharing, decision-making and what happens when somebody leaves.\n\nThe most useful preparation is a written account of how you expect the partnership to work. That helps the incorporation information and the LLP agreement tell the same story.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Start a business"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/start-business-sole-proprietorship-checklist",
+      "url": "https://www.registerbox.in/blog/start-business-sole-proprietorship-checklist",
+      "title": "How to start a small business: a practical proprietorship checklist",
+      "summary": "Decide your business structure, map registrations, prepare an address record and set up everyday bookkeeping before your first sale.",
+      "content_text": "Starting a small business usually means making several connected decisions, rather than obtaining one certificate called “business registration”. Your ownership, products, location and sales channels determine which registrations and permissions need review.\n\nA sole proprietorship is owned by one person and does not create a separate incorporated entity. It can be a straightforward way to organise a small operation, but the owner remains personally responsible for the business. Begin with the facts below before choosing the structure.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Start a business"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/shop-establishment-registration-karnataka",
+      "url": "https://www.registerbox.in/blog/shop-establishment-registration-karnataka",
+      "title": "Shop and establishment registration in Karnataka: prepare the right details",
+      "summary": "Understand what to check for a Karnataka shop or office, how to organise establishment records and why GST and other permissions are separate.",
+      "content_text": "Karnataka shop and establishment registration concerns the establishment and its applicable labour-law requirements. It is different from GST registration, a municipal trade permission or the incorporation of the owner’s company.\n\nBefore opening a shop, office or service location in Bengaluru, check whether the establishment falls within the current State requirements and whether an exemption applies. Then prepare information that matches the premises and the business actually operating there.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/start-online-ecommerce-business-india",
+      "url": "https://www.registerbox.in/blog/start-online-ecommerce-business-india",
+      "title": "Starting an online business in India: the questions to settle before selling",
+      "summary": "Plan products, marketplace roles, warehouses, customer policies and registration checks before your online business takes its first order.",
+      "content_text": "An online business needs a plan for who sells, where goods or services come from, how customers pay and what happens when an order goes wrong. There is no single registration that answers all of those questions.\n\nA website, marketplace account or social-media page is a sales channel. The business behind it still needs the registrations, product checks and customer information that apply to its actual role. Start with the order journey and work outwards.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Start a business"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/manufacturing-business-approvals-checklist",
+      "url": "https://www.registerbox.in/blog/manufacturing-business-approvals-checklist",
+      "title": "Manufacturing business approvals: what to check before taking a premises",
+      "summary": "A clear manufacturing setup checklist covering process details, site suitability, approval stages, technical documents and changes in capacity.",
+      "content_text": "Before starting a manufacturing unit, check whether the site can support the proposed product, process, machinery and workforce. Then map the approvals needed at each project stage. Incorporation or MSME registration alone does not answer whether a unit may be installed or operated.\n\nThe expensive mistake is often choosing a building first and asking about approvals later. A short process and premises review can uncover a problem while you still have choices.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/open-new-business-branch-gst",
+      "url": "https://www.registerbox.in/blog/open-new-business-branch-gst",
+      "title": "Opening a new business branch: address, GST and local registration checks",
+      "summary": "Plan a new shop, office or warehouse with clear location evidence, a GST review, local approval checks and a branch record that matches the business.",
+      "content_text": "Opening a branch starts with a location and activity review. Record the State, address, people, stock and invoicing arrangements, then check what needs an amendment or a new registration. An existing certificate does not automatically cover every new premises.\n\nThe same-State versus another-State question matters particularly for GST. So does the difference between an office, a shop and a warehouse. Describe what will happen at the branch before deciding which forms to use.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Grow & comply"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/business-compliance-check-checklist",
+      "url": "https://www.registerbox.in/blog/business-compliance-check-checklist",
+      "title": "How to check your business compliance without getting lost in certificates",
+      "summary": "Review registrations, filings, locations and notices using real evidence, then turn gaps into a practical list of actions and responsible owners.",
+      "content_text": "A useful business compliance check compares what the business does today with its registrations, filings and supporting records. A folder full of certificates is only the starting point. The scope, current status and evidence behind each item matter.\n\nBegin with a complete list of entities, locations and activities. Then look for missing registrations, overdue work, incorrect details and unanswered notices. Keep uncertain items visible until someone resolves them.",
+      "image": "https://www.registerbox.in/images/blog/records-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Grow & comply"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/trademark-registration-name-logo-search",
+      "url": "https://www.registerbox.in/blog/trademark-registration-name-logo-search",
+      "title": "Trademark registration: check your name, logo and business category first",
+      "summary": "Learn how a trademark search, applicant choice, goods and services description and application status fit together before you spend on your brand.",
+      "content_text": "Before applying for a trademark, decide who will own the mark, what you want to protect and which goods or services it identifies. Search for possible conflicts and review the result before spending heavily on a brand launch.\n\nA company name, domain name and trademark application are different records. Owning the first two does not mean the trademark will be accepted. A good preparation process makes those differences clear.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Grow & comply"
+      ]
+    }
+  ]
+}

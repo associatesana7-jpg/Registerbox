@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Search discovery is separate from training crawler policy.
+User-agent: OAI-SearchBot
+Allow: /
+
 Sitemap: https://www.registerbox.in/sitemap.xml
