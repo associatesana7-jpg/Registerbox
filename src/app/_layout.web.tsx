@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import type { PropsWithChildren } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { AppProvider } from '@/providers/app-provider';
 import { WebShell } from '@/components/website/shell.web';
 import '@/components/website/website.css';
@@ -8,5 +9,5 @@ function renderShell({ children }: PropsWithChildren) {
   return <WebShell>{children}</WebShell>;
 }
 export default function WebLayout() {
-  return <AppProvider><Stack layout={renderShell} screenOptions={{headerShown:false,animation:'none',contentStyle:{backgroundColor:'#F6F8FC'}}}/></AppProvider>;
+  return <AppProvider><Stack layout={renderShell} screenOptions={{headerShown:false,animation:'none',contentStyle:{backgroundColor:'#F6F8FC'}}}/><Analytics /></AppProvider>;
 }
