@@ -7,6 +7,7 @@ const services = [
   ['private-limited-company-registration', 'company'],
   ['llp-registration', 'llp'],
   ['gst-registration', 'gst_registration'],
+  ['udyam-registration', 'udyam'],
   ['fssai-food-business', 'food'],
   ['shop-establishment-registration', 'retail'],
   ['gst-returns', 'gst'],

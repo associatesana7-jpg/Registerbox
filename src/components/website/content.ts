@@ -8,6 +8,7 @@ export const services = [
   { category: 'company', title: 'Private limited company', group: 'Start a business', icon: 'company', detail: 'Build your company application with director, share capital and registered-office details.', tag: 'For your next big idea' },
   { category: 'llp', title: 'LLP registration', group: 'Start a business', icon: 'llp', detail: 'Prepare partner details, contributions, consent and your registered-office documents.', tag: 'Partner up, thoughtfully' },
   { category: 'gst_registration', title: 'GST registration', group: 'Registrations', icon: 'gst-registration', detail: 'Share your business name, address, business activity and contact details, then upload your documents.', tag: 'Simple questions. Easy document uploads.' },
+  { category: 'udyam', title: 'Udyam (MSME) registration', group: 'Registrations', icon: 'new-business', detail: 'Prepare your enterprise details in a guided application and send them to RegisterBox for review before the official Udyam process.', tag: 'Business details, one step at a time' },
   { category: 'food', title: 'Food business & FSSAI', group: 'Registrations', icon: 'food', detail: 'Find your food-business route and gather the relevant FoSCoS application evidence.', tag: 'Made for food entrepreneurs' },
   { category: 'retail', title: 'Shop & establishment', group: 'Registrations', icon: 'retail', detail: 'Collect establishment information and documents for your state-specific requirements.', tag: 'Open your doors with clarity' },
   { category: 'gst', title: 'GST returns workspace', group: 'Manage & comply', icon: 'gst-return', detail: 'Connect your GST account, prepare drafts, review records and track filing acknowledgements.', tag: 'GSTR-1 · GSTR-3B · Nil' },
@@ -32,7 +33,7 @@ export function safeNext(value?: string | string[]) {
   if(url.pathname==='/documents'&&url.searchParams.has('application'))return [...url.searchParams].every(([key,value])=>key==='application'&&/^[0-9a-f-]{36}$/i.test(value))?next:'/dashboard';
   const allowed = ['/dashboard', '/gst', '/gst-returns', '/gst-purchases', '/compliance', '/documents', '/ai', '/account', '/tally', '/document-locker', '/delete-account', '/privacy', '/services', '/onboarding/identify', '/onboarding/welcome', '/onboarding/intent', '/onboarding/business', '/onboarding/questions', '/onboarding/report', '/onboarding/review', '/onboarding/documents'];
   if (url.pathname === '/onboarding/application') {
-    return services.some(service => service.category === url.searchParams.get('category')) && [...url.searchParams].every(([key,value]) => key === 'category'||key==='resume'&&value==='1') ? next : '/dashboard';
+    return url.searchParams.getAll('category').length === 1 && url.searchParams.getAll('resume').length <= 1 && services.some(service => service.category === url.searchParams.get('category')) && [...url.searchParams].every(([key,value]) => key === 'category'||key==='resume'&&value==='1') ? next : '/dashboard';
   }
   if (!allowed.includes(url.pathname)) return '/dashboard';
   const validators: Record<string, (value:string)=>boolean> = url.pathname === '/gst-returns' ? {

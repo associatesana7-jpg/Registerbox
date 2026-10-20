@@ -19,6 +19,26 @@ const yesNo=['Yes','No'];
 const structure:ApplicationQuestion={key:'structure',label:'What is the legal constitution?',options:['Sole proprietor','Partnership','Private limited','LLP','Trust / society','Other']};
 const contact:ApplicationQuestion[]=[{key:'contact_name',label:'Who is the contact person?'},{key:'contact_email',label:'Contact email address',pattern:'^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$'},{key:'contact_mobile',label:'Indian contact mobile number',pattern:'^[6-9][0-9]{9}$'}];
 const countOptions=(min:number,max:number)=>Array.from({length:max-min+1},(_,i)=>String(i+min));
+applicationCategories.udyam={
+  title:'Apply for Udyam registration support',
+  questions:[
+    ...location,
+    structure,
+    {key:'commencement',label:'Business commencement date · YYYY-MM-DD',pattern:'^\\d{4}-\\d{2}-\\d{2}$',help:'Use the business records. If you are still planning, contact us before sending the application.'},
+    {key:'existing_udyam',label:'Does this enterprise already have Udyam registration?',options:['Yes','No','Not sure'],help:'One enterprise must not have multiple registrations. Existing records need review before a new registration is considered.'},
+    {key:'udyam_number',label:'Existing Udyam registration number',when:['existing_udyam','Yes'],pattern:'^UDYAM-[A-Z]{2}-[0-9]{2}-[0-9]{7}$',help:'Use the format UDYAM-XX-00-0000000. This request is for reviewing or updating the existing record, not duplicating it.'},
+    {key:'investment',label:'Investment in plant, machinery or equipment in ₹',numeric:true,min:0,help:'Enter the figure from your records. The official classification uses the applicable calculation and government-linked data, not simply the value of all business assets.'},
+    {key:'turnover',label:'Annual turnover in ₹',numeric:true,min:0,help:'Use the most recent completed financial year. Enter 0 if you have not started trading; explain this in your activity description.'},
+    {key:'employees',label:'How many people work in this enterprise?',numeric:true,min:0,integer:true},
+    {key:'pan_ready',label:'Is the relevant PAN available and accurate?',options:['Yes','Needs correction','Need guidance'],help:'Do not enter a PAN number here. The official portal handles PAN verification.'},
+    {key:'gst_status',label:'What is the enterprise’s GST position?',options:['Registered','Not registered — need applicability review','Not required — already reviewed'],help:'GST requirements depend on the CGST Act. Udyam does not make every enterprise liable for GST by itself.'},
+    {key:'aadhaar_ready',label:'Can the correct Aadhaar holder complete official verification?',options:['Yes','Need guidance'],help:'The proprietor, managing partner, karta or relevant authorised signatory must use the official route. Never share Aadhaar numbers or OTPs in these answers.'},
+    ...contact,
+  ],
+  documents:[],
+  source:'https://udyamregistration.gov.in/',
+  notice:'This sends a preparation request to RegisterBox, not a government application. Official Udyam registration is free and paperless, with no document uploads. Only the government portal and government single-window systems are authorised registration channels. Complete Aadhaar/PAN verification and any OTP on the official portal yourself; do not send identity copies or OTPs here.',
+};
 applicationCategories.company.questions=applicationCategories.company.questions.map(q=>q.key==='directors'?{...q,options:countOptions(2,15),min:2,max:15,integer:true}:q.key==='shareholders'?{...q,options:countOptions(2,200),min:2,max:200,integer:true}:q);
 applicationCategories.company.questions.push({key:'alternate_name',label:'Alternative proposed company name'},{key:'authorized_capital',label:'Proposed authorized share capital in ₹',numeric:true,min:1},{key:'subscribed_capital',label:'Proposed subscribed share capital in ₹',numeric:true,min:1},{key:'foreign_participation',label:'Are any subscribers or directors foreign nationals / overseas entities?',options:yesNo},{key:'dsc_ready',label:'Do proposed signatories have a DSC?',options:['All','Some','None']},...contact);
 applicationCategories.company.documents.push({type:'DIRECTOR_ADDRESS',label:'Residential address evidence for each director / subscriber'},{type:'OFFICE_UTILITY',label:'Registered-office utility bill (recent, matching the address)'},{type:'DIRECTOR_CONSENT',label:'Director consent / declarations for review'},{type:'FOREIGN_ID',label:'Foreign subscriber identity and authenticated evidence',when:['foreign_participation','Yes']});
@@ -92,4 +112,4 @@ export function validateQuestion(q:ApplicationQuestion,answers:Record<string,str
   if(q.key==='designated_partners'&&Number(value)>Number(answers.partners))return 'Designated partners cannot exceed total partners.';
   return '';
 }
-export function categoryFromLegacyPrompt(prompt:string){const value=prompt.toLowerCase();if(/gst/.test(value)&&/registration|register/.test(value))return 'gst_registration';if(/gst|return/.test(value))return 'gst';if(/private|company/.test(value))return 'company';if(/llp/.test(value))return 'llp';if(/food|kitchen/.test(value))return 'food';if(/retail|shop/.test(value))return 'retail';if(/manufactur/.test(value))return 'manufacturing';if(/online/.test(value))return 'online';if(/branch/.test(value))return 'branch';if(/existing|check/.test(value))return 'existing';return 'new';}
+export function categoryFromLegacyPrompt(prompt:string){const value=prompt.toLowerCase();if(/ud[yh]*am|msme/.test(value))return 'udyam';if(/gst/.test(value)&&/registration|register/.test(value))return 'gst_registration';if(/gst|return/.test(value))return 'gst';if(/private|company/.test(value))return 'company';if(/llp/.test(value))return 'llp';if(/food|kitchen/.test(value))return 'food';if(/retail|shop/.test(value))return 'retail';if(/manufactur/.test(value))return 'manufacturing';if(/online/.test(value))return 'online';if(/branch/.test(value))return 'branch';if(/existing|check/.test(value))return 'existing';return 'new';}

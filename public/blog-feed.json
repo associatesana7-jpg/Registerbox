@@ -6,6 +6,96 @@
   "language": "en-IN",
   "items": [
     {
+      "id": "https://www.registerbox.in/blog/udyam-registration-process-online",
+      "url": "https://www.registerbox.in/blog/udyam-registration-process-online",
+      "title": "Udyam registration online: the free official process, explained",
+      "summary": "Find the official Udyam registration link, current MSME limits, Aadhaar and PAN requirements, GST applicability and a practical checklist before you apply.",
+      "content_text": "Udyam registration is the Government of India’s online MSME registration. The official process is free, paperless and based on self-declaration. Start on udyamregistration.gov.in, rather than a lookalike website. You do not need to buy a registration package to use the government portal.\n\nBefore opening the form, check which enterprise you are registering, whose Aadhaar applies and whether the business needs a GSTIN. This guide explains the current limits and a sensible preparation process. Udyam recognises an eligible MSME; it does not create a company or replace the permissions needed to run a particular activity.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/llp-vs-private-limited-company-startup",
+      "url": "https://www.registerbox.in/blog/llp-vs-private-limited-company-startup",
+      "title": "LLP or private limited company: which fits your startup?",
+      "summary": "Compare an LLP with a private limited company using ownership, investor plans, decision-making and recurring work, with a practical founder checklist.",
+      "content_text": "A private limited company often fits founders planning share-based investment and employee equity. An LLP may fit a business whose owners want to work through a partner agreement and share profits on agreed terms. Neither structure is best for every startup: compare the next few years of ownership, funding and work before choosing.\n\nA low incorporation price is only one part of the decision. The structure must also work when someone joins, leaves, disagrees or invests. Start with those situations, then compare the registration and continuing obligations for each option.",
+      "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Start a business"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/professional-tax-registration-for-employers-karnataka",
+      "url": "https://www.registerbox.in/blog/professional-tax-registration-for-employers-karnataka",
+      "title": "Professional tax registration for employers in Karnataka: where to start",
+      "summary": "Understand Karnataka employer professional tax registration, business enrolment, payroll checks and the records to prepare before paying or filing.",
+      "content_text": "An employer in Karnataka should check two separate professional tax questions: the duty to deduct and pay tax for eligible employees, and any enrolment liability of the business or professional itself. One certificate or payment should not be assumed to settle both. Start with where people work, the employer identity and the applicable Karnataka schedule.\n\nThis guide is for a founder preparing the first payroll, a business opening a Bengaluru branch or an owner taking over compliance from someone else. It explains the decisions and records to organise before using the government portal. The official sources below were checked on 20 October 2026.",
+      "image": "https://www.registerbox.in/images/blog/records-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Grow & comply"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/esi-epf-registration-for-startups",
+      "url": "https://www.registerbox.in/blog/esi-epf-registration-for-startups",
+      "title": "ESI and EPF registration for a startup: a practical employer checklist",
+      "summary": "Check startup ESI and EPF coverage, current labour-code changes, existing registrations, employee records and the next steps after employer registration.",
+      "content_text": "A startup should assess ESI and EPF before its first payroll and again as its workforce changes. The answer depends on establishment coverage, the people engaged, wages, existing membership and current scheme rules. Startup recognition or a small revenue figure does not by itself answer these employment questions.\n\nThere have been material changes during 2025 and 2026. This guide separates a coverage review from form submission and ongoing payroll work. Sources were checked on 20 October 2026; use the current official employer guidance when applying them to a particular employee or payroll period.",
+      "image": "https://www.registerbox.in/images/blog/records-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Grow & comply"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/fssai-licence-cost-government-fees",
+      "url": "https://www.registerbox.in/blog/fssai-licence-cost-government-fees",
+      "title": "FSSAI licence cost in 2026: government fees and what changes the bill",
+      "summary": "Understand current FSSAI government fee examples, the April 2026 turnover changes, perpetual validity and how to compare a food-registration service quote.",
+      "content_text": "FSSAI cost has two parts when you use a service provider: the applicable government fee and the provider’s fee for the agreed work. The government amount depends on the actual kind of food business and licence or registration route. Get that classification right before comparing package prices.\n\nFrom April 2026, important turnover and validity changes make many older price guides unreliable. This guide explains the current official fee examples and a practical way to review a quote. Sources were checked on 20 October 2026; confirm the selection and amount shown by FoSCoS before payment.",
+      "image": "https://www.registerbox.in/images/blog/food-1200.webp",
+      "date_published": "2026-10-20T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
       "id": "https://www.registerbox.in/blog/gst-registration-documents-and-address-proof",
       "url": "https://www.registerbox.in/blog/gst-registration-documents-and-address-proof",
       "title": "GST registration documents: getting your address proof right",

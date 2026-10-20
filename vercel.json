@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "redirects": [
+    { "source": "/blog/gst-registration-guide", "destination": "/blog/gst-registration-documents-and-address-proof", "permanent": true },
+    { "source": "/blog/gst-return-filing-guide", "destination": "/blog/gstr-1-vs-gstr-3b", "permanent": true },
+    { "source": "/blog/fssai-registration-guide", "destination": "/blog/fssai-home-kitchen-cloud-kitchen", "permanent": true },
+    { "source": "/blog/private-limited-company-registration-guide", "destination": "/blog/private-limited-company-registration-documents", "permanent": true },
+    { "source": "/blog/llp-registration-guide", "destination": "/blog/llp-registration-partner-agreement", "permanent": true },
     {
       "source": "/auth/:path*",
       "has": [

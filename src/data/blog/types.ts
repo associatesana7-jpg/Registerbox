@@ -4,6 +4,9 @@ export type BlogArticle = {
   description: string;
   category: 'Start a business' | 'Registrations' | 'GST & records' | 'Grow & comply';
   serviceCategory: string;
+  enquiryOnly?: boolean;
+  additionalServiceCategory?: string;
+  officialApplication?: { label: string; url: string };
   image: 'formation' | 'food' | 'records';
   imageAlt: string;
   intro: string[];
