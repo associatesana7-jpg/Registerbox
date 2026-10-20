@@ -65,11 +65,12 @@ function request(body, { ip = `192.0.2.${++address}`, headers = {}, path = '/aut
   const request = new Request(`https://registerbox-auth-gateway.fixture.workers.dev${path}`, { method: 'POST', headers: {
     'Content-Type': 'application/json', 'CF-Connecting-IP': ip, 'User-Agent': normal.userAgent, ...headers,
   }, body: JSON.stringify(body) });
-  if (trusted) Object.defineProperty(request, 'cf', { value: {} });
+  if (trusted) Object.defineProperty(request, 'cf', { value: { country: 'IN' } });
   return request;
 }
 const credentials = { action: 'customer_email', email: 'fixture@example.invalid' };
 const statusRequest = new Request('https://registerbox-auth-gateway.fixture.workers.dev/status');
+Object.defineProperty(statusRequest, 'cf', { value: { country: 'IN' } });
 let status = await worker.default.fetch(statusRequest, { ...env, AUTH_GATEWAY_ACTIVE: 'false' });
 assert.equal((await status.json()).active, false);
 status = await worker.default.fetch(statusRequest, env);
@@ -137,7 +138,7 @@ const client = load('src/lib/auth-gateway.ts', { '@react-native-async-storage/as
   process: { env: configuration }, URL, AbortSignal,
   fetch: async (url, options) => {
     if (mode === 'offline') throw new Error('offline');
-    if (url.endsWith('/status')) return Response.json({ active: mode !== 'inactive' });
+    if (url.endsWith('/status')) return mode === 'foreign' ? Response.json({ code: 'region_not_allowed' }, { status: 403 }) : Response.json({ active: mode !== 'inactive' });
     sendCount++;
     const body = JSON.parse(options.body);
     if (mode === 'deny') return Response.json({ error: 'Too many attempts' }, { status: 429 });
@@ -153,6 +154,7 @@ await client.adaptiveAuthRequest('customer_email', credentials.email, verify);
 assert.equal(challengeCount, 1); assert.equal(sendCount, 3);
 mode = 'deny'; await assert.rejects(client.adaptiveAuthRequest('customer_email', credentials.email, verify));
 mode = 'offline'; await assert.rejects(client.adaptiveAuthRequest('customer_email', credentials.email, verify));
+mode = 'foreign'; await assert.rejects(client.adaptiveAuthRequest('customer_email', credentials.email, verify), /India only/);
 assert.equal(challengeCount, 1);
 delete configuration.EXPO_PUBLIC_AUTH_GATEWAY_URL;
 mode = 'inactive';

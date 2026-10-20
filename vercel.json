@@ -45,6 +45,10 @@
   "headers": [
     {
       "source": "/:path*",
+      "headers": [{ "key": "Referrer-Policy", "value": "strict-origin" }]
+    },
+    {
+      "source": "/:path*",
       "has": [
         {
           "type": "host",

@@ -21,6 +21,7 @@ const root = load('src/app/_layout.web.tsx', {
   'expo-router': { Stack: 'Stack' },
   '@/providers/app-provider': { AppProvider: 'AppProvider' },
   '@/components/website/shell.web': { WebShell: 'WebShell' },
+  '@/components/public-analytics': { PublicAnalytics: 'PublicAnalytics' },
   '@/components/website/website.css': {},
   '@/components/website/service-experience.css': {},
 }).default();
@@ -28,7 +29,7 @@ assert.equal(root.type, 'AppProvider');
 assert.equal(root.props.children.type, 'Stack', 'Auth/loading shell must be inside the navigator');
 const shell = root.props.children.props.layout({ children: 'screen-content' });
 assert.equal(shell.type, 'WebShell');
-assert.equal(shell.props.children, 'screen-content');
+assert.equal(shell.props.children[1], 'screen-content');
 
 let requested, account = { session: null, loadingSession: false };
 

@@ -5,22 +5,31 @@ import ts from 'typescript';
 
 // Exercise the same category, branching, validation and destination functions
 // used by the shared application screen, without mocking their decisions.
-function load(file) {
+function load(file, modules = {}) {
   const exports = {};
   const code = ts.transpileModule(fs.readFileSync(file, 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
   }).outputText;
   vm.runInNewContext(code, {
     exports,
     URL,
-    require(name) { throw new Error(`Unexpected dependency in application data: ${name}`); },
+    require(name) {
+      if (name === 'react/jsx-runtime') return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
+      if (name in modules) return modules[name];
+      throw new Error(`Unexpected dependency in application data: ${name}`);
+    },
   });
   return exports;
 }
 
-const { applicationCategories, questionsFor, documentsFor, validateQuestion, categoryFromLegacyPrompt } = load('src/data/application-categories.ts');
+const { applicationCategories, questionsFor, documentsFor, applicationFlowFor, validateQuestion, categoryFromLegacyPrompt } = load('src/data/application-categories.ts');
 const { services, servicePath, safeNext } = load('src/components/website/content.ts');
 const udyam = applicationCategories.udyam;
+const { ApplicationProgress } = load('src/components/application-form-ui.tsx', {
+  'react-native': { Pressable: 'Pressable', Text: 'Text', View: 'View', StyleSheet: { create: value => value } },
+  '@/constants/design': { palette: {} },
+  '@/lib/application-form-presentation': load('src/lib/application-form-presentation.ts'),
+});
 assert.ok(udyam, 'Udyam must have an application configuration');
 assert.equal(new URL(udyam.source).origin, 'https://udyamregistration.gov.in');
 assert.equal(new URL(udyam.source).pathname, '/');
@@ -38,8 +47,36 @@ for (const decision of ['No', 'Not sure', 'Yes']) {
   const answers = { existing_udyam: decision };
   const visible = visibleKeys(answers);
   assert.equal(visible.includes('udyam_number'), decision === 'Yes', `Existing Udyam number must follow the ${decision} branch`);
-  assert.equal(documentsFor('udyam', answers).length, 0, 'No branch may request identity or business-document uploads');
   assert.equal(new Set(visible).size, visible.length, 'A user must see each question once');
+}
+
+// Existing certificates are useful supporting records, not new requirements.
+// Only show the matching optional upload and skip the screen when none applies.
+for (const existing_udyam of ['No', 'Not sure', 'Yes']) {
+  for (const gst_status of ['Registered', 'Not registered — need applicability review', 'Not required — already reviewed']) {
+    const answers = { existing_udyam, gst_status };
+    const docs = documentsFor('udyam', answers);
+    const expected = [
+      ...(existing_udyam === 'Yes' ? ['EXISTING_REGISTRATION'] : []),
+      ...(gst_status === 'Registered' ? ['GST_CERTIFICATE'] : []),
+    ];
+    assert.deepEqual(Array.from(docs, doc => doc.type), expected, 'Certificate uploads must match the applicant’s existing records');
+    assert.ok(docs.every(doc => doc.optional === true), 'Supporting certificates must never block sending the application');
+    assert.ok(docs.every(doc => !/aadhaar|aadhar|identity|pan.?card|passport|otp/i.test(`${doc.type} ${doc.label}`)), 'Do not request personal identity copies');
+    const flow = applicationFlowFor('udyam', answers);
+    assert.equal(flow.hasDocumentStep, docs.length > 0);
+    assert.equal(flow.reviewStep, flow.questions.length + 1 + (docs.length > 0 ? 1 : 0), 'No empty document screen between the final question and review');
+    const progress = ApplicationProgress({ step: flow.reviewStep, documentStep: flow.documentStep, reviewStep: flow.reviewStep, hasDocuments: flow.hasDocumentStep, optionalDocuments: true });
+    const value = progress.props.children[1].props.accessibilityValue;
+    assert.equal(value.now, docs.length > 0 ? 4 : 3, 'Review progress must follow the visible number of phases');
+    assert.equal(value.max, value.now, 'Review is the final visible phase');
+    assert.equal(value.text, 'Review');
+  }
+}
+for (const category of ['company', 'llp', 'new', 'gst_registration']) {
+  const flow = applicationFlowFor(category, {});
+  assert.equal(flow.hasDocumentStep, true, `${category} retains its normal document screen`);
+  assert.equal(flow.reviewStep, flow.questions.length + 2);
 }
 
 const existingNumber = question('udyam_number');
@@ -68,7 +105,7 @@ assert.equal(validateQuestion(question('commencement'), { commencement: '2024-02
 assert.ok(validateQuestion(question('commencement'), { commencement: '2026-02-29' }), 'Reject impossible dates even when their format looks valid');
 
 // Readiness is a choice. It must never become a number, password, OTP or
-// identity-document collection field inside this preparation request.
+// identity-document collection field inside this assistance application.
 const readiness = new Set(['pan_ready', 'aadhaar_ready']);
 const sensitive = /aadhaar|aadhar|\bpan\b|bank|account.?number|ifsc|\botp\b|identity.?number|tax.?id/i;
 for (const q of udyam.questions) {
@@ -80,7 +117,8 @@ for (const q of udyam.questions) {
     assert.equal(sensitive.test(`${q.key.replaceAll('_', ' ')} ${q.label}`), false, `Sensitive input unexpectedly added: ${q.key}`);
   }
 }
-assert.equal(udyam.documents.length, 0, 'Udyam preparation must stay upload-free');
+assert.equal(udyam.documents.length, 2, 'Only existing Udyam and GST certificates are offered as supporting uploads');
+assert.ok(udyam.documents.every(doc => doc.when && doc.optional === true), 'Every Udyam upload must be conditional and optional');
 
 // Complete every visible branch with plausible non-sensitive business data.
 // This checks that the actual validators permit a useful zero-turnover intake.
@@ -140,4 +178,4 @@ for (const path of [
   assert.equal(safeNext(path), '/dashboard', `Reject an unsafe or ambiguous authentication destination: ${path}`);
 }
 
-console.log('Udyam intake verified: existing-number branches, zero-value amounts/counts, identity-free preparation, official source, legacy prompts and category-safe authentication destinations.');
+console.log('Udyam intake verified: existing-number branches, optional matching certificates, no empty document step, zero-value amounts/counts, no identity-copy or OTP collection, official source and category-safe destinations.');

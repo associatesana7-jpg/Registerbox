@@ -8,6 +8,7 @@
   "durable_objects": { "bindings": [{ "name": "AUTH_RISK", "class_name": "AuthRiskBucket" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AuthRiskBucket"] }],
   "vars": {
+    "ALLOWED_AUTH_COUNTRIES": "IN",
     "AUTH_GATEWAY_ACTIVE": "false",
     "AUTH_CAPTCHA_BACKSTOP_VERIFIED": "false",
     "SUPABASE_URL": "https://qbubmmwtycupfqbbmqpu.supabase.co",

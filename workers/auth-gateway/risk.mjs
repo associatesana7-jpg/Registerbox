@@ -1,4 +1,19 @@
 // Pure policy: inputs come from trusted gateway counters, never client scores.
+export function allowedAuthCountries(configuredCountries = 'IN') {
+  if (typeof configuredCountries !== 'string') return [];
+  const allowed = configuredCountries.split(',').map(value => value.trim().toUpperCase());
+  if (!allowed.length || allowed.some(value => !/^[A-Z]{2}$/.test(value) || value === 'XX')) return [];
+  return [...new Set(allowed)];
+}
+
+export function isAllowedAuthCountry(country, configuredCountries = 'IN') {
+  // Cloudflare uses XX for an unknown location. An absent/malformed location
+  // must never become an unrestricted fallback, even with a valid CAPTCHA.
+  if (typeof country !== 'string' || !/^[A-Z]{2}$/.test(country) || country === 'XX'
+    || typeof configuredCountries !== 'string') return false;
+  return allowedAuthCountries(configuredCountries).includes(country);
+}
+
 export function decideAuthRisk({ attempts, failures, emailAttempts, remembered, userAgent }) {
   if (![attempts, failures, emailAttempts].every(value => Number.isSafeInteger(value) && value >= 0)) {
     throw new Error('Invalid risk counters');

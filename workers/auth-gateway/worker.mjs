@@ -1,5 +1,5 @@
 import { DurableObject } from 'cloudflare:workers';
-import { decideAuthRisk, reserveAttempt, RISK_WINDOW_MS } from './risk.mjs';
+import { allowedAuthCountries, decideAuthRisk, isAllowedAuthCountry, reserveAttempt, RISK_WINDOW_MS } from './risk.mjs';
 
 const origin = 'https://qbubmmwtycupfqbbmqpu.supabase.co';
 const webOrigins = new Set(['https://registerbox.in', 'https://www.registerbox.in', 'https://admin.registerbox.in']);
@@ -102,12 +102,20 @@ async function challengeValid(token, action, ip, env) {
 export default {
   async fetch(request, env) {
     const path = new URL(request.url).pathname;
-    if (!['/auth', '/remember', '/status'].includes(path)) return reply(request, 404, { error: 'Not found' });
+    if (!['/auth', '/remember', '/status', '/health'].includes(path)) return reply(request, 404, { error: 'Not found' });
     const caller = request.headers.get('Origin');
     if (caller && !webOrigins.has(caller)) return reply(request, 403, { error: 'Request not allowed' });
     if (request.method === 'OPTIONS') return reply(request, 200, {});
+    if (path === '/health') return request.method === 'GET' ? reply(request, 200, { ok: true }) : reply(request, 405, { error: 'Method not allowed' });
+    // The location is supplied by Cloudflare's incoming Request, not an HTTP
+    // header or body claim. Gate status too: an inactive gateway must not let a
+    // foreign client enter the deliberate pre-rollout direct-Auth flow.
+    if (!isAllowedAuthCountry(request.cf?.country, env.ALLOWED_AUTH_COUNTRIES)) {
+      return reply(request, 403, { code: 'region_not_allowed', error: 'Sign-in is available only from supported countries. Please connect from India.' });
+    }
     if (path === '/status' && request.method === 'GET') return reply(request, 200, {
       active: env.AUTH_GATEWAY_ACTIVE === 'true' && env.AUTH_CAPTCHA_BACKSTOP_VERIFIED === 'true',
+      allowedCountries: allowedAuthCountries(env.ALLOWED_AUTH_COUNTRIES),
     });
     if (request.method !== 'POST') return reply(request, 405, { error: 'Method not allowed' });
     // Separate release gate: prove CAPTCHA rejects unverified direct Supabase

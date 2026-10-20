@@ -2,12 +2,14 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { palette } from '@/constants/design';
 import { applicationPhase } from '@/lib/application-form-presentation';
 
-export function ApplicationProgress({step,documentStep,reviewStep}:{step:number;documentStep:number;reviewStep:number}){
-  const phase=applicationPhase(step,documentStep,reviewStep);
-  const label=phase===0?'Start with your business':phase===1?`Question ${step} of ${documentStep-1}`:phase===2?'Add your documents':'Check before sending';
+export function ApplicationProgress({step,documentStep,reviewStep,hasDocuments=true,optionalDocuments=false}:{step:number;documentStep:number;reviewStep:number;hasDocuments?:boolean;optionalDocuments?:boolean}){
+  const phase=!hasDocuments&&step>=reviewStep?3:applicationPhase(step,documentStep,reviewStep);
+  const phases=hasDocuments?['Business','Details',optionalDocuments?'Records':'Docs','Review']:['Business','Details','Review'];
+  const displayPhase=!hasDocuments&&phase===3?2:phase;
+  const label=phase===0?'Start with your business':phase===1?`Question ${step} of ${documentStep-1}`:phase===2?(optionalDocuments?'Optional supporting records':'Add your documents'):'Check before sending';
   return <View style={styles.progress}>
-    <View style={{flexDirection:'row',justifyContent:'space-between',gap:12}}><Text accessibilityLiveRegion="polite" style={styles.progressLabel}>{label}</Text><Text style={styles.phaseCount}>{phase+1} / 4</Text></View>
-    <View accessibilityRole="progressbar" accessibilityValue={{min:1,max:4,now:phase+1,text:['Business','Details','Documents','Review'][phase]}} style={styles.phaseRow}>{['Business','Details','Docs','Review'].map((item,index)=><View key={item} style={{flex:1,gap:7}}><View style={[styles.phaseBar,index<=phase&&{backgroundColor:palette.blue}]}/><Text style={[styles.phaseName,index===phase&&{color:palette.ink,fontWeight:'800'}]}>{item}</Text></View>)}</View>
+    <View style={{flexDirection:'row',justifyContent:'space-between',gap:12}}><Text accessibilityLiveRegion="polite" style={styles.progressLabel}>{label}</Text><Text style={styles.phaseCount}>{displayPhase+1} / {phases.length}</Text></View>
+    <View accessibilityRole="progressbar" accessibilityValue={{min:1,max:phases.length,now:displayPhase+1,text:phases[displayPhase]}} style={styles.phaseRow}>{phases.map((item,index)=><View key={item} style={{flex:1,gap:7}}><View style={[styles.phaseBar,index<=displayPhase&&{backgroundColor:palette.blue}]}/><Text style={[styles.phaseName,index===displayPhase&&{color:palette.ink,fontWeight:'800'}]}>{item}</Text></View>)}</View>
   </View>;
 }
 

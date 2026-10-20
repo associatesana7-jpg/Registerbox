@@ -17,6 +17,10 @@ function gatewayUrl() {
 
 async function gatewayActive(base: string) {
   const response = await fetch(`${base}/status`, { signal: AbortSignal.timeout(10_000) });
+  if (response.status === 403) {
+    const denied = await response.json().catch(() => null) as { code?: unknown } | null;
+    if (denied?.code === 'region_not_allowed') throw new Error('Sign-in is currently available from India only. If you are in India, turn off your VPN and try again, or contact RegisterBox support.');
+  }
   if (!response.ok) throw new Error('Could not check secure sign-in availability. Please try again.');
   const data = await response.json() as { active?: unknown };
   if (typeof data.active !== 'boolean') throw new Error('Secure sign-in returned an invalid status. Please try again.');

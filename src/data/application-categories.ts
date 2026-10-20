@@ -1,5 +1,5 @@
 export type ApplicationQuestion={key:string;label:string;options?:string[];numeric?:boolean;kind?:'address';when?:[string,string];min?:number;max?:number;integer?:boolean;pattern?:string;help?:string};
-export type ApplicationCategory={title:string;questions:ApplicationQuestion[];documents:{type:string;label:string;when?:[string,string]}[];source?:string;notice?:string};
+export type ApplicationCategory={title:string;questions:ApplicationQuestion[];documents:{type:string;label:string;when?:[string,string];optional?:boolean}[];source?:string;notice?:string};
 const location:ApplicationQuestion[]=[{key:'address',label:'Where will this business operate?',kind:'address'},{key:'activity_sector',label:'Choose the main business sector',options:['IT / software','Professional services','Trading / retail','Food services','Food manufacturing','Other manufacturing','Construction','Transport / logistics','Education','Healthcare','Other']},{key:'activity',label:'What specific products or services will you provide?',help:'Describe the actual activity; the final government form may also require a NIC or HSN/SAC code.'}];
 const premises:ApplicationQuestion={key:'premises',label:'What type of premises will you use?',options:['Owned','Rented','Home-based','Not decided']};
 const addressDocs=[{type:'ADDRESS_PROOF',label:'Business address proof'},{type:'RENT_AGREEMENT',label:'Rent agreement',when:['premises','Rented'] as [string,string]}];
@@ -20,7 +20,7 @@ const structure:ApplicationQuestion={key:'structure',label:'What is the legal co
 const contact:ApplicationQuestion[]=[{key:'contact_name',label:'Who is the contact person?'},{key:'contact_email',label:'Contact email address',pattern:'^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$'},{key:'contact_mobile',label:'Indian contact mobile number',pattern:'^[6-9][0-9]{9}$'}];
 const countOptions=(min:number,max:number)=>Array.from({length:max-min+1},(_,i)=>String(i+min));
 applicationCategories.udyam={
-  title:'Apply for Udyam registration support',
+  title:'Apply for Udyam registration assistance',
   questions:[
     ...location,
     structure,
@@ -35,9 +35,12 @@ applicationCategories.udyam={
     {key:'aadhaar_ready',label:'Can the correct Aadhaar holder complete official verification?',options:['Yes','Need guidance'],help:'The proprietor, managing partner, karta or relevant authorised signatory must use the official route. Never share Aadhaar numbers or OTPs in these answers.'},
     ...contact,
   ],
-  documents:[],
+  documents:[
+    {type:'EXISTING_REGISTRATION',label:'Existing Udyam certificate',when:['existing_udyam','Yes'],optional:true},
+    {type:'GST_CERTIFICATE',label:'GST registration certificate',when:['gst_status','Registered'],optional:true},
+  ],
   source:'https://udyamregistration.gov.in/',
-  notice:'This sends a preparation request to RegisterBox, not a government application. Official Udyam registration is free and paperless, with no document uploads. Only the government portal and government single-window systems are authorised registration channels. Complete Aadhaar/PAN verification and any OTP on the official portal yourself; do not send identity copies or OTPs here.',
+  notice:'RegisterBox provides paid application preparation and review. Confirm the assistance fee and scope with our team. You complete official identity verification and declarations yourself; never share OTPs or Aadhaar copies here.',
 };
 applicationCategories.company.questions=applicationCategories.company.questions.map(q=>q.key==='directors'?{...q,options:countOptions(2,15),min:2,max:15,integer:true}:q.key==='shareholders'?{...q,options:countOptions(2,200),min:2,max:200,integer:true}:q);
 applicationCategories.company.questions.push({key:'alternate_name',label:'Alternative proposed company name'},{key:'authorized_capital',label:'Proposed authorized share capital in ₹',numeric:true,min:1},{key:'subscribed_capital',label:'Proposed subscribed share capital in ₹',numeric:true,min:1},{key:'foreign_participation',label:'Are any subscribers or directors foreign nationals / overseas entities?',options:yesNo},{key:'dsc_ready',label:'Do proposed signatories have a DSC?',options:['All','Some','None']},...contact);
@@ -94,12 +97,17 @@ export function questionsFor(category:string,answers:Record<string,string>){
   }
   return [...base,...people];
 }
-export function documentsFor(category:string,answers:Record<string,string>){
+export function documentsFor(category:string,answers:Record<string,string>):ApplicationCategory['documents']{
   const base=applicationCategories[category].documents.filter(d=>!d.when||answers[d.when[0]]===d.when[1]);
   if(category!=='company'&&category!=='llp')return base;
   const role=category==='company'?'DIRECTOR':'PARTNER',count=Math.min(Number(answers[category==='company'?'directors':'partners'])||0,50);
   const personDocs=Array.from({length:count},(_,i)=>[{type:role+'_'+(i+1)+'_IDENTITY',label:`${role==='DIRECTOR'?'Director':'Partner'} ${i+1} · PAN / passport and identity evidence`},{type:role+'_'+(i+1)+'_ADDRESS',label:`${role==='DIRECTOR'?'Director':'Partner'} ${i+1} · residential address evidence`}]).flat();
   return [...base.filter(d=>![role+'_PAN',role+'_ID',role+'_ADDRESS'].includes(d.type)),...personDocs];
+}
+export function applicationFlowFor(category:string,answers:Record<string,string>){
+  const questions=questionsFor(category,answers),documents=documentsFor(category,answers);
+  const documentStep=questions.length+1,hasDocumentStep=category!=='udyam'||documents.length>0;
+  return {questions,documents,documentStep,hasDocumentStep,reviewStep:documentStep+(hasDocumentStep?1:0)};
 }
 export function validateQuestion(q:ApplicationQuestion,answers:Record<string,string>){
   const value=answers[q.key]?.trim();if(q.kind==='address')return '';

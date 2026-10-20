@@ -3,15 +3,15 @@ import type { BlogArticle } from './types';
 export const startupGuides: BlogArticle[] = [
   {
     slug: 'udyam-registration-process-online',
-    title: 'Udyam registration online: the free official process, explained',
+    title: 'Udyam registration online: process, requirements and application support',
     description: 'Find the official Udyam registration link, current MSME limits, Aadhaar and PAN requirements, GST applicability and a practical checklist before you apply.',
     category: 'Registrations',
     serviceCategory: 'udyam',
-    officialApplication: { label: 'Register free on the official Udyam portal', url: 'https://udyamregistration.gov.in/' },
+    officialApplication: { label: 'Official Udyam registration portal', url: 'https://udyamregistration.gov.in/' },
     image: 'formation',
     imageAlt: 'Illustration of business owners organising their business information before an online registration',
     intro: [
-      'Udyam registration is the Government of India’s online MSME registration. The official process is free, paperless and based on self-declaration. Start on udyamregistration.gov.in, rather than a lookalike website. You do not need to buy a registration package to use the government portal.',
+      'Udyam registration identifies an eligible micro, small or medium enterprise under the Government of India’s MSME framework. You can use RegisterBox for paid assistance with organising the business information, reviewing existing records and understanding the application steps. You complete official verification and declarations yourself.',
       'Before opening the form, check which enterprise you are registering, whose Aadhaar applies and whether the business needs a GSTIN. This guide explains the current limits and a sensible preparation process. Udyam recognises an eligible MSME; it does not create a company or replace the permissions needed to run a particular activity.',
     ],
     sections: [
@@ -51,9 +51,9 @@ export const startupGuides: BlogArticle[] = [
       },
       {
         id: 'documents-and-duplicates',
-        heading: 'No uploads does not mean no records',
+        heading: 'Keep accurate records and check for an existing registration',
         paragraphs: [
-          'The official process does not require document or proof uploads. PAN and GST-linked investment and turnover information comes from government databases. You should still keep the records supporting what you declare and review any information that appears inconsistent.',
+          'PAN and GST-linked investment and turnover information comes from government databases. Keep the records supporting what you declare and review information that appears inconsistent. An existing registration certificate can help you and the assistance team compare names and details before proceeding.',
           'An enterprise must not file multiple Udyam registrations. Manufacturing and service activities can be included in one registration. Search your own records before starting afresh: the old email, certificate or registration number may show that an update or migration route is needed instead.',
           'For a shared business, agree who will maintain the certificate and portal contact details. Saving the result in one person’s private inbox makes later corrections harder when staff or partners change.',
         ],
@@ -71,29 +71,29 @@ export const startupGuides: BlogArticle[] = [
       },
       {
         id: 'get-help',
-        heading: 'Use the official filing route and ask useful questions',
+        heading: 'Apply with RegisterBox for guided assistance',
         paragraphs: [
-          'The Ministry identifies its official portal and government single-window systems as the authorised registration channels. It also lists Champions Control Rooms and District Industries Centres for facilitation. Use the official links below to register or find that help.',
-          'You can use RegisterBox’s guided Udyam application to prepare your enterprise information and send it to the team for review. It does not issue an Udyam certificate or submit the official registration. Complete government verification on the official portal. Keep Aadhaar copies and OTPs out of your RegisterBox application.',
+          'RegisterBox’s guided application gathers your enterprise activity, locations, existing registration status and contact details. If you already have an Udyam or GST certificate, you can optionally add it for review. The team confirms the assistance fee and scope before paid work begins.',
+          'RegisterBox provides independent preparation and guidance. The Ministry identifies its portal and government single-window systems as the authorised registration channels. You remain responsible for official identity verification and declarations. Keep Aadhaar copies and OTPs out of your RegisterBox application.',
         ],
         sourceIds: ['udyam-official'],
       },
     ],
     faqs: [
-      { question: 'What is the government fee for Udyam registration?', answer: 'There is no government filing fee. The official Udyam registration process is free.' },
+      { question: 'Why is RegisterBox assistance paid if government Udyam registration has no fee?', answer: 'The government does not charge an Udyam filing fee. RegisterBox charges separately for the agreed preparation, review and guidance. Confirm the quote and scope before work begins.' },
       { question: 'Is GST registration compulsory just to get Udyam?', answer: 'GSTIN is required according to the applicability of the CGST Act and the MSME clarification. Check the GST position for the actual enterprise rather than assuming every applicant needs a new GSTIN.' },
       { question: 'Do I need to renew my Udyam certificate every year?', answer: 'The official portal says registration does not need renewal. Keep your business information accurate through the applicable update process.' },
       { question: 'Can I include manufacturing and services in one Udyam registration?', answer: 'Yes. The official guidance permits multiple manufacturing or service activities in one registration and says an enterprise must not file more than one Udyam registration.' },
     ],
     sources: [
-      { id: 'udyam-official', title: 'Ministry of MSME: official free Udyam portal and registration channels', url: 'https://udyamregistration.gov.in/' },
+      { id: 'udyam-official', title: 'Ministry of MSME: official Udyam portal and registration channels', url: 'https://udyamregistration.gov.in/' },
       { id: 'msme-2025-notification', title: 'Ministry of MSME: S.O. 1364(E), 21 March 2025; revised limits effective 1 April 2025', url: 'https://udyamregistration.gov.in/docs/261838_220191.pdf' },
       { id: 'udyam-application', title: 'Official Udyam application: Aadhaar, PAN and business-detail stages', url: 'https://udyamregistration.gov.in/UdyamRegistration.aspx' },
       { id: 'msme-gst-clarification', title: 'Ministry of MSME: S.O. 1055(E), 5 March 2021; GST applicability clarification', url: 'https://udyamregistration.gov.in/docs/225669.pdf' },
       { id: 'udyam-sample-form', title: 'Ministry of MSME: Udyam application sample', url: 'https://udyamregistration.gov.in/docs/UdyamApplication.pdf' },
       { id: 'udyam-important', title: 'Ministry of MSME: registration rules, records and enterprise information', url: 'https://udyamregistration.gov.in/Important.aspx' },
     ],
-    searchQuestions: ['How do I complete Udyam registration online?', 'Is Udyam registration free?', 'What are the current MSME limits?', 'Can I get Udyam registration without GST?'],
+    searchQuestions: ['How do I complete Udyam registration online?', 'What does Udyam application assistance cover?', 'What are the current MSME limits?', 'Can I get Udyam registration without GST?'],
     relatedSlugs: ['start-business-sole-proprietorship-checklist', 'manufacturing-business-approvals-checklist', 'gst-registration-documents-and-address-proof'],
   },
   {
