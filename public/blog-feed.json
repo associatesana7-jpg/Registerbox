@@ -6,6 +6,78 @@
   "language": "en-IN",
   "items": [
     {
+      "id": "https://www.registerbox.in/blog/gstr-3b-filing-process-online",
+      "url": "https://www.registerbox.in/blog/gstr-3b-filing-process-online",
+      "title": "GSTR-3B filing online: a practical RegisterBox guide for regular and nil returns",
+      "summary": "Follow the GSTR-3B preparation process in RegisterBox, check nil-return eligibility, understand OTP authorisation and know what proves a return is filed.",
+      "content_text": "You should not have to guess which return period you are working on or whether a saved draft has actually been filed. RegisterBox brings the selected business, return preparation, review and filing status into a guided workspace. For an eligible nil GSTR-3B, the dedicated flow avoids entering a full set of zero-value tables and takes you towards the signatory’s filing OTP.\n\nThere is still a difference between a shorter process and filing without checks. You must confirm the facts, authorise the correct return and complete the required verification. A click that saves a draft is not a government acknowledgement. This guide explains the practical journey, the available shortcuts and the points where you should stop for help.",
+      "image": "https://www.registerbox.in/images/blog/gstr3b-process-1200.webp",
+      "date_published": "2026-10-21T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "GST & records"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/dir-3-kyc-filing-online-process",
+      "url": "https://www.registerbox.in/blog/dir-3-kyc-filing-online-process",
+      "title": "DIR-3 KYC filing online: what changed in 2026 and how to prepare",
+      "summary": "Understand the revised director KYC cycle, checking your DIN record, preparing a change filing and keeping proof, with official MCA sources and a clear help route.",
+      "content_text": "Looking for the DIR-3 KYC filing online process? Start by checking whether you need a routine KYC confirmation, a contact or address update, or help with a deactivated DIN. These are different situations. A director who is already compliant should not submit another form simply because an old article says KYC is due every September.\n\nThis guide was checked against official sources on 21 October 2026. RegisterBox offers a compliance enquiry and scope discussion here; it does not currently provide a dedicated DIR-3 KYC filing tool. The actual form and official confirmation belong to the MCA process.",
+      "image": "https://www.registerbox.in/images/blog/dir3-kyc-1200.webp",
+      "date_published": "2026-10-21T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Grow & comply"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/esic-registration-online-for-employers",
+      "url": "https://www.registerbox.in/blog/esic-registration-online-for-employers",
+      "title": "ESIC registration online for employers: a practical preparation guide",
+      "summary": "Prepare employer and employee records for ESIC registration, understand the current coverage review and official portal routes, and plan the payroll work that follows.",
+      "content_text": "ESIC registration online starts with a coverage check, not with choosing a certificate package. Work out which establishment is being registered, when coverage began and which employees need to be included. The employer record and the employee records must then connect to an ongoing payroll process.\n\nThis guide uses official sources checked on 21 October 2026. Labour-code changes mean older articles can describe a previous legal position or portal screen. RegisterBox can receive a compliance enquiry and discuss the work you need; this page is not a dedicated ESIC registration or contribution-filing tool.",
+      "image": "https://www.registerbox.in/images/blog/esic-employer-1200.webp",
+      "date_published": "2026-10-21T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Grow & comply"
+      ]
+    },
+    {
+      "id": "https://www.registerbox.in/blog/shop-and-establishment-registration-process",
+      "url": "https://www.registerbox.in/blog/shop-and-establishment-registration-process",
+      "title": "Karnataka shop and establishment registration: the online process, step by step",
+      "summary": "A practical e-Karmika application guide for Bengaluru and Karnataka: choose the right route, prepare Form A details, check uploads, pay and track the result.",
+      "content_text": "For a shop or commercial establishment in Karnataka, the official online registration route is the Labour Department’s e-Karmika portal. The practical sequence is to check applicability, prepare the establishment details, complete the application, upload the requested evidence, pay the applicable charge and save the acknowledgement. The authority reviews the application before issuing a certificate.\n\nThis is a Karnataka guide, including Bengaluru, not one national shop-licence process. Our separate Karnataka preparation guide covers the wider registration questions. Here, we focus on getting an online application ready without avoidable mistakes.",
+      "image": "https://www.registerbox.in/images/blog/shop-registration-1200.webp",
+      "date_published": "2026-10-21T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
       "id": "https://www.registerbox.in/blog/udyam-registration-process-online",
       "url": "https://www.registerbox.in/blog/udyam-registration-process-online",
       "title": "Udyam registration online: process, requirements and application support",

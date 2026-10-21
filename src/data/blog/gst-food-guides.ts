@@ -146,7 +146,7 @@ export const gstFoodGuides: BlogArticle[] = [
       { id: 'nil-manual', title: 'GSTN: draft, authorisation and filed-status steps for nil GSTR-3B', url: 'https://tutorial.gst.gov.in/userguide/returns/GSTR3B_-_File_Nil_Return.htm' },
     ],
     searchQuestions: ['What is the difference between GSTR-1 and GSTR-3B?', 'Why are my GSTR-1 and GSTR-3B figures different?', 'Is GSTR-2B a return?', 'How do I know my GST return is filed?'],
-    relatedSlugs: ['no-sales-nil-gstr-3b', 'gst-registration-documents-and-address-proof'],
+    relatedSlugs: ['gstr-3b-filing-process-online', 'no-sales-nil-gstr-3b', 'gst-registration-documents-and-address-proof'],
   },
   {
     slug: 'no-sales-nil-gstr-3b',
@@ -216,7 +216,7 @@ export const gstFoodGuides: BlogArticle[] = [
       { id: 'nil-manual', title: 'GSTN: online nil GSTR-3B conditions and filing steps', url: 'https://tutorial.gst.gov.in/userguide/returns/GSTR3B_-_File_Nil_Return.htm' },
     ],
     searchQuestions: ['Can I file nil GSTR-3B if there are no sales?', 'No sales but purchases: do I file a nil GST return?', 'Why is the nil GSTR-3B option disabled?', 'Is zero tax payable the same as a nil return?'],
-    relatedSlugs: ['gstr-1-vs-gstr-3b', 'gst-registration-documents-and-address-proof'],
+    relatedSlugs: ['gstr-3b-filing-process-online', 'gstr-1-vs-gstr-3b', 'gst-registration-documents-and-address-proof'],
   },
   {
     slug: 'fssai-home-kitchen-cloud-kitchen',

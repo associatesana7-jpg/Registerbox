@@ -7,7 +7,11 @@ export type BlogArticle = {
   enquiryOnly?: boolean;
   additionalServiceCategory?: string;
   officialApplication?: { label: string; url: string };
-  image: 'formation' | 'food' | 'records';
+  appActions?: { label: string; destination: '/gst' | '/gst-returns?form=gstr-3b' }[];
+  howToSection?: string;
+  availabilityNote?: string;
+  publishedAt?: string;
+  image: 'formation' | 'food' | 'records' | 'gstr3b-process' | 'dir3-kyc' | 'esic-employer' | 'shop-registration';
   imageAlt: string;
   intro: string[];
   sections: { id: string; heading: string; paragraphs: string[]; bullets?: string[]; sourceIds?: string[] }[];

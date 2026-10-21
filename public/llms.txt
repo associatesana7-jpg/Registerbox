@@ -10,8 +10,12 @@ Application drafts are not government submissions. Confirm scope and fees with t
 
 ## Business questions and guides
 
-These public English-language guides contain practical examples, preparation checklists and linked official sources. Publication date: 20 October 2026.
+These public English-language guides contain practical examples, preparation checklists and linked official sources. Each article displays its publication and source-check date.
 
+- [GSTR-3B filing online: a practical RegisterBox guide for regular and nil returns](https://www.registerbox.in/blog/gstr-3b-filing-process-online): Follow the GSTR-3B preparation process in RegisterBox, check nil-return eligibility, understand OTP authorisation and know what proves a return is filed.
+- [DIR-3 KYC filing online: what changed in 2026 and how to prepare](https://www.registerbox.in/blog/dir-3-kyc-filing-online-process): Understand the revised director KYC cycle, checking your DIN record, preparing a change filing and keeping proof, with official MCA sources and a clear help route.
+- [ESIC registration online for employers: a practical preparation guide](https://www.registerbox.in/blog/esic-registration-online-for-employers): Prepare employer and employee records for ESIC registration, understand the current coverage review and official portal routes, and plan the payroll work that follows.
+- [Karnataka shop and establishment registration: the online process, step by step](https://www.registerbox.in/blog/shop-and-establishment-registration-process): A practical e-Karmika application guide for Bengaluru and Karnataka: choose the right route, prepare Form A details, check uploads, pay and track the result.
 - [Udyam registration online: process, requirements and application support](https://www.registerbox.in/blog/udyam-registration-process-online): Find the official Udyam registration link, current MSME limits, Aadhaar and PAN requirements, GST applicability and a practical checklist before you apply.
 - [LLP or private limited company: which fits your startup?](https://www.registerbox.in/blog/llp-vs-private-limited-company-startup): Compare an LLP with a private limited company using ownership, investor plans, decision-making and recurring work, with a practical founder checklist.
 - [Professional tax registration for employers in Karnataka: where to start](https://www.registerbox.in/blog/professional-tax-registration-for-employers-karnataka): Understand Karnataka employer professional tax registration, business enrolment, payroll checks and the records to prepare before paying or filing.

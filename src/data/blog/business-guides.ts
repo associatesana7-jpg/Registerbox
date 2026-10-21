@@ -80,7 +80,7 @@ export const businessGuides: BlogArticle[] = [
       { id: 'nsws-approvals', title: 'NSWS: business approval discovery', url: 'https://www.nsws.gov.in/' },
     ],
     searchQuestions: ['What documents are needed for private limited company registration?', 'How do I register a private limited company in Bengaluru?', 'What should co-founders decide before company registration?'],
-    relatedSlugs: ['llp-registration-partner-agreement', 'start-business-sole-proprietorship-checklist', 'trademark-registration-name-logo-search'],
+    relatedSlugs: ['dir-3-kyc-filing-online-process', 'llp-registration-partner-agreement', 'trademark-registration-name-logo-search'],
   },
   {
     slug: 'llp-registration-partner-agreement',
@@ -318,7 +318,7 @@ export const businessGuides: BlogArticle[] = [
       { id: 'nsws-faq', title: 'NSWS: finding approval-specific documents and fees', url: 'https://www.nsws.gov.in/faqs' },
     ],
     searchQuestions: ['How do I register a shop in Karnataka?', 'Is shop and establishment registration different from GST?', 'What details are needed for shop registration in Bengaluru?'],
-    relatedSlugs: ['gst-registration-documents-and-address-proof', 'open-new-business-branch-gst', 'business-compliance-check-checklist'],
+    relatedSlugs: ['shop-and-establishment-registration-process', 'open-new-business-branch-gst', 'business-compliance-check-checklist'],
   },
   {
     slug: 'start-online-ecommerce-business-india',

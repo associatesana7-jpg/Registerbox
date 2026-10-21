@@ -13,6 +13,9 @@ for(const article of articles){
   assert.doesNotMatch(html,/name="robots" content="noindex/,'No auth-shell noindex on public articles');
   const graph=[...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].flatMap(match=>JSON.parse(match[1])['@graph']);
   const post=graph.find(item=>item['@type']==='BlogPosting');assert.ok(post);assert.equal(post.headline,article.title);assert.equal(post.image[0],`${site}/images/blog/${article.image}-1200.webp`);
+  assert.equal(post.datePublished,article.publishedAt||'2026-10-20','Actual publication date');
+  if(article.howToSection)assert.ok(html.includes(`href="#${article.howToSection}"`),'Guide jump button');
+  if(article.availabilityNote)assert.ok(html.includes(article.availabilityNote.replace(/&/g,'&amp;')),'Visible filing availability note');
   assert.ok(fs.statSync(path.join(root,'images/blog',article.image+'-1200.webp')).size>0);
   for(const section of article.sections)for(const id of section.sourceIds||[])assert.ok(article.sources.some(source=>source.id===id),`${article.slug}: source ${id}`);
   for(const slug of article.relatedSlugs)assert.ok(articles.some(item=>item.slug===slug),`${article.slug}: related ${slug}`);

@@ -161,7 +161,7 @@ export const payrollFoodGuides: BlogArticle[] = [
       { id: 'shram-manual', title: 'Shram Suvidha: official EPFO and ESIC registration manuals', url: 'https://registration.shramsuvidha.gov.in/users/user_manual' },
     ],
     searchQuestions: ['When does a startup need ESI and EPF registration?', 'What is the EPF wage ceiling in October 2026?', 'What documents should an employer prepare for ESI and EPF?', 'Does an employer code mean PF and ESI compliance is complete?'],
-    relatedSlugs: ['professional-tax-registration-for-employers-karnataka', 'business-compliance-check-checklist'],
+    relatedSlugs: ['esic-registration-online-for-employers', 'professional-tax-registration-for-employers-karnataka', 'business-compliance-check-checklist'],
   },
   {
     slug: 'fssai-licence-cost-government-fees',

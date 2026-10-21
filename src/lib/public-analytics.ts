@@ -16,6 +16,8 @@ export const analyticsPublicPaths = [
   '/blog/start-online-ecommerce-business-india', '/blog/manufacturing-business-approvals-checklist',
   '/blog/open-new-business-branch-gst', '/blog/business-compliance-check-checklist',
   '/blog/trademark-registration-name-logo-search',
+  '/blog/gstr-3b-filing-process-online', '/blog/dir-3-kyc-filing-online-process',
+  '/blog/esic-registration-online-for-employers', '/blog/shop-and-establishment-registration-process',
 ] as const;
 const allowedPaths = new Set<string>(analyticsPublicPaths);
 export function publicAnalyticsUrl(value: string): string | null {
