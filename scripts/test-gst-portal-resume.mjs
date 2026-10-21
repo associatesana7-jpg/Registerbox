@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {portal3bPaymentState,portal3bPreparation} from '../supabase/functions/_shared/gst-portal-resume.ts';
+import {portal3bPaymentState,portal3bPreparation,portal3bOffsetComplete} from '../supabase/functions/_shared/gst-portal-resume.ts';
 const charges=()=>Object.fromEntries(['igst','cgst','sgst','cess'].map(h=>[h,{tx:0,intr:0,fee:0}]));
 const remaining={trans_typ:30002,...charges()};
 const sections=Object.fromEntries(['sup_details','itc_elg','inward_sup','inter_sup','intr_ltfee'].map(k=>[k,{real_portal_field:0}]));
@@ -10,6 +10,12 @@ assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[{...remaining,cgst
 assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[]}}),'unconfirmed');
 assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[{trans_typ:30002}]}}),'unconfirmed');
 assert.equal(portal3bPaymentState({...snapshot,tx_pmt:{tx_py:[remaining,remaining]}}),'unconfirmed');
+const notPosted={...snapshot,tx_pmt:{tx_py:[{...remaining,liab_ldg_id:0}]}};
+assert.equal(portal3bOffsetComplete(notPosted),false,'Zero payable does not prove the credit-posting step ran');
+assert.equal(portal3bOffsetComplete(notPosted,true),true,'Explicit successful offset plus fresh zero payable confirms posting');
+assert.equal(portal3bOffsetComplete({...snapshot,tx_pmt:{tx_py:[{...remaining,liab_ldg_id:99}]}}),true);
+assert.equal(portal3bOffsetComplete({...snapshot,tx_pmt:{tx_py:[{...remaining,cgst:{tx:1,intr:0,fee:0}}]}},true),false,'An accepted offset cannot override current payable');
+assert.equal(portal3bOffsetComplete({...snapshot,tx_pmt:{}},true),false,'An accepted offset cannot invent missing payable data');
 const prepared=portal3bPreparation(snapshot);
 assert.equal(prepared.tx_pmt,undefined);assert.deepEqual(prepared.intr_ltfee,snapshot.intr_ltfee);
 assert.throws(()=>portal3bPreparation({...snapshot,sup_details:{}}),/complete/);

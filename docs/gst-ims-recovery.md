@@ -4,7 +4,9 @@
 
 GSTR-3B `IMS002_CD` means the period's GSTR-2B is not generated, not that GSTR-2B needs filing. Open IMS from the same nil or regular return. Review each supplier invoice or explicitly select acceptance for eligible loaded invoices, approve and save decisions, then approve compute/recompute GSTR-2B. Read-only status polling tracks the stored reference. Once processing and document availability are confirmed, the modal closes and the saved return resumes. No return is filed automatically.
 
-Nil declarations and the selected signatory remain in the mounted journey. The known IMS rejection can resume only after a matching GSTIN/period GSTR-2B is available and current filing history permits it. Regular returns import current portal values for review after IMS; changed amounts require fresh review. The existing RT-3BAS1079 payment/portal recovery remains available.
+Nil declarations and the selected signatory remain in the mounted journey. The known IMS rejection can resume only after a matching GSTIN/period GSTR-2B is available and current filing history permits it. Regular returns fetch current portal values for comparison after IMS while preserving private figures; changed amounts require fresh review. The existing RT-3BAS1079 payment/portal recovery remains available.
+
+20 October: reopening a previously completed computation checks its stored reference and matching document before returning to filing. Partial processing errors cannot be hidden by an older available GSTR-2B. Non-availability is distinguished from session, identity and provider errors. After 20 automatic checks, the UI explicitly pauses and offers read-only continuation. Unknown writes without a provider reference remain tracked for support rather than being replayed. Session errors offer reconnection back to the same saved return.
 
 GSTR-1 and GSTR-3B resend the filing OTP directly without resetting declarations or replaying preparation. Server cooldown, snapshot freshness, specific filing consent, duplicate protection and unknown-outcome safeguards remain enforced. Filing codes accept letters and numbers.
 

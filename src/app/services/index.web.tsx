@@ -1,7 +1,8 @@
 import { Link, type Href } from 'expo-router';
 import { useState } from 'react';
 import { WebBrand } from '@/components/website/brand.web';
-import { contact, servicePath } from '@/components/website/content';
+import { SiteFooter } from '@/components/website/footer.web';
+import { servicePath } from '@/components/website/content';
 import { Seo, siteUrl } from '@/components/website/seo.web';
 import { publicServices } from '@/components/website/service-pages';
 import { useApp } from '@/hooks/use-app';
@@ -68,6 +69,6 @@ export default function ServicesPage() {
 
       <section className="rb-sd-support" aria-labelledby="help-title"><div><p className="rb-sd-eyebrow">A LITTLE CLARITY HELPS</p><h2 id="help-title">Not sure which service fits?</h2><p>Tell us what your business does and what you’re planning next. We’ll help you find a starting point.</p></div><Link href="/contact">Discuss your business <span aria-hidden="true">↗</span></Link></section>
     </main>
-    <footer className="rb-sd-footer rb-container"><p>RegisterBox · Bengaluru, India</p><nav aria-label="Footer"><a href={`mailto:${contact.email}`}>Email our team</a><Link href="/policies">Privacy & service information</Link></nav></footer>
+    <SiteFooter/>
   </div>;
 }

@@ -1,13 +1,21 @@
 export const contact = {
-  email: 'registerbox@yahoo.com',
+  email: 'registerboxindia@gmail.com',
   whatsapp: 'https://wa.me/918147777843',
   phone: '+91 81477 77843',
-  address: 'Registerbox, BBMP Ward, Hal Aerospace Division, 5th Cross Road, New Thippasandra Main Rd, New Thippasandra, Bengaluru, Karnataka 560075',
+  telephoneHref: 'tel:+918147777843',
+  address: '3rd Floor, Site No. 71, 5th Cross Road, above Kookie Kids, New Thippasandra Main Road, HAL Aerospace Division, Bengaluru, Karnataka 560075',
+  callback: 'https://docs.google.com/forms/d/e/1FAIpQLSfFF7938FGJPuLRipOPcH1VndwzDA17RIFMDOU4AMcpzzpSMA/viewform',
+  googleReview: 'https://g.page/r/CeRt8CUDmIO6EBM/review',
+  googleProfile: 'https://www.google.com/maps?cid=13439752852292529636',
 };
+export const branches = [
+  { id: 'new-thippasandra', name: 'New Thippasandra', address: contact.address, streetAddress: '3rd Floor, Site No. 71, 5th Cross Road, above Kookie Kids, New Thippasandra Main Road, HAL Aerospace Division', postalCode: '560075', maps: 'https://www.google.com/maps/search/?api=1&query=12.9718924%2C77.6524058', latitude: 12.9718924, longitude: 77.6524058 },
+  { id: 'marathahalli', name: 'Marathahalli', address: '149, RegisterBox, 1st Cross, Trinity School Rd, Marathahalli, Bengaluru, Karnataka 560037', streetAddress: '149, RegisterBox, 1st Cross, Trinity School Rd, Marathahalli', postalCode: '560037', maps: contact.googleProfile, latitude: 12.9547917, longitude: 77.6944716 },
+];
 export const services = [
   { category: 'company', title: 'Private limited company', group: 'Start a business', icon: 'company', detail: 'Build your company application with director, share capital and registered-office details.', tag: 'For your next big idea' },
   { category: 'llp', title: 'LLP registration', group: 'Start a business', icon: 'llp', detail: 'Prepare partner details, contributions, consent and your registered-office documents.', tag: 'Partner up, thoughtfully' },
-  { category: 'gst_registration', title: 'GST registration', group: 'Registrations', icon: 'gst-registration', detail: 'Share your business name, address, business activity and contact details, then upload your documents.', tag: 'Simple questions. Easy document uploads.' },
+  { category: 'gst_registration', title: 'GST registration', group: 'Registrations', icon: 'gst-registration', detail: 'Share your business name, address, business activity and contact details, then upload your documents.', tag: 'Simple questions. Easy document uploads.', priceLabel: 'RegisterBox fee ₹1,999' },
   { category: 'udyam', title: 'Udyam (MSME) registration', group: 'Registrations', icon: 'new-business', detail: 'Prepare your enterprise details in a guided application and send them to RegisterBox for review before the official Udyam process.', tag: 'Business details, one step at a time' },
   { category: 'food', title: 'Food business & FSSAI', group: 'Registrations', icon: 'food', detail: 'Find your food-business route and gather the relevant FoSCoS application evidence.', tag: 'Made for food entrepreneurs' },
   { category: 'retail', title: 'Shop & establishment', group: 'Registrations', icon: 'retail', detail: 'Collect establishment information and documents for your state-specific requirements.', tag: 'Open your doors with clarity' },
@@ -31,7 +39,7 @@ export function safeNext(value?: string | string[]) {
   const url = new URL(next, 'https://registerbox.invalid');
   if(url.pathname==='/application-details')return [...url.searchParams].every(([key,value])=>key==='id'&&/^[0-9a-f-]{36}$/i.test(value))&&url.searchParams.has('id')?next:'/dashboard';
   if(url.pathname==='/documents'&&url.searchParams.has('application'))return [...url.searchParams].every(([key,value])=>key==='application'&&/^[0-9a-f-]{36}$/i.test(value))?next:'/dashboard';
-  const allowed = ['/dashboard', '/gst', '/gst-returns', '/gst-purchases', '/compliance', '/documents', '/ai', '/account', '/tally', '/document-locker', '/delete-account', '/privacy', '/services', '/onboarding/identify', '/onboarding/welcome', '/onboarding/intent', '/onboarding/business', '/onboarding/questions', '/onboarding/report', '/onboarding/review', '/onboarding/documents'];
+  const allowed = ['/dashboard', '/gst', '/gst-returns', '/gst-purchases', '/compliance', '/documents', '/ai', '/account', '/document-locker', '/delete-account', '/privacy', '/services', '/onboarding/identify', '/onboarding/welcome', '/onboarding/intent', '/onboarding/business', '/onboarding/questions', '/onboarding/report', '/onboarding/review', '/onboarding/documents'];
   if (url.pathname === '/onboarding/application') {
     return url.searchParams.getAll('category').length === 1 && url.searchParams.getAll('resume').length <= 1 && services.some(service => service.category === url.searchParams.get('category')) && [...url.searchParams].every(([key,value]) => key === 'category'||key==='resume'&&value==='1') ? next : '/dashboard';
   }

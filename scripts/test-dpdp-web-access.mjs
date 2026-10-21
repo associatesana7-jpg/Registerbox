@@ -10,6 +10,8 @@ const modules={
  'expo-router/head':{default:'Head',__esModule:true},
  '@/hooks/use-app':{useApp:()=>({session:null,loadingSession:false})},
  './brand.web':{WebBrand:'Brand'},
+ '../app-icon':{AppIcon:'AppIcon'},
+ './workspace-shell.css':{},
  './content':{contact:{whatsapp:'https://example.invalid'},safeNext:value=>value},
 };
 const code=ts.transpileModule(fs.readFileSync('src/components/website/shell.web.tsx','utf8'),{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;

@@ -88,7 +88,7 @@ export async function verifyControlCenterOtp(email: string, token: string) {
 }
 
 export async function controlCenterRequest<T>(
-  action: 'me' | 'dashboard' | 'directory' | 'document_link' | 'filing_workspace',
+  action: 'me' | 'dashboard' | 'directory' | 'document_link' | 'filing_workspace' | `crm_${string}`,
   payload: Record<string, unknown> = {},
 ): Promise<T> {
   const { data, error } = await supabase.functions.invoke<T>('control-center', { body: { action, ...payload } });

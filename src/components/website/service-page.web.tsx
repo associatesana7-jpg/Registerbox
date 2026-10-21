@@ -1,6 +1,7 @@
 import { Link, type Href } from 'expo-router';
 import { useApp } from '@/hooks/use-app';
 import { WebBrand } from './brand.web';
+import { SiteFooter } from './footer.web';
 import { BlogServiceLinks } from './blog-service-links.web';
 import { contact, servicePath } from './content';
 import { serviceDetails } from './service-details';
@@ -12,7 +13,7 @@ type Presentation = { title: string; promise: string; action: string; icon: stri
 const presentation: Record<string, Presentation> = {
   company: { title: 'Private limited company', promise: 'Your idea. A company of its own.', action: 'Start company registration', icon: 'company', documents: ['Director & shareholder details', 'Business & ownership plan', 'Registered-office proof'] },
   llp: { title: 'LLP registration', promise: 'Build your partnership with a clear plan.', action: 'Start LLP registration', icon: 'llp', documents: ['Partner details', 'Contribution & profit-sharing plan', 'Office address proof'] },
-  gst_registration: { title: 'GST registration', promise: 'Get your GST application in good order.', action: 'Start GST registration', icon: 'gst-registration', documents: ['Business identity', 'Owner or entity details', 'Business-address proof'], fee: '₹199' },
+  gst_registration: { title: 'GST registration', promise: 'Get your GST application in good order.', action: 'Start GST registration', icon: 'gst-registration', documents: ['Business identity', 'Owner or entity details', 'Business-address proof'], fee: '₹1,999' },
   udyam: { title: 'Udyam (MSME) registration', promise: 'Application support, one clear step at a time.', action: 'Apply with RegisterBox', icon: 'new-business', documents: ['Enterprise name & activities', 'Business address & unit locations', 'Existing Udyam or GST certificate, if available'] },
   food: { title: 'FSSAI & food licence', promise: 'You bring the flavour. We help with the paperwork.', action: 'Start FSSAI application', icon: 'food', documents: ['Food activity & products', 'Business details', 'Kitchen or premises information'], fee: '₹3,999' },
   retail: { title: 'Shop & establishment', promise: 'A clear next step for your shop or office.', action: 'Start shop registration', icon: 'retail', documents: ['Owner & establishment details', 'Premises information', 'Workforce details'], fee: '₹4,500' },
@@ -36,7 +37,7 @@ function Check() {
 export default function ServicePage({ slug }: { slug: string }) {
   const { session } = useApp();
   const service = publicServices.find(item => item.slug === slug);
-  if (!service) return <div className="rb-public-page rb-qs-page"><header className="rb-public-header rb-container"><WebBrand/></header><main className="rb-container rb-qs-missing"><h1>Let’s find the right service.</h1><p>Explore the services available for your business.</p><Link className="rb-button" href="/services">View all services <Arrow/></Link></main></div>;
+  if (!service) return <div className="rb-public-page rb-qs-page"><header className="rb-public-header rb-container"><WebBrand/></header><main className="rb-container rb-qs-missing"><h1>Let’s find the right service.</h1><p>Explore the services available for your business.</p><Link className="rb-button" href="/services">View all services <Arrow/></Link></main><SiteFooter/></div>;
   const ui = presentation[service.category] || { title: service.title, promise: service.detail, action: 'Discuss this service', icon: 'business-check', documents: ['Business details', 'Your requirement', 'Existing registrations'] };
   const details = serviceDetails[service.category] || { audience: 'Business owners preparing brand information and documents for a scoped discussion.', prepare: ui.documents, question: 'Does an application guarantee registration?', answer: 'Filing and authority approval are separate stages. Discuss the scope and appropriate professional review before proceeding.' };
   const isEnquiry = service.category === 'trademark' || !presentation[service.category];
@@ -60,7 +61,6 @@ export default function ServicePage({ slug }: { slug: string }) {
     ['Answer simple questions', 'Tell us about your activity, people and business location.'],
     ['Add documents & save', 'Follow your checklist and return to your application when you are ready.'],
   ];
-  const supportHref = `${contact.whatsapp}?text=${encodeURIComponent(`Hello RegisterBox, I would like help with ${ui.title}. My business activity and location are: `)}`;
   return <div className="rb-public-page rb-qs-page">
     <Seo title={`${ui.title} in Bengaluru | RegisterBox`} description={isUdyam ? 'Apply for paid Udyam registration assistance from RegisterBox. Prepare enterprise details, add existing certificates and get guidance on the official process.' : `${ui.title} support from RegisterBox. See the document checklist, understand the next steps and start your application online.`} path={path} schema={[
       { '@type': 'Service', name: ui.title, description: service.detail, url: `${siteUrl}${path}`, provider: { '@id': `${siteUrl}/#organization` }, areaServed: { '@type': 'Country', name: 'India' } },
@@ -90,8 +90,8 @@ export default function ServicePage({ slug }: { slug: string }) {
       <BlogServiceLinks category={service.category}/>
       <section className="rb-qs-next" aria-labelledby="next-title"><div><p className="rb-qs-eyebrow">WHEN YOU ARE READY</p><h2 id="next-title">Let’s take the next step.</h2><p>{isEnquiry ? 'Tell us about your brand and the help you need.' : 'Bring your business details together, one question at a time.'}</p></div><Link className="rb-button" href={startHref}>{ui.action}<Arrow/></Link></section>
       <section className="rb-qs-related" aria-labelledby="related-title"><h2 id="related-title">Explore other services.</h2><div>{publicServices.filter(item => item.category !== service.category).map(item => <Link key={item.slug} href={`/services/${item.slug}` as Href}><span>{presentation[item.category]?.title || item.title}</span><Arrow/></Link>)}</div></section>
-      <footer className="rb-qs-footer"><WebBrand/><div><a href={supportHref} target="_blank" rel="noopener noreferrer">Chat with RegisterBox ↗</a><Link href="/policies">Privacy & service information</Link></div></footer>
     </main>
+    <SiteFooter/>
     <div className="rb-qs-mobile-action" aria-label="Start this service"><span><small>{ui.title}</small><strong>{isUdyam ? 'Paid application assistance' : ui.fee ? `${ui.fee} assistance fee` : 'Scope & quote first'}</strong></span><Link className="rb-button" href={startHref}>{isUdyam ? ui.action : isEnquiry ? 'Enquire' : service.category === 'gst' ? 'Open workspace' : 'Start application'}<Arrow/></Link></div>
   </div>;
 }

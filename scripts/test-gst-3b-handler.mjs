@@ -16,7 +16,7 @@ import { blank3b, zeroBlanks } from '../supabase/functions/_shared/gstr3b.ts';
 import { returnHistoryReason, returnPhase } from '../src/lib/gst-return-workspace.ts';
 
 const gstin='29ABCDE1234F1Z5', period='082026';
-let handler, draft, portal, ledger, calls, operations, history, writes, failure, status, owner, locked;
+let handler, draft, portal, ledger, calls, operations, history, writes, failure, status, owner, locked, offsetMode, twoB;
 const connection={id:'connection',gstin,status:'linked',token_ciphertext:'synthetic',expires_at:'2099-01-01'};
 function query(table) {
   let values, filters={}, countQuery=false;
@@ -60,13 +60,17 @@ new Function('require','exports','Deno','fetch',source)(name=>modules[name]??ass
   if(failure?.action===action){
     if(failure.kind==='timeout')throw Error('Synthetic network timeout');
     if(failure.kind==='no-ack')return Response.json({data:{status_cd:'1',data:{}}});
-    return Response.json({data:{status_cd:'0',error:{error_cd:failure.code??'TEST_REJECTED',message:'Synthetic provider rejection'}}});
+    return Response.json({transaction_id:'synthetic-provider-request',data:{status_cd:'0',error:{error_cd:failure.code??'TEST_REJECTED',message:'Synthetic provider rejection'}}});
   }
   if(action==='save'){portal={...JSON.parse(options.body),tx_pmt:portal.tx_pmt};return Response.json({data:{status_cd:'1',data:{reference_id:'save-reference'}}});}
-  if(action==='offset')return Response.json({data:{status_cd:'1',data:{reference_id:'offset-reference'}}});
+  if(action==='offset'){
+    if(!offsetMode.endsWith('stale'))portal.tx_pmt.tx_py=portal.tx_pmt.net_tax_pay.map(row=>({...row,liab_ldg_id:offsetMode==='sync-zero-noids'?0:123,...Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]))}));
+    return Response.json({data:{status_cd:'1',data:offsetMode.startsWith('sync')?{Message:'Payment of tax successfully done'}:{reference_id:'offset-reference'}}});
+  }
   if(action==='evc')return Response.json({data:{status_cd:'1'}});
   if(action==='file')return Response.json({data:{status_cd:'1',data:{ack_num:'SYNTHETIC-ARN-NOT-A-REAL-RETURN'}}});
   if(path.endsWith('/status'))return Response.json({data:{status_cd:'1',data:{status_cd:status}}});
+  if(path.includes('/gstr-2b/'))return Response.json({data:{status_cd:'1',data:twoB}});
   if(path.includes('/ledgers/bal/'))return Response.json({data:{status_cd:'1',data:ledger}});
   return Response.json({data:{status_cd:'1',data:portal}});
 });
@@ -80,7 +84,7 @@ async function reset(){
   portal={...structuredClone(payload),tx_pmt:{net_tax_pay:[{liab_ldg_id:1,trans_typ:30002,...charges}]}};
   ledger={gstin,cash_bal:Object.fromEntries(payment.HEADS.map(h=>[h,{tx:h==='igst'?140:0,intr:0,fee:0}])),itc_bal:Object.fromEntries(payment.HEADS.map(h=>[h+'_bal',h==='igst'?40:0])),itc_blck_bal:Object.fromEntries(payment.HEADS.map(h=>[h+'_blck_bal',0]))};
   history={period,checkedAt:new Date().toISOString(),records:[{form:'GSTR1',period,status:'Filed',arn:'SYNTHETIC-GSTR1'}]};
-  calls=[];operations=[];writes=true;failure=null;status='P';owner='owner';locked=true;
+  calls=[];operations=[];writes=true;failure=null;status='P';owner='owner';locked=true;offsetMode='reference';twoB={gstin,rtnprd:period,docdata:{}};
 }
 async function act(action,overrides={}){
   const input={businessId:'business',action,consent:true,consentAction:action,consentVersion:validation.VERSION,draftId:draft.id,revision:draft.revision,
@@ -89,6 +93,7 @@ async function act(action,overrides={}){
   return {status:response.status,body:await response.json()};
 }
 async function prepared(){
+  if(portal.tx_pmt?.net_tax_pay)portal.tx_pmt.tx_py=portal.tx_pmt.net_tax_pay.map(row=>({...row,liab_ldg_id:123,...Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]))}));
   draft.state='prepared';draft.snapshot=structuredClone(portal);draft.snapshot_hash=await validation.hash(portal);draft.snapshot_at=new Date().toISOString();draft.reconciliation={matched:true};
 }
 const allocation={paymentChoices:{...payment.emptyCredit(),i_pdi:40},minimumCash:0,paymentRulesReviewed:true};
@@ -219,3 +224,77 @@ await reset();assert.notEqual((await act('resume_portal',{consent:false})).statu
 await reset();draft.state='saved';portal.tx_pmt.pdcash=[{liab_ldg_id:1,trans_typ:30002,ipd:140}];
 assert.match((await act('ledger')).body.error,/existing payment/);assert.ok(calls.every(c=>c.method==='GET'));
 console.log('Portal recovery verified: paid nil rejection resumes as full saved return; unpaid resumes offset; original declaration preserved, old OTP cleared, already-filed/unknown/incomplete/stale-consent cases blocked; no automatic payment or filing.');
+
+// A new zero-tax return with ITC still needs the explicit Post credit step.
+await reset();
+portal.sup_details=structuredClone(zeroBlanks(blank3b(gstin,period))).sup_details;
+portal.tx_pmt.net_tax_pay=portal.tx_pmt.net_tax_pay.map(row=>({...row,liab_ldg_id:0,...Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]))}));
+portal.tx_pmt.tx_py=structuredClone(portal.tx_pmt.net_tax_pay);
+draft={...draft,payload:nilPayload,payload_hash:await validation.hash(nilPayload),state:'blocked'};
+const zeroResume=await act('resume_portal');
+assert.equal(zeroResume.status,200);assert.equal(draft.state,'saved');assert.equal(zeroResume.body.creditPostingRequired,true);
+assert.equal((await act('ledger')).body.creditPostingRequired,true);
+assert.equal(calls.filter(c=>c.method==='POST').length,0,'A zero liability/ITC import must not silently offset');
+const zeroAllocation={...allocation,paymentChoices:payment.emptyCredit()};
+const zeroPreview=await act('preview_offset',zeroAllocation);
+assert.equal(zeroPreview.status,200);assert.equal(zeroPreview.body.paymentReview.ready,true);
+offsetMode='sync-zero-noids';
+assert.equal((await act('offset',{...zeroAllocation,allocationHash:zeroPreview.body.allocationHash})).status,200);
+assert.equal(draft.state,'prepared','Explicit accepted zero posting plus fresh zero payable can continue');
+assert.equal(portal.itc_elg.itc_net.iamt,40,'The current return ITC claim was not discarded');
+assert.equal(calls.filter(c=>c.method==='POST').length,1);
+
+// A processing receipt is not fresh payment evidence. Keep a read-only way to
+// refresh it and never automatically spend the balances a second time.
+for(const mode of ['reference-stale','sync-stale']){
+  await reset();draft.state='saved';offsetMode=mode;
+  const preview=await act('preview_offset',allocation);
+  assert.equal((await act('offset',{...allocation,allocationHash:preview.body.allocationHash})).status,200);
+  assert.equal(draft.state,'offset_pending');
+  assert.equal((await act('poll')).status,200);assert.equal(draft.state,'offset_pending','Status P / accepted does not override still-payable figures');
+  assert.equal((await act('evc',{pan:'ABCDE1234F'})).status,502);
+  portal.tx_pmt.tx_py=portal.tx_pmt.net_tax_pay.map(row=>({...row,liab_ldg_id:123,...Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]))}));
+  assert.equal((await act('poll')).status,200);assert.equal(draft.state,'prepared');
+  assert.equal(calls.filter(c=>c.method==='POST').length,1);
+}
+
+await reset();draft.state='saved';
+const timeoutPreview=await act('preview_offset',allocation);failure={action:'offset',kind:'timeout'};
+assert.equal((await act('offset',{...allocation,allocationHash:timeoutPreview.body.allocationHash})).status,502);assert.equal(draft.state,'unknown');
+assert.equal(draft.reference_id,null,'A previous save reference must not be polled as this unknown offset');
+assert.equal((await act('poll')).body.paymentOutcomePending,true);assert.equal(draft.state,'unknown');
+portal.tx_pmt.tx_py=portal.tx_pmt.net_tax_pay.map(row=>({...row,liab_ldg_id:123,...Object.fromEntries(payment.HEADS.map(h=>[h,{tx:0,intr:0,fee:0}]))}));
+assert.equal((await act('poll')).status,200);assert.equal(draft.state,'prepared','Fresh authoritative posting evidence recovers an uncertain offset in-app');
+assert.equal(calls.filter(c=>c.method==='POST').length,1);
+
+await reset();draft.state='saved';const rejectedPreview=await act('preview_offset',allocation);failure={action:'offset',kind:'rejected',code:'RT-3BAS1070'};
+const rejected=await act('offset',{...allocation,allocationHash:rejectedPreview.body.allocationHash});
+assert.equal(rejected.body.providerCode,'RT-3BAS1070');assert.equal(rejected.body.providerRequestId,'synthetic-provider-request');assert.ok(rejected.body.operationId);
+console.log('Payment recovery verified: explicit zero-value credit posting, fresh post-offset settlement, pending sync/async reads, unknown offset recovery without replay, and structured provider correlation errors.');
+
+for(const paid of [false,true]){
+  await reset();if(paid)await prepared();
+  draft.state='blocked';draft.last_error='GST rejected the request (IMS002_CD): Generate GSTR-2B';draft.otp_sent_at=new Date().toISOString();draft.signatory_pan='ABCDE1234F';
+  const previous=structuredClone(draft);
+  const recovered=await act('recover_ims');
+  assert.equal(recovered.status,200);assert.equal(recovered.body.imsRecovered,true);
+  assert.equal(draft.state,paid?'prepared':'saved');assert.equal(draft.reconciliation.matched,true);
+  assert.deepEqual(draft.payload,previous.payload);assert.equal(draft.payload_hash,previous.payload_hash);assert.equal(draft.revision,previous.revision);
+  assert.equal(draft.otp_sent_at,null);assert.equal(draft.signatory_pan,null);assert.equal(draft.last_error,null);
+  assert.equal(calls.length,2);assert.ok(calls.every(c=>c.method==='GET'),'Regular IMS recovery only verifies 2B and fetches the saved return');
+}
+await reset();draft.state='blocked';draft.last_error='GST rejected the request (IMS002_CD)';
+const original=structuredClone(draft.payload);portal.itc_elg.itc_net.iamt=99;
+const changed2b=await act('recover_ims');
+assert.equal(changed2b.status,200);assert.equal(changed2b.body.reviewRequired,true);assert.equal(draft.state,'saved');assert.equal(draft.reconciliation.matched,false);
+assert.deepEqual(draft.payload,original,'Recomputed portal ITC must not overwrite the private approved return');assert.equal(draft.snapshot.itc_elg.itc_net.iamt,99);
+assert.ok(calls.every(c=>c.method==='GET'));
+for(const wrong of [{gstin:'different'},{rtnprd:'072026'}]){
+  await reset();draft.state='blocked';draft.last_error='GST rejected the request (IMS002_CD)';twoB={...twoB,...wrong};
+  assert.notEqual((await act('recover_ims')).status,200);assert.equal(draft.state,'blocked');assert.equal(calls.length,1);
+}
+for(const [state,message] of [['unknown','(IMS002_CD)'],['blocked','unrelated rejection']]){
+  await reset();draft.state=state;draft.last_error=message;
+  assert.notEqual((await act('recover_ims')).status,200);assert.equal(calls.length,0);
+}
+console.log('Regular IMS recovery verified: matching 2B required, fresh snapshot compared without overwrite, payment-state continuation, changed ITC review, old OTP invalidation and GET-only recovery.');

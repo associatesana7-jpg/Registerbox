@@ -10,7 +10,7 @@ export type ComplianceItem = {
 
 export const demoCompliances: ComplianceItem[] = [
   { id: '1', name: 'FSSAI Licence', slug: 'fssai', status: 'REQUIRED', fee: 1999, icon: '🍽️', reason: 'Required because ABC Foods prepares and sells food.' },
-  { id: '2', name: 'GST Registration', slug: 'gst-registration', status: 'CHECK_REQUIRED', fee: 999, icon: '▦', reason: 'Your turnover and sale channels need a GST applicability check.' },
+  { id: '2', name: 'GST Registration', slug: 'gst-registration', status: 'CHECK_REQUIRED', fee: 1999, icon: '▦', reason: 'Your turnover and sale channels need a GST applicability check.' },
   { id: '3', name: 'Trade Licence', slug: 'trade-licence', status: 'REQUIRED', fee: 999, icon: '🏬', reason: 'A Bengaluru restaurant needs municipal trade permission.' },
   { id: '4', name: 'Shops & Establishment', slug: 'shops-establishment', status: 'REQUIRED', fee: 999, icon: '🏢', reason: 'Your commercial premises and employees trigger a state assessment.' },
   { id: '5', name: 'Professional Tax', slug: 'professional-tax', status: 'CHECK_REQUIRED', fee: 499, icon: '₹', reason: 'Professional tax depends on the Karnataka employee setup.' },

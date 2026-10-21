@@ -1,0 +1,391 @@
+{
+  "status": "FINAL",
+  "category": "logo-reveal",
+  "form_note": "Closest standard form category: logo-reveal. This is intentionally a custom seven-slot UI/logo product sting governed by the bs-hyperframes-velocity-sting structure, not an ordinary single-shot logo reveal.",
+  "search_required": false,
+  "duration_s": 12,
+  "fps": 30,
+  "canvas": {
+    "w": 1080,
+    "h": 1080,
+    "aspect": "1:1"
+  },
+  "style": "Precise, fast, reassuring, product-led motion. Seven clean RegisterBox surfaces behave as one continuous camera move through strict velocity-matched cuts, crisp mobile UI geometry, restrained depth, and one mirrored exponential ease family. No idle float, pulse, bounce, narration, or explanatory detours.",
+  "palette": [
+    "#F5F9FF",
+    "#0A1943",
+    "#0865F7",
+    "#E0E9F7",
+    "#FFB627",
+    "#009D62"
+  ],
+  "brand_tokens": {
+    "ground": "#F5F9FF",
+    "ink": "#0A1943",
+    "accent": "#0865F7",
+    "hairline": "#E0E9F7",
+    "logo_star": "#FFB627",
+    "success": "#009D62"
+  },
+  "font": "system-ui",
+  "beats": [
+    1,
+    40,
+    79,
+    124,
+    169,
+    226,
+    322,
+    360
+  ],
+  "export": "mp4",
+  "output": {
+    "container": "mp4",
+    "video_codec": "h264",
+    "audio": "none",
+    "target": "silent 1080x1080 MP4 at 30fps"
+  },
+  "asset_needs": [
+    {
+      "role": "registerbox-mark",
+      "kind": "logo",
+      "source": "assets/registerbox-app-icon.png",
+      "treatment": "none"
+    }
+  ],
+  "resolved_assets": [
+    {
+      "role": "registerbox-mark",
+      "path": "assets/registerbox-app-icon.png",
+      "provenance": "Copied from the user-owned RegisterBox app repository; no external search or capture.",
+      "usage": "Render as a rounded app tile because the 1024x1024 raster has a full-frame white background. Use clipping windows over the same source for the perceptual mark/wordmark split; do not attempt transparency removal or vectorization."
+    }
+  ],
+  "catalog_searches": [
+    {
+      "query": "velocity-matched continuous-camera UI sting with matched directional cuts",
+      "tier": "words",
+      "tier_detail": "local word match",
+      "decision": "No single registry block or component covers the required seven-slot, mixed-axis, exact-seam structure. Use cut-the-curve and whip-pan-cut only as motion references for same-axis velocity continuity; do not use their stock easing because the specialized skill requires the custom EO/EI functions."
+    },
+    {
+      "query": "oversized cursor click on a primary action",
+      "tier": "words",
+      "tier_detail": "local word match",
+      "decision": "oversized-cursor is the closest behavior reference for slot F: a 3.5x pointer lands tip-first, clicks, settles below the control so the result remains visible, then exits. Reproduce that behavior inside the monolithic timeline rather than adding a sub-composition."
+    },
+    {
+      "query": "raster logo reveal endcard",
+      "tier": "words",
+      "tier_detail": "local word match",
+      "decision": "logo-outro and logo-sting are generic references, but neither fits the supplied raster tile, the required counter-moving two-part lockup, or the incoming z-negative seam. Use the skill's counter-bounce and pull-back landing instead; omit glow bloom, impact flash, URL pill, and piece-by-piece vector assembly."
+    }
+  ],
+  "block": "custom:monolithic-gsap-seven-slot-velocity-sting",
+  "customize": {
+    "reuse_decision": "No registry result fits the whole structure. Build one hand-authored GSAP timeline in the standalone index.html, using registry results only as behavior references and using no sub-compositions.",
+    "file_contract": "One standalone HTML composition with embedded CSS/SVG/GSAP choreography; external files are limited to the frozen local logo asset plus project metadata and the separate seam ledger.",
+    "registry_rule_references": [
+      {
+        "name": "cut-the-curve",
+        "apply": "Same-axis, same-direction hard-cut continuity at peak velocity across all six seams; replace its power4 family with the exact custom EO/EI mirror pair."
+      },
+      {
+        "name": "whip-pan-cut",
+        "apply": "Use its capped, direction-derived motion-blur principle for x/y seams only; blur must be driven by the same EO/EI progress and clear at rest."
+      },
+      {
+        "name": "oversized-cursor",
+        "apply": "Slot F pointer actor at 3.5x normal size: tip-first EO arrival, click compression/ring, settle below the button to preserve menu visibility, then EI exit."
+      },
+      {
+        "name": "logo-sting",
+        "apply": "Reference only the readable lockup hold; do not use its slam, impact ring, or white flash. The specialized counter-bounce and seam motion take precedence."
+      }
+    ],
+    "timeline": {
+      "engine": "GSAP",
+      "defaults": {
+        "immediateRender": false
+      },
+      "continuous_properties": "Tween with EO for arrival and EI for departure, passed as functions rather than stock ease names.",
+      "discrete_choreography": "Stamp typing, readiness values, navigation highlight decisions, cursor click states, and menu rows frame by frame with tl.set(...).",
+      "determinism": "Repeat every animated property in both from/to states, use no Math.random, and use no infinite repeat."
+    },
+    "layout": {
+      "canvas": "1080x1080 square",
+      "safe_area": "Keep critical text and controls inside a 96px inset; off-canvas travel is deliberate and must be marked with the appropriate HyperFrames layout allowances.",
+      "surface_language": "Mobile-first rounded cards, large touch targets, navy hierarchy, blue primary actions, hairline borders, and generous whitespace."
+    },
+    "logo_treatment": "Keep the white-backed raster as a rounded app tile. Measure the visible artwork bounds from a rendered frame before final positioning. Split mark and wordmark perceptually with clipping windows over duplicate instances, not by editing the asset.",
+    "slot_f_cursor": "The oversized pointer enters already moving within slot F, lands its tip on Start registration, compresses for the click, triggers the menu, settles below/right so all three menu rows remain visible, then leaves while the action group begins the z-negative exit.",
+    "endcard": "Pull back into the raster tile plus RegisterBox wordmark and one closing line. Use the required two-part damped counter-bounce and finish on a clean readable hold; no URL, bloom, flash, particle assembly, or additional slogan.",
+    "audio": "No audio element and no audio track in the MP4."
+  },
+  "shot_brief": "The viewer experiences RegisterBox as one uninterrupted, confident move: its mark and wordmark counter-bounce into life, drive downward into a sign-in card, sweep left into a closer email-entry moment, rise into a 100% GST-readiness count, travel right across the real app navigation, push through into the primary registration action and its next-step menu, then pull back into a crisp brand endcard. The single dominant motion idea is matched velocity at every cut; outgoing and incoming elements share axis, direction, and comparable speed so none of the seven slots ever feels like a separate slide.",
+  "motion_contract": {
+    "arrival_ease": "EO(p) = p >= 1 ? 1 : 1 - Math.pow(2, -10 * p)",
+    "exit_ease": "EI(p) = p <= 0 ? 0 : Math.pow(2, 10 * (p - 1))",
+    "rules": [
+      "Pass the custom ease functions themselves; do not substitute stock named eases.",
+      "Every cut is velocity-matched: neither side may be settled at the seam.",
+      "Tween continuous curves; stamp typing, number steps, row selection, and menu decisions frame by frame.",
+      "Derive motion blur from the same motion ease and remove it at rest.",
+      "Use no random, infinite repeat, idle float, breathing, pulse, or generic bounce motion."
+    ]
+  },
+  "frame_plan": {
+    "total_frames": 360,
+    "slot_frames": {
+      "A": 39,
+      "B": 39,
+      "C": 45,
+      "D": 45,
+      "E": 57,
+      "F": 96,
+      "G": 39
+    }
+  },
+  "seam_plan": [
+    {
+      "id": "A-to-B",
+      "cut_s": 1.299,
+      "cut_after_frame": 39,
+      "technique": "velocity-matched cut, downward",
+      "exit": {
+        "subject": "A lockup",
+        "axis": "y",
+        "dir": 1
+      },
+      "entry": {
+        "subject": "B sign-in card",
+        "axis": "y",
+        "dir": 1
+      }
+    },
+    {
+      "id": "B-to-C",
+      "cut_s": 2.599,
+      "cut_after_frame": 78,
+      "technique": "velocity-matched cut, leftward",
+      "exit": {
+        "subject": "B sign-in card",
+        "axis": "x",
+        "dir": -1
+      },
+      "entry": {
+        "subject": "C close sign-in surface",
+        "axis": "x",
+        "dir": -1
+      }
+    },
+    {
+      "id": "C-to-D",
+      "cut_s": 4.099,
+      "cut_after_frame": 123,
+      "technique": "velocity-matched cut, upward",
+      "exit": {
+        "subject": "C email field",
+        "axis": "y",
+        "dir": -1
+      },
+      "entry": {
+        "subject": "D readiness metric",
+        "axis": "y",
+        "dir": -1
+      }
+    },
+    {
+      "id": "D-to-E",
+      "cut_s": 5.599,
+      "cut_after_frame": 168,
+      "technique": "velocity-matched cut, rightward",
+      "exit": {
+        "subject": "D readiness metric",
+        "axis": "x",
+        "dir": 1
+      },
+      "entry": {
+        "subject": "E navigation list",
+        "axis": "x",
+        "dir": 1
+      }
+    },
+    {
+      "id": "E-to-F",
+      "cut_s": 7.499,
+      "cut_after_frame": 225,
+      "technique": "velocity-matched push-through",
+      "exit": {
+        "subject": "E selected navigation row",
+        "axis": "z",
+        "dir": 1
+      },
+      "entry": {
+        "subject": "F primary action",
+        "axis": "z",
+        "dir": 1
+      }
+    },
+    {
+      "id": "F-to-G",
+      "cut_s": 10.699,
+      "cut_after_frame": 321,
+      "technique": "velocity-matched pull-back",
+      "exit": {
+        "subject": "F action result",
+        "axis": "z",
+        "dir": -1
+      },
+      "entry": {
+        "subject": "G endcard lockup",
+        "axis": "z",
+        "dir": -1
+      }
+    }
+  ],
+  "content": {
+    "logo": "assets/registerbox-app-icon.png",
+    "tagline": "Compliance, under control.",
+    "url": "",
+    "custom_structure": "seven-slot-ui-logo-sting",
+    "seven_slots": [
+      {
+        "id": "A",
+        "name": "brand-lockup",
+        "start_s": 0,
+        "end_s": 1.3,
+        "start_frame": 1,
+        "end_frame": 39,
+        "duration_frames": 39,
+        "copy": {
+          "wordmark": "RegisterBox"
+        },
+        "visual": "Split the supplied app-icon artwork into the graphic mark and the RegisterBox wordmark as two perceptual parts. Keep the raster source unaltered; use clipping/masking for the split and measure its real visible bounds before placement.",
+        "motion": "The mark and wordmark arrive with equal-and-opposite damped counter-bounce, then remain in downward flight into the A-to-B seam. The counter-bounce is the only spring-like motion in the film and must use the specified damped formula, not a stock elastic ease."
+      },
+      {
+        "id": "B",
+        "name": "entry-surface",
+        "start_s": 1.3,
+        "end_s": 2.6,
+        "start_frame": 40,
+        "end_frame": 78,
+        "duration_frames": 39,
+        "copy": {
+          "surface_title": "Welcome back",
+          "field_labels": [
+            "Business email",
+            "Password"
+          ],
+          "button": "Sign in"
+        },
+        "visual": "A clean mobile sign-in card on the pale ground, using RegisterBox blue for the primary action and navy ink for hierarchy.",
+        "motion": "Enter already moving downward from the matched seam, decelerate just enough to read, then accelerate left before the B-to-C cut."
+      },
+      {
+        "id": "C",
+        "name": "entry-surface-close",
+        "start_s": 2.6,
+        "end_s": 4.1,
+        "start_frame": 79,
+        "end_frame": 123,
+        "duration_frames": 45,
+        "copy": {
+          "surface_title": "Welcome back",
+          "field_label": "Business email",
+          "typed_value": "owner@business.in"
+        },
+        "visual": "The same sign-in surface as B, closer on the business-email field; do not introduce a different screen.",
+        "motion": "Enter already moving left. Stamp an intentionally uneven typing rhythm into the email field, then carry the focused field upward through the C-to-D cut."
+      },
+      {
+        "id": "D",
+        "name": "hero-number",
+        "start_s": 4.1,
+        "end_s": 5.6,
+        "start_frame": 124,
+        "end_frame": 168,
+        "duration_frames": 45,
+        "copy": {
+          "value": 100,
+          "suffix": "%",
+          "label": "GST return ready"
+        },
+        "visual": "One oversized readiness number with a compact supporting label and restrained success accent; no chart and no competing metrics.",
+        "motion": "Enter already moving upward. Stamp irregular, accelerating readiness values that resolve at 100%, hold legibility briefly, then move right into the D-to-E seam."
+      },
+      {
+        "id": "E",
+        "name": "primary-navigation",
+        "start_s": 5.6,
+        "end_s": 7.5,
+        "start_frame": 169,
+        "end_frame": 225,
+        "duration_frames": 57,
+        "copy": {
+          "rows": [
+            "Home",
+            "AI",
+            "Compliance",
+            "Documents",
+            "Account"
+          ],
+          "selected": "Compliance"
+        },
+        "visual": "The real five-row RegisterBox primary navigation. A blue selection band chooses Compliance while clipped navy duplicate labels preserve contrast over the highlight.",
+        "motion": "Rows enter already moving right with deliberately uneven spacing. Stamp the highlight path across the real rows, select Compliance, then keep the selected row growing toward camera for the E-to-F push-through.",
+        "measure_after_first_render": [
+          "Each row's off-screen start from its settled rendered width.",
+          "The Compliance highlight's resting width from the pre-highlight frame, using text width plus fixed padding."
+        ]
+      },
+      {
+        "id": "F",
+        "name": "primary-action",
+        "start_s": 7.5,
+        "end_s": 10.7,
+        "start_frame": 226,
+        "end_frame": 321,
+        "duration_frames": 96,
+        "copy": {
+          "button": "Start registration",
+          "menu_rows": [
+            "Business details",
+            "Documents",
+            "Review & submit"
+          ]
+        },
+        "copy_budget_note": "The repository brief explicitly requires the product label 'Start registration'. At 18 characters including the space, it is a controlled exception to the generic 16-character slot-F guideline; preserve the product language and fit it with width/padding, not condensed or undersized type.",
+        "visual": "A prominent RegisterBox-blue primary button and a compact three-step next-action menu that opens from the button corner, then recenters as a group.",
+        "motion": "Enter already growing from the push-through. Use three distinct beats: arrive at the control, activate it with a decisive cursor/contact response, then reveal the next-step menu with stamped row decisions. The whole result begins shrinking before the F-to-G cut. If button dimensions change, update the button box, menu origin, and recentering nudge together."
+      },
+      {
+        "id": "G",
+        "name": "endcard",
+        "start_s": 10.7,
+        "end_s": 12,
+        "start_frame": 322,
+        "end_frame": 360,
+        "duration_frames": 39,
+        "copy": {
+          "wordmark": "RegisterBox",
+          "closing_line": "Compliance, under control."
+        },
+        "visual": "The supplied mark and RegisterBox wordmark land as the hero lockup on the pale brand ground, with one closing line only.",
+        "motion": "Enter already shrinking from the pull-back, settle through the shared arrival ease, and give the two lockup parts a subtle two-frame-staggered counter-bounce before the final readable hold."
+      }
+    ]
+  },
+  "rights": {
+    "logo": "User-supplied local RegisterBox asset from the user's repository; no external capture.",
+    "ui": "RegisterBox product language and neutral original HTML/CSS/SVG surfaces only; no third-party UI or iconography.",
+    "type": "Generic system-ui stack; no proprietary font file is embedded or redistributed."
+  },
+  "verification_notes": [
+    "Measure the supplied logo's visible content bounds before final placement because the PNG contains surrounding white space.",
+    "After the first render, paste back all text-dependent navigation measurements from settled frames.",
+    "Verify every seam using frames immediately before and after each cut: both sides must move on the planned axis and sign.",
+    "The final deliverable is silent: do not create or include an audio track."
+  ]
+}

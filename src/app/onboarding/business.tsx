@@ -23,7 +23,7 @@ export default function BusinessDetailsScreen() {
         <View style={styles.divider} />
         {rows.map(([label, value]) => <View key={label} style={styles.row}><Text style={styles.label}>{label}</Text><Text selectable style={styles.value}>{value}</Text></View>)}
       </Card>
-      <Button title="Edit Details" variant="ghost" onPress={() => router.back()} />
+      <Button title="Update business details" variant="ghost" onPress={() => router.push({pathname:'/onboarding/application',params:{category:'existing'}})} />
       <View style={styles.source}><Text style={styles.sourceTitle}>✓ Source traceability</Text><Text style={styles.sourceText}>{business.verifiedAt ? `Verified against government registry data via Sandbox.co.in on ${new Date(business.verifiedAt).toLocaleString()}. You can correct any field before continuing.` : 'These values have not yet been verified against a trusted source.'}</Text></View>
     </Screen>
   );

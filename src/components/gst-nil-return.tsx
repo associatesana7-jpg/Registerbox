@@ -14,6 +14,9 @@ import { periodIsClosed, validPeriod } from '../../supabase/functions/gst-worksp
 import { GstCheckbox } from './gst-checkbox';
 import { useGstRefresh } from '@/hooks/use-gst-refresh';
 import { GstImsRecovery } from './gst-ims-recovery';
+import { GstRecoveryCard } from './gst-recovery-card';
+import { gstReturnRecovery } from '@/lib/gst-return-recovery';
+import { gstReconnectParams } from '@/lib/gst-return-route';
 
 const heading = { color: palette.ink, fontSize: 20, lineHeight:27, fontWeight: '600' as const };
 const detail = { color: palette.muted, fontSize: 14, lineHeight: 21 };
@@ -30,27 +33,29 @@ export function GstNilReturn({ businessId, form, year, month }: { businessId: st
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [providerCode,setProviderCode]=useState(''),[supportReference,setSupportReference]=useState('');
   const [declared, setDeclared] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [fileApproved, setFileApproved] = useState(false);
   const [pan, setPan] = useState('');
   const [otp, setOtp] = useState('');
-  const [resumeApproved,setResumeApproved]=useState(false);
   const [imsOpen,setImsOpen]=useState(false);
-  const running = useRef(false), mounted = useRef(true);
+  const running = useRef(false), mounted = useRef(true),readEpoch=useRef(0);
   const period = String(month).padStart(2, '0') + year;
   const periodLabel = `${String(month).padStart(2, '0')}/${year}`;
+  function showFailure(cause:unknown,fallback:string){setError(cause instanceof Error?cause.message:fallback);if(cause&&typeof cause==='object'){const meta=cause as {providerCode?:string;operationId?:string;providerRequestId?:string};setProviderCode(meta.providerCode||'');setSupportReference(meta.operationId||meta.providerRequestId||'');}}
   async function reload(initial = false) {
-    if (!initial) { setLoading(true); setError(''); }
+    const epoch=++readEpoch.current;
+    if (!initial) { setLoading(true); setError('');setProviderCode('');setSupportReference(''); }
     try {
       if (!validPeriod(year, month)) throw new Error('Choose a valid return period.');
       const [list, status] = await Promise.all([returnAction(businessId, 'list'), returnAction(businessId, 'history', { year, month })]);
-      if (!mounted.current) return;
+      if (!mounted.current||epoch!==readEpoch.current) return;
       const saved = list.drafts?.find(d => d.form === form && d.year === year && d.month === month) ?? null;
       setDraft(saved); setGstin(list.gstin || ''); setWrites(list.writesEnabled); setHistory(status.history ?? null);
       setPan(value=>value||saved?.signatory_pan||'');
-    } catch (cause) { if (mounted.current) {setHistory(null);setError(cause instanceof Error ? cause.message : 'Could not load GST status.');} }
-    finally { if (mounted.current) setLoading(false); }
+    } catch (cause) { if (mounted.current&&epoch===readEpoch.current) {setHistory(null);showFailure(cause,'Could not load GST status.');} }
+    finally { if (mounted.current&&epoch===readEpoch.current) setLoading(false); }
   }
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; /* Remounted for every account/period. */
   }, []);
@@ -60,9 +65,11 @@ export function GstNilReturn({ businessId, form, year, month }: { businessId: st
   const regular = !!draft && draft.payload.registerbox_nil !== true;
   const priorFiled = history?.records.some(r => r.form === 'GSTR1' && r.status.toLowerCase() === 'filed');
   const stage = nilNextStep(draft);
+  const recovery=gstReturnRecovery(draft,error?{message:error,providerCode}:null);
   const blocked = loading || !history || !!block || regular || stage==='ims' || !periodIsClosed(year, month) || !writes || (form === 'gstr-3b' && !priorFiled);
   async function act(action: string, current: ReturnDraft | null, extra: Record<string, unknown> = {}) {
     if (!mounted.current) throw new Error('Screen closed. Reload to check the saved status.');
+    readEpoch.current++;
     const result = await returnAction(businessId, action, { consent: true, draftId: current?.id, revision: current?.revision, approvedHash: current?.payload_hash, ...extra });
     if (!result.draft) throw new Error('No saved return status was returned. Reload before continuing.');
     if (mounted.current) setDraft(result.draft);
@@ -100,7 +107,7 @@ export function GstNilReturn({ businessId, form, year, month }: { businessId: st
       // A failed request may have advanced the server state. Never retain the
       // stale draft and send preparation again from this screen.
       const message = cause instanceof Error ? cause.message : 'Could not continue. Reload to check status before retrying.';
-      if (mounted.current) { await reload(); setError(message); }
+      if (mounted.current) { await reload(); showFailure(cause,message); }
     }
     finally { running.current = false; if (mounted.current) setBusy(''); }
   }
@@ -110,7 +117,7 @@ export function GstNilReturn({ businessId, form, year, month }: { businessId: st
     try { await act('file', draft, { otp }); setOtp(''); setFileApproved(false); }
     catch (cause) {
       const message = cause instanceof Error ? cause.message : 'Check GST status before retrying.';
-      if (mounted.current) { await reload(); setError(message); }
+      if (mounted.current) { await reload(); showFailure(cause,message); }
     }
     finally { running.current = false; if (mounted.current) setBusy(''); }
   }
@@ -118,27 +125,47 @@ export function GstNilReturn({ businessId, form, year, month }: { businessId: st
     if(running.current||blocked||!draft)return;
     running.current=true;setBusy('Resending filing OTP…');setError('');
     try{await act('evc',draft,{pan:draft.signatory_pan||pan});setOtp('');setFileApproved(false);}
-    catch(cause){await reload();setError(cause instanceof Error?cause.message:'Could not resend OTP.');}
+    catch(cause){await reload();showFailure(cause,'Could not resend OTP.');}
     finally{running.current=false;setBusy('');}
   }
   function openSavedReturn(){router.replace({pathname:'/gst-returns',params:{form,year,month,mode:'regular'}});}
-  async function resumePortal(){
-    if(running.current||loading||!history||!!block||!resumeApproved)return;
+  async function resumePortal(readApproved=false){
+    if(running.current||loading||!history||!!block||!readApproved)return;
     running.current=true;setBusy('Loading your saved GSTR-3B and payment status…');setError('');
     try{await act('resume_portal',draft);setOtp('');setFileApproved(false);openSavedReturn();}
-    catch(cause){if(mounted.current)setError(cause instanceof Error?cause.message:'Could not load the saved GST return.');}
+    catch(cause){if(mounted.current)showFailure(cause,'Could not load the saved GST return.');}
     finally{running.current=false;if(mounted.current)setBusy('');}
+  }
+  async function afterIms(){
+    if(running.current)return;
+    setImsOpen(false);running.current=true;setBusy('Checking GSTR-2B and your saved return…');setError('');
+    try{if(stage==='ims')await act('recover_ims',draft);else await reload();}
+    catch(cause){showFailure(cause,'GSTR-2B is not ready yet. Continue checking in IMS.');}
+    finally{running.current=false;if(mounted.current)setBusy('');}
+  }
+  async function resolveRecovery(){
+    if(!recovery||running.current)return;
+    switch(recovery.target){
+      case 'ims':setImsOpen(true);break;
+      case 'saved-return':case 'payment':await resumePortal(true);break;
+      case 'reconnect':router.push({pathname:'/gst',params:gstReconnectParams({form,year:String(year),month:String(month).padStart(2,'0'),mode:'nil'},businessId)});break;
+      case 'otp':setError('');setOtp('');setFileApproved(false);break;
+      case 'reconcile':if(regular)openSavedReturn();else await reload();break;
+      case 'check':running.current=true;setBusy('Checking the previous GST request…');setError('');try{await act('poll',draft);}catch(cause){showFailure(cause,'Could not confirm the previous request.');}finally{running.current=false;setBusy('');}break;
+      case 'refresh':await reload();break;
+    }
   }
   return <Screen><Stack.Screen options={{ headerShown: false }}/><GstHeader title={`File Nil ${form.toUpperCase()}`} onBack={() => router.replace('/gst')}/>
     <View style={{ gap: 20 }}><JourneyRail current={filed ? 2 : stage === 'otp' ? 1 : 0} steps={['Declaration', 'OTP & file', 'Receipt']}/>
       <Card><Text style={heading}>{form.toUpperCase()} · {periodLabel}</Text><Text selectable style={detail}>{gstin || 'Loading GST account…'}</Text><Text style={detail}>Monthly return · Nil declaration</Text></Card>
       <ErrorBanner message={error}/>
-      {form==='gstr-3b'?<GstImsRecovery businessId={businessId} year={year} month={month} visible={imsOpen} onClose={()=>setImsOpen(false)} onComplete={()=>{setImsOpen(false);void (async()=>{setBusy('Refreshing return after IMS…');try{if(stage==='ims')await act('recover_ims',draft);else await reload();}catch(cause){setError(cause instanceof Error?cause.message:'Refresh GST status to continue.');}finally{setBusy('');}})();}}/>:null}
-      {form==='gstr-3b'&&!filed?<Card><Text style={heading}>{draft?.last_error?.includes('IMS002')?'Generate GSTR-2B to continue':'Invoices & GSTR-2B'}</Text><Text style={detail}>Review supplier invoices in IMS, save your decisions, then compute GSTR-2B. Your return and checklist stay here.</Text><Button title="Open IMS dashboard →" variant="secondary" disabled={!!busy} onPress={()=>setImsOpen(true)}/>{stage==='ims'?<Button title="I completed IMS · refresh & continue" disabled={!!busy} onPress={()=>void (async()=>{setBusy('Checking GSTR-2B…');setError('');try{await act('recover_ims',draft);}catch(cause){setError(cause instanceof Error?cause.message:'GSTR-2B is not ready yet.');}finally{setBusy('');}})()}/>:null}</Card>:null}
+      {supportReference?<Text selectable style={detail}>Support reference: {supportReference}</Text>:null}
+      {recovery&&!filed?<GstRecoveryCard key={recovery.target+draft?.revision+draft?.state} recovery={recovery} disabled={!!busy||loading} onResolve={()=>void resolveRecovery()}/>:null}
+      {form==='gstr-3b'?<GstImsRecovery businessId={businessId} year={year} month={month} visible={imsOpen} onClose={()=>setImsOpen(false)} onComplete={()=>void afterIms()} onReconnect={()=>router.push({pathname:'/gst',params:gstReconnectParams({form,year:String(year),month:String(month).padStart(2,'0'),mode:'nil'},businessId)})}/>:null}
       {loading ? <Text style={detail}>Checking your account and filing status…</Text> : null}
       {filed ? <Card><Badge label="Filed · duplicate filing blocked" tone="green"/><Text selectable style={heading}>ARN: {draft?.acknowledgement || block?.record.arn || 'Not returned by GST'}</Text>{form === 'gstr-1' ? <Button title="Continue to GSTR-3B →" onPress={() => router.replace({ pathname: '/gst-returns', params: { form: 'gstr-3b', year, month, mode: 'nil' } })}/> : <Button title="Back to GST" onPress={() => router.replace('/gst')}/>}</Card> : <>
-        {!loading && blocked ? <Card><Text style={heading}>Before continuing</Text><Text style={detail}>{regular ? 'A regular draft exists. Review it instead of overwriting it with nil.' : block?.message || (stage==='ims'?'Compute GSTR-2B in IMS below, then continue with your saved declaration.':!periodIsClosed(year, month) ? 'This tax period has not ended in India.' : !history ? 'GST filing status could not be verified. Retry below.' : !writes ? 'Live GST filing is currently unavailable.' : 'Complete GSTR-1 for this period before filing GSTR-3B.')}</Text></Card> : null}
-        {regular?<Card><Text style={heading}>Continue your saved GSTR-3B</Text><Text style={detail}>Review the saved return and its payment details to continue filing.</Text><Button title="Open saved return →" onPress={openSavedReturn}/></Card>:stage==='portal'?<Card><Text style={heading}>Continue with your saved GSTR-3B</Text><Text style={detail}>GST has saved figures for this period, so it rejected the nil request (RT-3BAS1079). You can continue here: review those figures, complete payment / offset if needed, then file with OTP. No return is filed by loading it.</Text><Confirm checked={resumeApproved} disabled={!!busy} onPress={()=>setResumeApproved(!resumeApproved)} label={`Load the saved GSTR-3B and payment details for ${periodLabel}, and continue with that return for review.`}/><Button title="Review saved return & continue →" loading={!!busy} disabled={!!busy||loading||!history||!!block||!resumeApproved} onPress={()=>void resumePortal()}/></Card>:stage === 'blocked' ? <Card><Text style={heading}>Check the previous operation</Text><Text style={detail}>{draft?.last_error || 'The previous request needs review. Check its outcome on GST before trying again.'}</Text></Card> : stage === 'otp' ? <Card><Text style={heading}>Enter GST filing OTP</Text><Text style={detail}>Sent to the authorized signatory’s registered GST contact. Entering the OTP alone does not submit the return.</Text><Field label="GST filing code (letters and numbers)" value={otp} secureTextEntry keyboardType="default" autoCapitalize="none" autoCorrect={false} maxLength={32} editable={!busy} onChangeText={value => { setOtp(value.trim()); setFileApproved(false); }}/><Confirm checked={fileApproved} disabled={!!busy} onPress={() => setFileApproved(!fileApproved)} label={`I confirm the nil declaration for ${gstin}, ${form.toUpperCase()}, ${periodLabel} is true and complete, and authorize filing this return using this OTP.`}/><Button title="Verify OTP & file nil return" loading={!!busy} disabled={!!busy || blocked || !fileApproved || !validFilingOtp(otp)} onPress={() => void fileReturn()}/><Button title="Resend OTP" variant="ghost" disabled={!!busy || blocked} onPress={() => void resendOtp()}/></Card> : <Card>
+        {!loading && blocked && !recovery ? <Card><Text style={heading}>Before continuing</Text><Text style={detail}>{regular ? 'A regular draft exists. Review it instead of overwriting it with nil.' : block?.message || (!periodIsClosed(year, month) ? 'This tax period has not ended in India.' : !history ? 'GST filing status could not be verified. Retry below.' : !writes ? 'Live GST filing is currently unavailable.' : 'Complete GSTR-1 for this period before filing GSTR-3B.')}</Text></Card> : null}
+        {regular?<Card><Text style={heading}>Continue your saved GSTR-3B</Text><Text style={detail}>Review the saved return and its payment details to continue filing.</Text><Button title="Open saved return →" onPress={openSavedReturn}/></Card>:['portal','blocked','ims','poll'].includes(stage)?null:stage === 'otp' ? <Card><Text style={heading}>Enter GST filing OTP</Text><Text style={detail}>Sent to the authorized signatory’s registered GST contact. Entering the OTP alone does not submit the return.</Text><Field label="GST filing code (letters and numbers)" value={otp} secureTextEntry keyboardType="default" autoCapitalize="none" autoCorrect={false} maxLength={32} editable={!busy} onChangeText={value => { setOtp(value.trim()); setFileApproved(false); }}/><Confirm checked={fileApproved} disabled={!!busy} onPress={() => setFileApproved(!fileApproved)} label={`I confirm the nil declaration for ${gstin}, ${form.toUpperCase()}, ${periodLabel} is true and complete, and authorize filing this return using this OTP.`}/><Button title="Verify OTP & file nil return" loading={!!busy} disabled={!!busy || blocked || !fileApproved || !validFilingOtp(otp)} onPress={() => void fileReturn()}/><Button title="Resend OTP" variant="ghost" disabled={!!busy || blocked} onPress={() => void resendOtp()}/></Card> : <Card>
           <Text style={heading}>File Nil {form.toUpperCase()}</Text>
           <Text style={detail}>Confirm all of the following for this period:</Text>
           <Text style={detail}>• No outward supplies, including exports and reverse-charge supplies.{ '\n' }• No amendments or credit/debit notes to report.{ '\n' }• No service advances to declare or adjust.</Text>
@@ -151,6 +178,7 @@ export function GstNilReturn({ businessId, form, year, month }: { businessId: st
           <Text style={detail}>No invoice upload or manual summary fetch is needed for this nil flow. GST may still reject a return if its requirements are not met.</Text>
         </Card>}
       </>}
+      {form==='gstr-3b'&&!filed&&recovery?.target!=='ims'?<Button title="Review invoices in IMS / GSTR-2B" variant="ghost" disabled={!!busy} onPress={()=>setImsOpen(true)}/>:null}
       <Button title="Refresh filing status" variant="ghost" disabled={!!busy || loading} onPress={() => void reload()}/>
       <Button title="Change period / back to GST" variant="ghost" disabled={!!busy} onPress={() => router.replace('/gst')}/>
     </View>

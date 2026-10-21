@@ -1,0 +1,49 @@
+{
+  "_": "Vector ledger authored before composition HTML. Exit and entry agree on axis and direction; cuts sit just below their frame time so the incoming slot owns the cut frame.",
+  "fps": 30,
+  "duration": 12,
+  "seams": [
+    {
+      "id": "A → B",
+      "cut": 1.299,
+      "technique": "velocity-matched cut, downward",
+      "exit": { "selector": "#a-lockup", "axis": "y", "dir": 1 },
+      "entry": { "selector": "#b-card", "axis": "y", "dir": 1 }
+    },
+    {
+      "id": "B → C",
+      "cut": 2.599,
+      "technique": "velocity-matched cut, leftward",
+      "exit": { "selector": "#b-card", "axis": "x", "dir": -1 },
+      "entry": { "selector": "#c-email", "axis": "x", "dir": -1 }
+    },
+    {
+      "id": "C → D",
+      "cut": 4.099,
+      "technique": "velocity-matched cut, upward",
+      "exit": { "selector": "#c-email", "axis": "y", "dir": -1 },
+      "entry": { "selector": "#d-metric", "axis": "y", "dir": -1 }
+    },
+    {
+      "id": "D → E",
+      "cut": 5.599,
+      "technique": "velocity-matched cut, rightward",
+      "exit": { "selector": "#d-metric", "axis": "x", "dir": 1 },
+      "entry": { "selector": "#e-nav", "axis": "x", "dir": 1 }
+    },
+    {
+      "id": "E → F",
+      "cut": 7.499,
+      "technique": "velocity-matched push-through",
+      "exit": { "selector": "#e-selected", "axis": "z", "dir": 1 },
+      "entry": { "selector": "#f-action", "axis": "z", "dir": 1 }
+    },
+    {
+      "id": "F → G",
+      "cut": 10.699,
+      "technique": "velocity-matched pull-back",
+      "exit": { "selector": "#f-action", "axis": "z", "dir": -1 },
+      "entry": { "selector": "#g-lockup", "axis": "z", "dir": -1 }
+    }
+  ]
+}

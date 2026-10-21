@@ -4,6 +4,11 @@
 # working directory name when running `supabase init`.
 project_id = "registerbox"
 
+# Harvey uses a scoped bearer token checked against a SHA-256 digest in the
+# function. It never accepts anonymous requests or exposes the OpenRouter key.
+[functions.harvey-brain]
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.
