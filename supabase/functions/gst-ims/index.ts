@@ -2,10 +2,12 @@ import { createClient } from 'npm:@supabase/supabase-js@2.117.1';
 import {corsHeaders,json} from '../_shared/http.ts';
 import {decryptToken,validPeriod,periodIsClosed} from '../gst-workspace/domain.ts';
 import {fetchFilingHistory,filingBlock} from '../_shared/gst-filing-history.ts';
-import {imsSections,imsRows,imsSavePayload,imsProcessed,type ImsInvoice} from '../_shared/gst-ims.ts';
-import {unpack2b} from '../_shared/gst-purchases.ts';
+import {imsSections,imsRows,imsSavePayload,imsProcessed,imsComputationProcessed,type ImsInvoice} from '../_shared/gst-ims.ts';
+import {unpack2b,PurchaseError} from '../_shared/gst-purchases.ts';
 class SafeError extends Error{}
-class Rejected extends SafeError{}
+class Rejected extends SafeError{
+  constructor(message:string,readonly code='UNKNOWN'){super(message);}
+}
 const digest=async(value:unknown)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value))))).map(x=>x.toString(16).padStart(2,'0')).join('');
 Deno.serve(async request=>{
   if(request.method==='OPTIONS')return new Response('ok',{headers:corsHeaders});
@@ -44,7 +46,7 @@ Deno.serve(async request=>{
       const response=await fetch('https://api.sandbox.co.in'+path,{method:payload===undefined?'GET':'POST',headers:{authorization:token,'x-api-key':key,'x-api-version':'1.0.0','Content-Type':'application/json','x-source':'primary'},body:payload===undefined?undefined:JSON.stringify(payload),signal:AbortSignal.timeout(15000)});
       const result=await response.json();
       if(!response.ok||!result.data||Number(result.code)>=400)throw new SafeError('GST provider is unavailable or your session expired. Reconnect, then check the previous operation.');
-      if(String(result.data.status_cd)==='0'||result.data.error){const error=result.data.error;throw new Rejected(`GST rejected IMS (${String(error?.error_cd||'UNKNOWN').replace(/[^A-Za-z0-9_-]/g,'')}): ${String(error?.message||'Review the GST portal response.').slice(0,240)}`);}
+      if(String(result.data.status_cd)==='0'||result.data.error){const error=result.data.error,code=String(error?.error_cd||'UNKNOWN').replace(/[^A-Za-z0-9_-]/g,'');throw new Rejected(`GST rejected IMS (${code}): ${String(error?.message||'Review the GST portal response.').slice(0,240)}`,code);}
       if(String(result.data.status_cd)!=='1'&&!(path.includes('/gstr-2b/')&&String(result.data.status_cd)==='3'))throw new SafeError('Unrecognized GST response. No operation was automatically repeated.');
       return result.data;
     };
@@ -67,11 +69,21 @@ Deno.serve(async request=>{
       const path=operation.action==='save'?'/gst/compliance/tax-payer/invoices/status':'/gst/compliance/tax-payer/gstrs/gstr-2b/regenerate';
       const result=(await provider(path+'?reference_id='+encodeURIComponent(operation.reference_id))).data;
       if(!result||typeof result!=='object')throw new SafeError('GST returned no processing status.');
-      let outcome=imsProcessed(result,Number(operation.approval.count));let ready=false;
-      if(operation.action==='compute'&&!result.err_cd&&!result.err_msg&&['P','S'].includes(String(result.status_cd))){try{await document();outcome='succeeded';ready=true;}catch{outcome='pending';}}
+      let outcome=operation.action==='compute'?imsComputationProcessed(result):imsProcessed(result,Number(operation.approval.count));let ready=false,message:string|undefined;
+      if(operation.action==='compute'&&outcome==='succeeded'){
+        try{await document();ready=true;}
+        catch(cause){
+          // A completed generation can precede document propagation. Other failures
+          // (session expiry, malformed/wrong-period data) need an actionable error,
+          // not a timer that silently polls forever.
+          if(cause instanceof Rejected&&cause.code==='IMS002_CD'){
+            outcome='pending';message='GST completed computation, but GSTR-2B is not available yet. We will check again; do not compute it twice.';
+          }else throw cause;
+        }
+      }
       const {data:updated,error}=await admin.from('gst_ims_operations').update({outcome,result,updated_at:new Date().toISOString()}).eq('id',operation.id).select('*').single();
       if(error)throw new SafeError('Could not save the processing outcome. Check status again.');
-      return json({workspace,operation:updated,ready});
+      return json({workspace,operation:updated,ready,message});
     }
     if(!periodIsClosed(year,month))throw new SafeError('This return period has not ended in India.');
     if(env.GST_RETURN_WRITES_ENABLED!=='true')throw new SafeError('Live GST writes are currently unavailable. Complete IMS on the official portal, then check GSTR-2B here.');
@@ -99,7 +111,7 @@ Deno.serve(async request=>{
     writeStarted=false;operation=updated;
     return json({workspace,operation});
   }catch(cause){
-    if(writeStarted&&operationId)await admin.from('gst_ims_operations').update({outcome:cause instanceof Rejected?'failed':'unknown',updated_at:new Date().toISOString()}).eq('id',operationId);
-    return json({error:cause instanceof SafeError?cause.message:'IMS could not be completed. Refresh its status; no write was automatically repeated.'},502);
+    if(writeStarted&&operationId)await admin.from('gst_ims_operations').update({outcome:cause instanceof Rejected?'failed':'unknown',result:{err_msg:cause instanceof SafeError?cause.message:'The GST request outcome is not confirmed.',...(cause instanceof Rejected?{err_cd:cause.code}:{})},updated_at:new Date().toISOString()}).eq('id',operationId);
+    return json({error:cause instanceof SafeError||cause instanceof PurchaseError?cause.message:'IMS could not be completed. Refresh its status; no write was automatically repeated.',...(cause instanceof Rejected?{code:cause.code}:{})},502);
   }finally{if(connectionId&&lockId)await admin.from('gst_connections').update({lock_id:null,locked_until:null}).eq('id',connectionId).eq('lock_id',lockId);}
 });

@@ -1,4 +1,4 @@
-import { Redirect, router, Stack } from 'expo-router';
+import { Redirect, router, Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 import { Button, ErrorBanner, Field, Screen } from '@/components/registerbox-ui';
@@ -15,6 +15,7 @@ import { GstCheckbox } from '@/components/gst-checkbox';
 import { Disclosure } from '@/components/workspace-ui';
 import { AppIcon } from '@/components/app-icon';
 import { advanceTo3b } from '@/lib/gst-period-navigation';
+import { gstResumeRoute } from '@/lib/gst-return-route';
 
 function Consent({checked,label,onChange,disabled=false}:{checked:boolean;label:string;onChange:()=>void;disabled?:boolean}) {
   return <GstCheckbox checked={checked} label={label} disabled={disabled} onPress={onChange}/>;
@@ -27,15 +28,17 @@ export default function GstScreen() {
   return <GstWorkspace key={session.user.id+business.id} businessId={business.id} initialGstin={business.gstin} name={business.tradeName||business.legalName}/>;
 }
 function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialGstin:string;name:string}) {
+  const route=useLocalSearchParams();
+  const [resumeReturn]=useState(()=>gstResumeRoute(route,businessId));
   const [connection,setConnection]=useState<GstConnection|null>(null);
   const [gstin,setGstin]=useState(initialGstin||''),[username,setUsername]=useState(''),[otp,setOtp]=useState('');
   const [consent,setConsent]=useState(false),[verifyConsent,setVerifyConsent]=useState(false),[readConsent,setReadConsent]=useState(false),[disconnectConsent,setDisconnectConsent]=useState(false);
   const [busy,setBusy]=useState(true),[error,setError]=useState('');
-  const [section,setSection]=useState('GSTR-1');
+  const [section,setSection]=useState(resumeReturn?.form==='gstr-3b'?'GSTR-3B':'GSTR-1');
   const [page,setPage]=useState<'period'|'summary'|'connection'>('connection');
-  const [resumeMode,setResumeMode]=useState<string|null>(null);
+  const [resumeMode,setResumeMode]=useState<string|null>(resumeReturn?.mode||null);
   const previous=new Date();previous.setDate(1);previous.setMonth(previous.getMonth()-1);
-  const [year,setYear]=useState(String(previous.getFullYear())),[month,setMonth]=useState(String(previous.getMonth()+1).padStart(2,'0'));
+  const [year,setYear]=useState(resumeReturn?.year||String(previous.getFullYear())),[month,setMonth]=useState(resumeReturn?.month||String(previous.getMonth()+1).padStart(2,'0'));
   const [financialYear,setFinancialYear]=useState(previous.getMonth()<3?previous.getFullYear()-1:previous.getFullYear());
   const [result,setResult]=useState<GstReturn|null>(null);
   const [filingHistory,setFilingHistory]=useState<FilingHistory|null>(null);
@@ -50,7 +53,7 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
   const [coverageOpen,setCoverageOpen]=useState(false);
   const running=useRef(false),mounted=useRef(true);
   const [now,setNow]=useState(()=>Date.now());
-  useEffect(()=>{mounted.current=true;gstAction<{connection:GstConnection}>(businessId,'status').then(({connection:next})=>{if(mounted.current){setConnection(next);setGstin(next.gstin||initialGstin||'');setUsername(next.username||'');setPage(next.status==='linked'&&Date.parse(next.expiresAt||'')>Date.now()?'period':'connection');}}).catch(cause=>{if(mounted.current)setError(cause.message);}).finally(()=>{if(mounted.current)setBusy(false);});const timer=setInterval(()=>setNow(Date.now()),1000);return()=>{mounted.current=false;clearInterval(timer);};},[businessId,initialGstin]);
+  useEffect(()=>{mounted.current=true;gstAction<{connection:GstConnection}>(businessId,'status').then(({connection:next})=>{if(mounted.current){setConnection(next);setGstin(next.gstin||initialGstin||'');setUsername(next.username||'');setPage(!resumeReturn&&next.status==='linked'&&Date.parse(next.expiresAt||'')>Date.now()?'period':'connection');}}).catch(cause=>{if(mounted.current)setError(cause.message);}).finally(()=>{if(mounted.current)setBusy(false);});const timer=setInterval(()=>setNow(Date.now()),1000);return()=>{mounted.current=false;clearInterval(timer);};},[businessId,initialGstin,resumeReturn]);
   const linked=connection?.status==='linked'&&Date.parse(connection.expiresAt||'')>now;
   const pending=connection?.status==='otp_pending';
   const cooldown=Math.max(0,Math.ceil((Date.parse(connection?.lastOtpAt||'')+60000-now)/1000))||0;
@@ -98,7 +101,7 @@ function GstWorkspace({businessId,initialGstin,name}:{businessId:string;initialG
         <View style={s.card}><Pressable accessibilityRole="button" accessibilityState={{expanded:coverageOpen}} onPress={()=>setCoverageOpen(!coverageOpen)} style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10}}><View style={{flex:1,gap:3}}><Text style={s.title}>Return coverage</Text><Text style={s.caption}>Forms are enabled only after taxpayer applicability and live provider support are verified.</Text></View><Text style={{color:palette.blue,fontSize:18}}>{coverageOpen?'⌃':'⌄'}</Text></Pressable>{coverageOpen?GST_RETURN_COVERAGE.map(item=><View key={item.form} style={{flexDirection:'row',alignItems:'center',gap:10,paddingTop:9,borderTopWidth:1,borderTopColor:palette.line}}><View style={{flex:1,gap:2}}><Text style={{fontSize:12,fontWeight:'800',color:palette.ink}}>{item.form}</Text><Text style={s.caption}>{item.purpose}</Text></View><Text style={{fontSize:10,fontWeight:'800',color:item.availability==='enabled'?palette.green:palette.amber}}>{item.availability==='enabled'?'Guided flow':'CA/provider review'}</Text></View>):null}</View>
       </>:null}
       {page==='connection'?<>
-        <View style={s.card}><Text style={s.title}>{linked?'GST account connected':'Connect your GST account'}</Text>{linked?<><Text selectable style={{fontSize:16,fontWeight:'700',color:palette.ink}}>{connection?.gstin}</Text><Text style={s.caption}>Access expires {new Date(connection!.expiresAt!).toLocaleString('en-IN')}.</Text><Button title="Choose return period" onPress={()=>setPage('period')}/></>:<>
+        <View style={s.card}><Text style={s.title}>{linked?'GST account connected':'Connect your GST account'}</Text>{resumeReturn?<Text style={s.caption}>Continue {resumeReturn.form.toUpperCase()} · {resumeReturn.month}/{resumeReturn.year}. Your return and saved progress are preserved. Connecting does not repeat a payment or file anything.</Text>:null}{linked?<><Text selectable style={{fontSize:16,fontWeight:'700',color:palette.ink}}>{connection?.gstin}</Text><Text style={s.caption}>Access expires {new Date(connection!.expiresAt!).toLocaleString('en-IN')}.</Text>{resumeReturn?<Button title="Continue saved return →" onPress={()=>router.replace({pathname:'/gst-returns',params:resumeReturn})}/>:<Button title="Choose return period" onPress={()=>setPage('period')}/>}</>:<>
           <Text style={s.caption}>Enable API access under GST Portal → View Profile → Manage API Access.</Text><Button title="Open GST Portal" variant="ghost" onPress={()=>void Linking.openURL('https://www.gst.gov.in/').catch(()=>setError('Open gst.gov.in in your browser.'))}/>
           <Field label="GSTIN" value={gstin} editable={!busy&&!pending} autoCapitalize="characters" autoCorrect={false} maxLength={15} onChangeText={value=>{setGstin(value.toUpperCase().replace(/\s/g,''));setConsent(false);}}/>
           {gstin&&!gstinValid?<Text accessibilityRole="alert" style={{...s.caption,color:palette.red}}>Enter your 15-character GST registration number here. Your GST portal username belongs in the next field.</Text>:null}

@@ -1,4 +1,5 @@
 import { record, amount, type Obj } from './gstr3b.ts';
+import { portal3bHasPayments, portal3bPaymentState } from './gst-portal-resume.ts';
 export const HEADS=['igst','cgst','sgst','cess'] as const;
 export const CREDIT_FIELDS={i_pdi:'IGST credit → IGST',i_pdc:'IGST credit → CGST',i_pds:'IGST credit → SGST',c_pdi:'CGST credit → IGST',c_pdc:'CGST credit → CGST',s_pdi:'SGST credit → IGST',s_pds:'SGST credit → SGST',cs_pdcs:'Cess credit → Cess'};
 export const emptyCredit=()=>Object.fromEntries(Object.keys(CREDIT_FIELDS).map(k=>[k,0]));
@@ -12,7 +13,12 @@ export function paymentContext(snapshot:Obj,ledger:Obj):PaymentContext {
   if(snapshot.gstin!==ledger.gstin)throw Error('Ledger GSTIN does not match this return.');
   const payment=record(snapshot.tx_pmt,'GST payment tables');
   for(const key of ['adjnegliab','pdnls'])if(Array.isArray(payment[key])&&(payment[key] as unknown[]).length)throw Error('Negative-liability adjustments require the GST portal workflow.');
-  const source=payment.net_tax_pay;
+  // net_tax_pay can retain the original liability after a previous offset.
+  // Never allocate that historical amount again when GST supplies tx_py.
+  const currentState=portal3bPaymentState(snapshot);
+  if(payment.tx_py!==undefined&&currentState==='unconfirmed')throw Error('GST did not return a complete current payable table. Refresh payment details before allocating funds.');
+  if(payment.tx_py===undefined&&portal3bHasPayments(snapshot))throw Error('GST returned previous payments without current payable amounts. Refresh payment status; do not offset the original liability again.');
+  const source=payment.tx_py??payment.net_tax_pay;
   if(!Array.isArray(source)||!source.length)throw Error('GST has not provided payable liability. Save/process the return and fetch payment details.');
   const seen=new Set<number>();
   const liabilities=source.map(value=>{

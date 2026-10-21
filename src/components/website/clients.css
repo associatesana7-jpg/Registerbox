@@ -1,0 +1,66 @@
+.rb-clients{padding:76px 0 58px;background:#fff;scroll-margin-top:24px;border-bottom:1px solid #e9edf5}
+.rb-clients-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:32px}
+.rb-website .rb-clients-heading h2{font-size:clamp(36px,4vw,50px);line-height:1.1;letter-spacing:-1.9px;margin:18px 0 0}
+.rb-clients-heading h2>span{color:#3458dd}
+.rb-clients-intro{width:300px;flex:none;padding-bottom:3px}
+.rb-clients-intro>p{font-size:14px;line-height:1.8;color:#66728a;max-width:280px;margin:0 0 18px}
+.rb-clients-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.rb-clients-caption{font-size:11px;font-weight:600;color:#52617a;display:flex;align-items:center;gap:8px}
+.rb-clients-caption>i{display:block;height:7px;width:7px;background:#3458dd;border-radius:50%;box-shadow:0 0 0 4px #edf1ff}
+.rb-website .rb-clients-motion{display:none;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:9px 13px;border:1px solid #dfe5f0;border-radius:24px;font-size:11px;font-weight:600;color:#344560;background:#fff;transition:transform 220ms,background-color 220ms,border-color 220ms}
+.rb-website .rb-clients-motion:hover{background:#edf1ff;border-color:#c8d3f0;transform:translateY(-2px)}
+.rb-clients-window{position:relative;padding:12px 0 18px}
+.rb-clients-track{width:100%}
+.rb-clients-group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.rb-clients-group-copy{display:none}
+.rb-client-card{position:relative;isolation:isolate;min-width:0;min-height:251px;display:flex;flex-direction:column;align-items:center;padding:20px 24px 23px;border:1px solid #e2e7f0;border-radius:18px;background:linear-gradient(145deg,#fff 60%,#f5f7fc);overflow:hidden;transition:transform 220ms,border-color 220ms,box-shadow 220ms}
+.rb-client-card::after{content:"";position:absolute;z-index:-1;width:150px;height:150px;border-radius:50%;bottom:-112px;right:-32px;border:1px solid #dfe7f7;box-shadow:0 0 0 17px #f1f5fc,0 0 0 18px #e6ecf7}
+.rb-client-card-label{width:100%;display:flex;align-items:center;justify-content:space-between;gap:15px;color:#60718a;font-size:9px;letter-spacing:1.3px;line-height:1.7}
+.rb-client-card-label>span:first-child{letter-spacing:0;font-variant-numeric:tabular-nums;font-size:10px}
+.rb-client-card-label>span:last-child{display:flex;align-items:center;gap:6px}
+.rb-client-card-label i{display:inline-block;width:4px;height:4px;border-radius:50%;background:#9daed5}
+.rb-client-logo{display:flex;align-items:center;justify-content:center;height:144px;width:100%;margin:8px 0 3px}
+.rb-client-logo>img{display:block;width:220px;max-width:100%;height:118px;object-fit:contain}
+.rb-client-card.is-absolute-shawarma .rb-client-logo>img,.rb-client-card.is-kunafa-bakery .rb-client-logo>img{width:116px;height:116px}
+.rb-client-card h3{font-size:14px;font-weight:650;line-height:1.5;letter-spacing:-.15px;text-align:center;margin:8px 0 0;color:#132548}
+.rb-clients-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:7px}
+.rb-clients-bottom>p{font-size:11px;color:#66728a;margin:0}
+.rb-clients-bottom nav{display:flex;align-items:center;gap:14px;font-size:11px;font-weight:600;color:#52617a}
+.rb-clients-bottom a{min-height:44px;display:inline-flex;align-items:center;gap:7px}
+.rb-clients-bottom a>span{display:inline-block;transition:transform 220ms}
+.rb-clients-bottom a:hover{color:#3458dd}
+.rb-clients-bottom a:hover>span{transform:translate(2px,-2px)}
+.rb-clients-link-dot{color:#a0abc0}
+@keyframes rb-clients-travel{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@media(prefers-reduced-motion:no-preference){
+  .rb-clients[data-enhanced=true] .rb-clients-motion{display:inline-flex}
+  .rb-clients[data-enhanced=true] .rb-clients-window{overflow:hidden;margin-inline:-10px;padding-inline:10px;mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)}
+  .rb-clients[data-enhanced=true] .rb-clients-track{display:flex;width:max-content;animation:rb-clients-travel 28s linear infinite;will-change:transform}
+  .rb-clients[data-enhanced=true] .rb-clients-group{display:flex;flex:none;width:1200px;gap:20px;padding-right:20px}
+  .rb-clients[data-enhanced=true] .rb-client-card{width:calc((100% - 40px)/3);flex:none}
+  .rb-clients[data-paused=true] .rb-clients-track,.rb-clients .rb-clients-window:focus-within .rb-clients-track{animation-play-state:paused}
+  @media(hover:hover){.rb-clients .rb-clients-window:hover .rb-clients-track{animation-play-state:paused}.rb-client-card:hover{transform:translateY(-4px);border-color:#cbd7ee;box-shadow:0 12px 28px #233e7b0b}}
+}
+@media(max-width:950px){.rb-clients-heading{gap:25px}.rb-clients-intro{width:270px}.rb-client-card{padding-inline:18px}.rb-client-logo>img{width:190px}.rb-client-card-label{font-size:8px;letter-spacing:1px}}
+@media(max-width:600px){
+  .rb-clients{padding:44px 0 30px}
+  .rb-clients-heading{display:block;margin-bottom:17px}
+  .rb-website .rb-clients-heading h2{font-size:37px;letter-spacing:-1.4px;margin-top:16px}
+  .rb-clients-intro{width:100%;margin-top:17px;padding-bottom:0}
+  .rb-clients-intro>p{font-size:12px;max-width:285px;margin-bottom:11px}
+  .rb-clients-tools{gap:20px}
+  .rb-clients-caption{font-size:10px}
+  .rb-website .rb-clients-motion{font-size:10px;padding:9px 12px}
+  .rb-clients-group{grid-template-columns:1fr;gap:14px}
+  .rb-client-card{min-height:224px;padding:17px 20px 20px;border-radius:15px}
+  .rb-client-card-label{font-size:8px;letter-spacing:1px}
+  .rb-client-logo{height:124px;margin-top:8px}
+  .rb-client-logo>img{width:190px;height:104px}
+  .rb-client-card.is-absolute-shawarma .rb-client-logo>img,.rb-client-card.is-kunafa-bakery .rb-client-logo>img{width:103px;height:103px}
+  .rb-client-card h3{font-size:13px;margin-top:8px}
+  .rb-clients-bottom{align-items:flex-start;flex-direction:column;gap:0;padding-top:10px}
+  .rb-clients-bottom>p{font-size:10px}
+  .rb-clients-bottom nav{font-size:10px;gap:12px}
+  @media(prefers-reduced-motion:no-preference){.rb-clients[data-enhanced=true] .rb-clients-group{width:852px;gap:14px;padding-right:14px}.rb-clients[data-enhanced=true] .rb-client-card{width:calc((100% - 28px)/3)}.rb-clients[data-enhanced=true] .rb-clients-window{margin-right:-20px;margin-left:-8px;padding-left:8px;padding-right:20px;mask-image:linear-gradient(90deg,transparent,#000 15px,#000 calc(100% - 20px),transparent)}}
+}
+@media(prefers-reduced-motion:reduce){.rb-clients *{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rb-clients .rb-clients-motion{display:none}.rb-clients .rb-clients-window{overflow:visible;mask-image:none}.rb-clients .rb-clients-track{transform:none}.rb-clients .rb-clients-group-copy{display:none}.rb-clients .rb-clients-motion:hover{transform:none}}

@@ -1,0 +1,18 @@
+{
+  "duration": 12,
+  "assertions": [
+    { "kind": "appearsBy", "selector": "#a-lockup", "bySec": 0.45 },
+    { "kind": "appearsBy", "selector": "#b-card", "bySec": 1.75 },
+    { "kind": "appearsBy", "selector": "#c-email", "bySec": 3.05 },
+    { "kind": "appearsBy", "selector": "#d-metric", "bySec": 4.55 },
+    { "kind": "appearsBy", "selector": "#e-nav", "bySec": 6.05 },
+    { "kind": "appearsBy", "selector": "#f-action", "bySec": 8.0 },
+    { "kind": "appearsBy", "selector": "#g-lockup", "bySec": 11.2 },
+    { "kind": "before", "a": "#a-lockup", "b": "#b-card" },
+    { "kind": "before", "a": "#b-card", "b": "#c-email" },
+    { "kind": "before", "a": "#c-email", "b": "#d-metric" },
+    { "kind": "before", "a": "#d-metric", "b": "#e-nav" },
+    { "kind": "before", "a": "#e-nav", "b": "#f-action" },
+    { "kind": "before", "a": "#f-action", "b": "#g-lockup" }
+  ]
+}

@@ -28,6 +28,12 @@ export function imsSavePayload(gstin:string,rows:ImsInvoice[],choices:Record<str
 }
 export function imsProcessed(result:Record<string,unknown>,expected:number){
   if(result.err_cd||result.err_msg||Number(result.err_cnt||0)>0||['PE','ER','E'].includes(String(result.status_cd)))return 'failed';
-  if(['P','S'].includes(String(result.status_cd))&&Number(result.proc_cnt)>=expected)return 'succeeded';
+  if(['P','S'].includes(String(result.status_cd))&&Number.isInteger(expected)&&expected>0&&Number(result.proc_cnt)>=expected)return 'succeeded';
   return 'pending';
+}
+// Regeneration does not return proc_cnt. It has its own completion contract;
+// never let a completed marker override a partial/error response.
+export function imsComputationProcessed(result:Record<string,unknown>){
+  if(result.err_cd||result.err_msg||Number(result.err_cnt||0)>0||['PE','ER','E'].includes(String(result.status_cd)))return 'failed';
+  return ['P','S'].includes(String(result.status_cd))?'succeeded':'pending';
 }
