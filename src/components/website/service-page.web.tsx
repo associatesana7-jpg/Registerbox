@@ -36,7 +36,7 @@ export default function ServicePage({ slug }: { slug: string }) {
   const [stage, setStage] = useState(0);
   const review = service.category === 'trademark' ? { ...contentReview, date: '16 October 2026', isoDate: '2026-10-16' } : contentReview;
   const path = `/services/${service.slug}`;
-  const startHref: Href = service.category === 'trademark' ? '/contact?service=trademark' as Href : session ? servicePath(service.category) as Href : { pathname: '/auth', params: { next: servicePath(service.category) } };
+  const startHref: Href = service.category === 'trademark' ? '/contact' : session ? servicePath(service.category) as Href : { pathname: '/auth', params: { next: servicePath(service.category) } };
   const actionLabel = serviceActionLabels[service.category];
   const quotedService = ['company', 'llp', 'gst_registration', 'food', 'retail', 'trademark'].includes(service.category);
   const price = quotedService ? details.pricing?.value || 'Ask for a quote' : 'Ask for a quote';
@@ -80,6 +80,8 @@ export default function ServicePage({ slug }: { slug: string }) {
       </section>
 
       <div className="rb-sx-confidence"><span><ServiceIcon name="check"/> Bengaluru team</span><span><ServiceIcon name="check"/> Clear scope before work</span><span><ServiceIcon name="check"/> No guaranteed approvals</span></div>
+
+      {service.category === 'gst' && <aside className="rb-sx-catalog-help"><span aria-hidden="true">₹0</span><div><h2>Need to file a nil GST return?</h2><p>Eligible nil GSTR-1 and GSTR-3B returns have a ₹0 RegisterBox service fee. Check the eligibility and offer details first.</p></div><Link className="rb-button" href={'/services/free-nil-gst-filing' as Href}>Free nil GST filing ↗</Link></aside>}
 
       <section className="rb-sx-journey" aria-labelledby="journey-title">
         <div className="rb-sx-section-heading"><div><div className="rb-sx-kicker">THREE SIMPLE STEPS</div><h2 id="journey-title">Your next steps, made simple.</h2></div><p>{service.category === 'trademark' ? 'Share your requirement with our team.' : 'Start in your existing RegisterBox workspace.'}</p></div>

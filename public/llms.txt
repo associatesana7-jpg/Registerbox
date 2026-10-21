@@ -1,9 +1,43 @@
 # RegisterBox
 
-Business registration preparation and compliance workspaces in India. Based in Bengaluru.
+RegisterBox provides guided business-registration preparation and compliance workspaces in India. The team is based in Bengaluru. Public service guides explain eligibility factors, documents, government-fee components, realistic timelines, common filing issues, State differences and links to responsible authorities.
 
-- [Services](https://www.registerbox.in/services)
-- [Contact](https://www.registerbox.in/contact)
+## Service guides
+
+- [All services](https://www.registerbox.in/services)
+- [Private limited company registration](https://www.registerbox.in/services/private-limited-company-registration)
+- [LLP registration](https://www.registerbox.in/services/llp-registration)
+- [GST registration](https://www.registerbox.in/services/gst-registration)
+- [Food business and FSSAI](https://www.registerbox.in/services/fssai-food-business)
+- [Shop and establishment registration](https://www.registerbox.in/services/shop-establishment-registration)
+- [GST returns workspace](https://www.registerbox.in/services/gst-returns)
+- [Free nil GST filing](https://www.registerbox.in/services/free-nil-gst-filing): ₹0 RegisterBox service fee for eligible nil GSTR-1 and GSTR-3B returns. Eligibility checks and filing authorisation still apply; statutory dues are not waived.
+- [Trademark application](https://www.registerbox.in/services/trademark-registration)
+- [Start a new business](https://www.registerbox.in/services/start-a-business)
+- [Online and e-commerce business](https://www.registerbox.in/services/online-ecommerce-business)
+- [Manufacturing business](https://www.registerbox.in/services/manufacturing-business)
+- [Open a new branch](https://www.registerbox.in/services/business-branch)
+- [Business compliance check](https://www.registerbox.in/services/business-compliance-check)
+
+## Important boundaries
+
+- RegisterBox fees are professional assistance charges and are stated separately from government fees.
+- Application drafts, receipts and preparation status are not government approvals or successful filings.
+- Information pages are reviewed against linked official sources but are not CA, CS, legal or tax opinions.
+- Eligibility, jurisdiction, current fees and professional-review requirements are confirmed for the customer’s facts before an authorised submission.
+
+## Published RegisterBox service fees
+
+- GST registration assistance: INR 199.
+- Eligible nil GST filing: INR 0 RegisterBox service fee. Other work and any statutory dues are separate.
+- FSSAI registration/licence assistance: INR 3,999.
+- Private limited company assistance: ask for a quotation.
+- MSME/Udyam registration assistance: free.
+- Labour/shop licence assistance: INR 4,500.
+- Government fees, taxes and exceptional third-party costs are separate unless the written scope expressly says otherwise.
+
+## Contact and policies
+
+- [Contact RegisterBox](https://www.registerbox.in/contact)
 - [Privacy and service information](https://www.registerbox.in/policies)
-
-Application drafts are not government submissions. Confirm scope and fees with the team.
+- [XML sitemap](https://www.registerbox.in/sitemap.xml)
