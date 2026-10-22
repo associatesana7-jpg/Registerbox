@@ -34,8 +34,6 @@ import { AdminClientRegister } from '@/components/admin-client-register';
 import { Link } from 'expo-router';
 import { useAuthCaptcha } from '@/hooks/use-auth-captcha';
 
-const ADMIN_EMAIL = 'fekupsony@gmail.com';
-
 type AuthStep = 'checking' | 'email' | 'otp' | 'dashboard';
 
 type NavigationSection = 'overview' | 'client-register' | ControlCenterSection;
@@ -271,7 +269,7 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
 export function ControlCenter() {
   const { verify: verifyCaptcha, challenge } = useAuthCaptcha();
   const [step,setStep]=useState<AuthStep>('checking');
-  const [email,setEmail]=useState(ADMIN_EMAIL);
+  const [email,setEmail]=useState('');
   const [otp,setOtp]=useState('');
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState('');
