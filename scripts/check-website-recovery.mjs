@@ -9,6 +9,10 @@ const html = route => {
   return fs.readFileSync(file, 'utf8');
 };
 const home = html('');
+for (const name of ['llms.txt', 'blog-feed.json', 'sitemap.xml']) {
+  const content = fs.readFileSync(path.join(root, name), 'utf8');
+  assert(!/(?:INR|₹|Rs\.)\s*1,?999/u.test(content), `${name} contains a removed advertised service price`);
+}
 for (const marker of ['id="our-clients"', 'Tea Day', 'Absolute Shawarma', 'Kunafa Bakery', 'rb-google-reviews', 'rb-footer-map', 'google.com/maps', 'New Thippasandra', 'Marathahalli']) {
   assert(home.includes(marker), `Homepage is missing restored content: ${marker}`);
 }
