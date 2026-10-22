@@ -1,5 +1,6 @@
 // Exact public-page allowlist. Never collect application IDs, search terms,
 // auth tokens, private route names, or arbitrary customer-provided paths.
+import publishedBlogPaths from '../data/blog/public-paths.generated.json';
 const englishPublicPaths = [
   '/', '/services', '/contact', '/blog', '/blog/editorial-policy', '/privacy', '/policies',
   '/services/private-limited-company-registration', '/services/llp-registration',
@@ -21,11 +22,8 @@ const englishPublicPaths = [
   '/blog/fast-gst-registration-three-hours',
 ] as const;
 export const analyticsPublicPaths = [
-  ...englishPublicPaths,
-  '/hi/blog',
-  ...englishPublicPaths
-    .filter(path => path.startsWith('/blog/') && path !== '/blog/editorial-policy')
-    .map(path => `/hi${path}`),
+  ...englishPublicPaths.filter(path => path !== '/blog' && !path.startsWith('/blog/')),
+  ...publishedBlogPaths,
 ] as const;
 const allowedPaths = new Set<string>(analyticsPublicPaths);
 export function publicAnalyticsUrl(value: string): string | null {

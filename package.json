@@ -54,6 +54,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
+    "blog:translate": "node scripts/translate-blog.mjs",
+    "blog:discover": "node scripts/build-blog-discovery.mjs",
+    "build:web": "node scripts/prepare-blog-build.mjs && expo export --platform web",
     "tally:connector": "node scripts/tally-connector.mjs",
     "test:tally": "node --test scripts/test-tally.mjs scripts/test-tally-desktop.mjs",
     "build:tally:windows": "node scripts/build-tally-windows.mjs"

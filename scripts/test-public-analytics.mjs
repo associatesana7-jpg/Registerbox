@@ -2,9 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
 import vm from 'node:vm';
-import { readBlogArticles } from './blog-catalog.mjs';
-const output = {};
-new Function('exports', ts.transpileModule(fs.readFileSync('src/lib/public-analytics.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(output);
+import { readBlogArticles, readBlogModule } from './blog-catalog.mjs';
+const output = readBlogModule('src/lib/public-analytics.ts');
 const { publicAnalyticsUrl, analyticsPublicPaths } = output;
 for (const path of analyticsPublicPaths) {
   assert.equal(publicAnalyticsUrl(`https://registerbox.in${path}?email=private@example.invalid#token`), `https://www.registerbox.in${path}`);

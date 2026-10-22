@@ -1,65 +1,46 @@
 import fs from 'node:fs';
-import { readBlogArticles } from './blog-catalog.mjs';
+import { readBlogArticles, readLocalizedBlogCatalog } from './blog-catalog.mjs';
 
 const articles = readBlogArticles();
+const { availableBlogLocales, localizedArticle, blogPath, blogAlternates } = readLocalizedBlogCatalog();
 const site = 'https://www.registerbox.in';
-const date = '2026-10-22';
-const xml = value => value.replace(/[<>&"']/g, char => ({
-  '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;',
-})[char]);
-
-const blogPaths = [
-  '/blog',
-  '/hi/blog',
-  '/blog/editorial-policy',
-  ...articles.flatMap(article => [`/blog/${article.slug}`, `/hi/blog/${article.slug}`]),
+const xml = value => value.replace(/[<>&"']/g, char => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[char]);
+const entries = [
+  ...availableBlogLocales().map(locale => ({ path: blogPath(locale.code), alternates: blogAlternates() })),
+  { path: '/blog/editorial-policy', alternates: [] },
+  ...articles.flatMap(article => availableBlogLocales(article.slug).map(locale => ({
+    path: blogPath(locale.code, article.slug), alternates: blogAlternates(article.slug),
+  }))),
 ];
-const dates = new Map(articles.flatMap(article => [
-  [`/blog/${article.slug}`, article.publishedAt || date],
-  [`/hi/blog/${article.slug}`, date],
-]));
-const alternate = path => {
-  if (path === '/blog' || path === '/hi/blog') return ['/blog', '/hi/blog'];
-  if (path === '/blog/editorial-policy') return null;
-  const slug = path.split('/').at(-1);
-  return [`/blog/${slug}`, `/hi/blog/${slug}`];
-};
-const sitemapEntry = path => {
-  const languages = alternate(path);
-  const links = languages ? languages.map((href, index) =>
-    `<xhtml:link rel="alternate" hreflang="${index ? 'hi-IN' : 'en-IN'}" href="${xml(site + href)}"/>`
-  ).join('') : '';
-  return `  <url><loc>${xml(site + path)}</loc><lastmod>${dates.get(path) || date}</lastmod>${links}</url>`;
-};
 const original = fs.readFileSync('public/sitemap.xml', 'utf8');
 const sitemap = original
-  .replace(/\s*<url>\s*<loc>https:\/\/www\.registerbox\.in\/(?:hi\/)?blog(?:\/[^<]*)?<\/loc>[\s\S]*?<\/url>/g, '')
-  .replace('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">')
-  .replace('</urlset>', blogPaths.map(sitemapEntry).join('\n') + '\n</urlset>');
+  .replace(/\s*<url>\s*<loc>https:\/\/www\.registerbox\.in\/(?:[a-z]{2,3}(?:-[A-Za-z]+)?\/)?blog(?:\/[^<]*)?<\/loc>[\s\S]*?<\/url>/g, '')
+  .replace(/<urlset\b[^>]*>/, '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">')
+  // The source catalogue records publication, not the last content edit.
+  // Omit unknown lastmod dates rather than refreshing them on every build.
+  .replace('</urlset>', entries.map(entry => `  <url><loc>${xml(site + entry.path)}</loc>${entry.alternates.map(alternate => `<xhtml:link rel="alternate" hreflang="${alternate.language}" href="${xml(site + alternate.path)}"/>`).join('')}</url>`).join('\n') + '\n</urlset>');
 fs.writeFileSync('public/sitemap.xml', sitemap);
 
 const existing = fs.readFileSync('public/llms.txt', 'utf8').split('\n## Business questions and guides')[0].trimEnd();
-fs.writeFileSync('public/llms.txt', existing + '\n\n## Business questions and guides\n\n'
-  + 'These public guides contain practical examples, preparation checklists and linked official sources. Each article displays its publication and source-check date. English and Hindi are separately crawlable pages.\n\n'
-  + articles.map(article => `- [${article.title}](${site}/blog/${article.slug}) — [हिन्दी में पढ़ें](${site}/hi/blog/${article.slug}): ${article.description}`).join('\n')
-  + `\n\n- [Editorial approach](${site}/blog/editorial-policy)\n- [All business guides](${site}/blog)\n- [सभी गाइड हिन्दी में](${site}/hi/blog)\n`);
+fs.writeFileSync('public/llms.txt', `${existing}\n\n## Business questions and guides\n\nThese public guides contain preparation checklists, practical explanations and linked official sources. Complete language versions have separate crawlable URLs. Language availability is generated from published translations.\n\n`
+  + articles.map(article => `- [${article.title}](${site}/blog/${article.slug}): ${article.description}\n  ${availableBlogLocales(article.slug).filter(locale => locale.code !== 'en').map(locale => `[${locale.nativeName}](${site}${blogPath(locale.code, article.slug)})`).join(' · ')}`).join('\n')
+  + `\n\n- [Editorial approach](${site}/blog/editorial-policy)\n`
+  + availableBlogLocales().map(locale => `- [${locale.nativeName} guides](${site}${blogPath(locale.code)})`).join('\n') + '\n');
 
-fs.writeFileSync('public/blog-feed.json', JSON.stringify({
-  version: 'https://jsonfeed.org/version/1.1',
-  title: 'RegisterBox business guides',
-  home_page_url: `${site}/blog`,
-  feed_url: `${site}/blog-feed.json`,
-  language: 'en-IN',
-  items: articles.map(article => ({
-    id: `${site}/blog/${article.slug}`,
-    url: `${site}/blog/${article.slug}`,
-    title: article.title,
-    summary: article.description,
-    content_text: article.intro.join('\n\n'),
+const items = articles.flatMap(article => availableBlogLocales(article.slug).map(locale => {
+  const translated = localizedArticle(article.slug, locale.code);
+  const url = `${site}${blogPath(locale.code, article.slug)}`;
+  return { id: url, url, title: translated.title, summary: translated.description,
+    content_text: translated.intro.join('\n\n'), language: locale.hreflang,
     image: `${site}/images/blog/${article.image}-1200.webp`,
-    date_published: `${article.publishedAt || date}T00:00:00+05:30`,
-    authors: [{ name: 'RegisterBox', url: `${site}/blog/editorial-policy` }],
-    tags: [article.category],
-  })),
+    date_published: `${article.publishedAt || '2026-10-20'}T00:00:00+05:30`,
+    authors: [{ name: 'RegisterBox', url: `${site}/blog/editorial-policy` }], tags: [article.category] };
+}));
+fs.writeFileSync('public/blog-feed.json', JSON.stringify({ version: 'https://jsonfeed.org/version/1.1',
+  title: 'RegisterBox business guides', home_page_url: `${site}/blog`, feed_url: `${site}/blog-feed.json`,
+  language: 'en-IN', items,
 }, null, 2) + '\n');
-console.log(`Generated sitemap, guide index and public JSON feed for ${articles.length} bilingual articles.`);
+
+// Keep analytics restricted to exact published URLs.
+fs.writeFileSync('src/data/blog/public-paths.generated.json', JSON.stringify(entries.map(entry => entry.path), null, 2) + '\n');
+console.log(`Generated discovery files for ${items.length} articles in ${availableBlogLocales().length} published languages.`);

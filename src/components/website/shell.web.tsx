@@ -5,6 +5,7 @@ import { useApp } from '@/hooks/use-app';
 import { WebBrand } from './brand.web';
 import { contact, safeNext } from './content';
 import { AppIcon, type AppIconName } from '../app-icon';
+import blogLocales from '@/data/blog/locales.json';
 import './workspace-shell.css';
 const nav: [string,string,AppIconName][] = [
   ['/dashboard', 'Home', 'home'], ['/compliance', 'Applications', 'grid'], ['/documents', 'Documents', 'folder'],
@@ -19,7 +20,8 @@ export function WebShell({ children }: PropsWithChildren) {
   // Never send its signed-out visitors through the customer login guard.
   if (pathname === '/privacy-operations' || pathname === '/control-center' || pathname.startsWith('/control-center/')) return <><Head><meta name="robots" content="noindex,nofollow"/></Head>{children}</>;
   const landing = pathname === '/' && !segments.includes('(tabs)' as never);
-  const publicPage = landing || pathname === '/blog' || pathname.startsWith('/blog/') || pathname === '/hi/blog' || pathname.startsWith('/hi/blog/') || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/privacy' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
+  const regionalBlog = blogLocales.some(locale => pathname === `/${locale.code}/blog` || pathname.startsWith(`/${locale.code}/blog/`));
+  const publicPage = landing || pathname === '/blog' || pathname.startsWith('/blog/') || regionalBlog || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/privacy' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
   if (publicPage) return <>{pathname.startsWith('/auth') && <Head><meta name="robots" content="noindex,nofollow"/></Head>}{children}</>;
   const next = safeNext(typeof window !== 'undefined' ? window.location.pathname + window.location.search : pathname);
   return <div className="rb-shell"><Head><meta name="robots" content="noindex,nofollow"/></Head>

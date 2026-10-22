@@ -1,22 +1,50 @@
 import { useState } from 'react';
+import Head from 'expo-router/head';
 import { Link, type Href } from 'expo-router';
-import { blogArticles } from '@/data/blog';
-import { blogHindiBySlug } from '@/data/blog/hindi';
+import { blogArticles, type BlogArticle } from '@/data/blog';
+import { availableBlogLocales, blogAlternates, blogLocale, blogPath, blogUi, localizedArticle, type BlogLocale } from '@/data/blog/localized';
 import { Seo, siteUrl } from './seo.web';
-import { BlogCard, BlogFooter, BlogHeader } from './blog-chrome.web';
+import { BlogCard, BlogFooter, BlogHeader, blogCategoryLabel } from './blog-chrome.web';
 import './blog.css';
-const categories = ['All guides', 'Start a business', 'Registrations', 'GST & records', 'Grow & comply'];
-export default function BlogIndex({ locale = 'en' }: { locale?: 'en' | 'hi' }) {
-  const hi = locale === 'hi';
-  const articles = hi ? blogArticles.filter(article => Boolean(blogHindiBySlug[article.slug])).map(article => ({ ...article, title: blogHindiBySlug[article.slug].title, description: blogHindiBySlug[article.slug].description })) : blogArticles;
+
+const categories = ['All guides', 'Start a business', 'Registrations', 'GST & records', 'Grow & comply'] as const;
+
+export default function BlogIndex({ locale = 'en' }: { locale?: BlogLocale }) {
+  const language = blogLocale(locale);
+  const articles = blogArticles.map(article => localizedArticle(article.slug, locale)).filter((article): article is BlogArticle => Boolean(article));
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('All guides');
-  const normalized = query.trim().toLowerCase();
-  const shown = articles.filter(article => (category === 'All guides' || article.category === category) && normalized.split(/\s+/).every(term => `${article.title} ${article.description} ${article.searchQuestions.join(' ')}`.toLowerCase().includes(term)));
+  const [category, setCategory] = useState<string>('All guides');
+  if (!availableBlogLocales().some(item => item.code === locale)) return <div className="rbg-page" lang="en" dir="ltr">
+    <Head><title>Guides not available | RegisterBox</title><meta name="robots" content="noindex"/></Head>
+    <BlogHeader/><main id="blog-main" className="rbg-main"><h1>These guides are not available in this language yet.</h1><Link href="/blog">Browse available guides</Link></main><BlogFooter/>
+  </div>;
+  const normalized = query.trim().toLocaleLowerCase(language.hreflang);
+  const shown = articles.filter(article => (category === 'All guides' || article.category === category) && normalized.split(/\s+/).every(term => `${article.title} ${article.description} ${article.searchQuestions.join(' ')}`.toLocaleLowerCase(language.hreflang).includes(term)));
   const featured = !normalized && category === 'All guides' ? shown[0] : undefined;
-  const path = hi ? '/hi/blog' : '/blog';
-  return <div className="rbg-page" lang={hi ? 'hi' : 'en'}><Seo title={hi ? 'बिज़नेस और GST की आसान गाइड | RegisterBox' : 'Business guides: GST, Udyam, company setup & compliance | RegisterBox'} description={hi ? 'GST, कंपनी रजिस्ट्रेशन, FSSAI और दूसरे कामों की आसान हिंदी गाइड। सवालों के जवाब, तैयारी की सूची और सरकारी स्रोत।' : 'Practical guides to Udyam, company setup, FSSAI fees, GST, professional tax, ESI and EPF. Checklists and linked official sources.'} path={path} alternatePath={hi ? '/blog' : '/hi/blog'} language={hi ? 'hi-IN' : 'en-IN'} schema={[{'@type':'CollectionPage',name:hi ? 'RegisterBox बिज़नेस गाइड' : 'RegisterBox business guides',inLanguage:hi ? 'hi-IN' : 'en-IN',url:`${siteUrl}${path}`,mainEntity:{'@type':'ItemList',itemListElement:articles.map((article,index)=>({'@type':'ListItem',position:index+1,url:`${siteUrl}${path}/${article.slug}`,name:article.title}))}}]}/><BlogHeader locale={locale}/><main id="blog-main" className="rbg-main"><div className="rbg-index-intro"><div className="rbg-kicker">{hi ? 'REGISTERBOX गाइड' : 'THE REGISTERBOX JOURNAL'}</div><h1>{hi ? <>सही सवाल।<br/>आसान जवाब।</> : <>Good questions.<br/>Clear next steps.</>}</h1><p>{hi ? 'कारोबार शुरू करने से लेकर GST और रजिस्ट्रेशन तक, हर कदम को आसान भाषा में समझें।' : 'Starting a business brings enough questions. Here are practical answers on registrations, paperwork and keeping things in order.'}</p><Link href={'/blog/editorial-policy' as Href}>{hi ? 'हमारे स्रोत और लिखने का तरीका ↗' : 'Our sources & editorial approach ↗'}</Link></div>
-    <section aria-label={hi ? 'गाइड खोजें' : 'Find a guide'} className="rbg-controls"><label className="rbg-search"><span>{hi ? 'किस विषय पर मदद चाहिए?' : 'What do you need help with?'}</span><input type="search" placeholder={hi ? 'जैसे “GST रजिस्ट्रेशन” या “खाने का कारोबार”' : 'Try “GST documents” or “home kitchen”'} value={query} onChange={event=>setQuery(event.target.value)}/></label><div className="rbg-filters" aria-label={hi ? 'विषय चुनें' : 'Filter by topic'}>{categories.map((item,index)=><button key={item} aria-pressed={item===category} onClick={()=>setCategory(item)}>{hi ? ['सभी गाइड','कारोबार शुरू करें','रजिस्ट्रेशन','GST और रिकॉर्ड','कारोबार चलाएँ'][index] : item}</button>)}</div></section>
-    <p role="status" className="rbg-count">{shown.length} {hi ? 'गाइड' : shown.length===1?'guide':'guides'}{normalized ? ` ${hi ? '“' : 'for “'}${query.trim()}”` : hi ? ' भारतीय कारोबारियों के लिए' : ' for Indian business owners'}</p>{featured&&<BlogCard article={featured} featured locale={locale}/>}<section aria-label={hi ? 'बिज़नेस गाइड' : 'Business guides'} className="rbg-grid">{shown.filter(article=>article!==featured).map(article=><BlogCard key={article.slug} article={article} locale={locale}/>)}</section>{!shown.length&&<div className="rbg-empty"><h2>{hi ? 'इस खोज के लिए गाइड नहीं मिली।' : 'No guide matches that search yet.'}</h2><p>{hi ? 'दूसरा शब्द खोजें या हमें अपनी ज़रूरत बताएं।' : 'Try a service name, or tell us what you are trying to do.'}</p><button onClick={()=>{setQuery('');setCategory('All guides');}}>{hi ? 'सभी गाइड देखें' : 'Show all guides'}</button><Link href="/contact">{hi ? 'RegisterBox से पूछें' : 'Ask RegisterBox'}</Link></div>}
-    <aside className="rbg-bottom-cta"><div><h2>{hi ? 'अब अगला कदम उठाएँ' : 'Ready to put the plan into practice?'}</h2><p>{hi ? 'जानें क्या तैयार रखना है और RegisterBox कैसे मदद कर सकता है।' : 'See what to prepare and how RegisterBox can help with your next step.'}</p></div><Link href="/services">{hi ? 'अपनी सेवा खोजें ↗' : 'Find your service ↗'}</Link></aside></main><BlogFooter locale={locale}/></div>;
+  const path = blogPath(locale);
+
+  return <div className="rbg-page" lang={language.code} dir={language.direction}>
+    <Seo title={blogUi(locale, 'indexTitle')} description={blogUi(locale, 'indexDescription')} path={path} alternates={blogAlternates()} language={language.hreflang} schema={[{
+      '@type': 'CollectionPage', name: blogUi(locale, 'collectionName'), inLanguage: language.hreflang, url: `${siteUrl}${path}`,
+      mainEntity: { '@type': 'ItemList', itemListElement: articles.map((article, index) => ({ '@type': 'ListItem', position: index + 1, url: `${siteUrl}${blogPath(locale, article.slug)}`, name: article.title })) },
+    }]}/>
+    <BlogHeader locale={locale}/>
+    <main id="blog-main" className="rbg-main">
+      <div className="rbg-index-intro">
+        <div className="rbg-kicker">{blogUi(locale, 'journal')}</div>
+        <h1>{blogUi(locale, 'goodQuestions')}<br/>{blogUi(locale, 'clearSteps')}</h1>
+        <p>{blogUi(locale, 'indexIntro')}</p><Link href={'/blog/editorial-policy' as Href}>{blogUi(locale, 'ourSources')}</Link>
+      </div>
+      <section aria-label={blogUi(locale, 'findGuide')} className="rbg-controls">
+        <label className="rbg-search"><span>{blogUi(locale, 'helpQuestion')}</span><input type="search" placeholder={blogUi(locale, 'searchPlaceholder')} value={query} onChange={event => setQuery(event.target.value)}/></label>
+        <div className="rbg-filters" aria-label={blogUi(locale, 'filterTopic')}>{categories.map(item => <button type="button" key={item} aria-pressed={item === category} onClick={() => setCategory(item)}>{item === 'All guides' ? blogUi(locale, 'allGuides') : blogCategoryLabel(item, locale)}</button>)}</div>
+      </section>
+      <p role="status" className="rbg-count">{shown.length} {locale === 'en' && shown.length === 1 ? 'guide' : blogUi(locale, 'guideCount')}{normalized ? ` “${query.trim()}”` : ` ${blogUi(locale, 'indianOwners')}`}</p>
+      {featured && <BlogCard article={featured} featured locale={locale}/>}
+      <section aria-label={blogUi(locale, 'collectionName')} className="rbg-grid">{shown.filter(article => article !== featured).map(article => <BlogCard key={article.slug} article={article} locale={locale}/>)}</section>
+      {!shown.length && <div className="rbg-empty"><h2>{blogUi(locale, 'noMatches')}</h2><p>{blogUi(locale, 'tryService')}</p><button type="button" onClick={() => { setQuery(''); setCategory('All guides'); }}>{blogUi(locale, 'showAll')}</button><Link href="/contact">{blogUi(locale, 'askUs')}</Link></div>}
+      <aside className="rbg-bottom-cta"><div><h2>{blogUi(locale, 'ready')}</h2><p>{blogUi(locale, 'prepareHelp')}</p></div><Link href="/services">{blogUi(locale, 'findService')}</Link></aside>
+    </main>
+    <BlogFooter locale={locale}/>
+  </div>;
 }
