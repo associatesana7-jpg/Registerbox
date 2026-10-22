@@ -6,6 +6,24 @@
   "language": "en-IN",
   "items": [
     {
+      "id": "https://www.registerbox.in/blog/fast-gst-registration-three-hours",
+      "url": "https://www.registerbox.in/blog/fast-gst-registration-three-hours",
+      "title": "Tatkal GST registration in 3 hours? RegisterBox’s fast service and the official rules",
+      "summary": "Need GST registration quickly? Learn what RegisterBox can prepare in 3–24 hours, who may qualify for the official three-working-day route, and when a GSTIN is actually issued.",
+      "content_text": "If you need a GST number urgently, the first question is whether your application is ready. A missing address proof, a name that does not match PAN, or an unavailable authorised signatory can delay even a simple case. RegisterBox helps you gather and check the details quickly, then guides you towards the correct registration route.\n\nYou may hear this described as “Tatkal GST” or “GST in three hours”. Those are search phrases, not the name or deadline of an official GST scheme. The government’s faster registration rules refer to three working days for eligible applications. Our 3–24-hour commitment concerns the RegisterBox preparation and submission-assistance stage after we receive complete, usable details. The GST portal and tax authority decide when the GSTIN is issued.",
+      "image": "https://www.registerbox.in/images/blog/fast-gst-registration-1200.webp",
+      "date_published": "2026-10-22T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "Registrations"
+      ]
+    },
+    {
       "id": "https://www.registerbox.in/blog/gstr-3b-filing-process-online",
       "url": "https://www.registerbox.in/blog/gstr-3b-filing-process-online",
       "title": "GSTR-3B filing online: a practical RegisterBox guide for regular and nil returns",
@@ -84,7 +102,7 @@
       "summary": "Find the official Udyam registration link, current MSME limits, Aadhaar and PAN requirements, GST applicability and a practical checklist before you apply.",
       "content_text": "Udyam registration identifies an eligible micro, small or medium enterprise under the Government of India’s MSME framework. You can use RegisterBox for paid assistance with organising the business information, reviewing existing records and understanding the application steps. You complete official verification and declarations yourself.\n\nBefore opening the form, check which enterprise you are registering, whose Aadhaar applies and whether the business needs a GSTIN. This guide explains the current limits and a sensible preparation process. Udyam recognises an eligible MSME; it does not create a company or replace the permissions needed to run a particular activity.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -102,7 +120,7 @@
       "summary": "Compare an LLP with a private limited company using ownership, investor plans, decision-making and recurring work, with a practical founder checklist.",
       "content_text": "A private limited company often fits founders planning share-based investment and employee equity. An LLP may fit a business whose owners want to work through a partner agreement and share profits on agreed terms. Neither structure is best for every startup: compare the next few years of ownership, funding and work before choosing.\n\nA low incorporation price is only one part of the decision. The structure must also work when someone joins, leaves, disagrees or invests. Start with those situations, then compare the registration and continuing obligations for each option.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -120,7 +138,7 @@
       "summary": "Understand Karnataka employer professional tax registration, business enrolment, payroll checks and the records to prepare before paying or filing.",
       "content_text": "An employer in Karnataka should check two separate professional tax questions: the duty to deduct and pay tax for eligible employees, and any enrolment liability of the business or professional itself. One certificate or payment should not be assumed to settle both. Start with where people work, the employer identity and the applicable Karnataka schedule.\n\nThis guide is for a founder preparing the first payroll, a business opening a Bengaluru branch or an owner taking over compliance from someone else. It explains the decisions and records to organise before using the government portal. The official sources below were checked on 20 October 2026.",
       "image": "https://www.registerbox.in/images/blog/records-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -138,7 +156,7 @@
       "summary": "Check startup ESI and EPF coverage, current labour-code changes, existing registrations, employee records and the next steps after employer registration.",
       "content_text": "A startup should assess ESI and EPF before its first payroll and again as its workforce changes. The answer depends on establishment coverage, the people engaged, wages, existing membership and current scheme rules. Startup recognition or a small revenue figure does not by itself answer these employment questions.\n\nThere have been material changes during 2025 and 2026. This guide separates a coverage review from form submission and ongoing payroll work. Sources were checked on 20 October 2026; use the current official employer guidance when applying them to a particular employee or payroll period.",
       "image": "https://www.registerbox.in/images/blog/records-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -156,7 +174,7 @@
       "summary": "Understand current FSSAI government fee examples, the April 2026 turnover changes, perpetual validity and how to compare a food-registration service quote.",
       "content_text": "FSSAI cost has two parts when you use a service provider: the applicable government fee and the provider’s fee for the agreed work. The government amount depends on the actual kind of food business and licence or registration route. Get that classification right before comparing package prices.\n\nFrom April 2026, important turnover and validity changes make many older price guides unreliable. This guide explains the current official fee examples and a practical way to review a quote. Sources were checked on 20 October 2026; confirm the selection and amount shown by FoSCoS before payment.",
       "image": "https://www.registerbox.in/images/blog/food-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -174,7 +192,7 @@
       "summary": "A practical GST registration checklist for owned, rented and family premises, with ways to resolve name and address mismatches before you apply.",
       "content_text": "For an ordinary GST registration, prepare the applicant’s PAN and business details, the relevant identity and constitution documents, signatory authority, and evidence for the actual business premises. The right address documents depend on whether you own, rent or use the property with permission. Start with that question before collecting a folder of unrelated proofs.\n\nA useful application tells one consistent story: who is applying, what the business does, where it operates and who can act for it. This guide explains how to organise that story and spot problems while there is still time to fix them.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -192,7 +210,7 @@
       "summary": "Understand the difference between GSTR-1 and GSTR-3B, how to compare records and input credit, and what proves that filing is complete.",
       "content_text": "GSTR-1 reports outward supplies, including the relevant sales and invoice details. GSTR-3B brings together summary liabilities, input tax credit and tax payment for the period. Filing one does not complete the other. Start by checking which forms and filing frequency apply to your GSTIN.\n\nThe practical question is whether your invoices, books, portal statements and payment records tell the same story. A total that looks reasonable can still contain the wrong customer GSTIN, a missing credit note or an unsupported input-credit claim.",
       "image": "https://www.registerbox.in/images/blog/records-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -210,7 +228,7 @@
       "summary": "No sales does not automatically mean a nil GST return. Check purchases, input credit, reverse charge, adjustments and outstanding charges first.",
       "content_text": "No sales does not automatically make GSTR-3B a nil return. You must also check inward supplies, credit activity, reverse charge, adjustments and any liability that belongs in the return. Decide from complete records for the selected period, rather than the balance in your bank account or an empty sales screen.\n\nThis matters for a newly registered business, a seasonal shop and a company that has temporarily stopped trading. A quiet sales month can still include rent, stock purchases, professional services or earlier-period work that needs attention.",
       "image": "https://www.registerbox.in/images/blog/records-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -228,7 +246,7 @@
       "summary": "Check the current FSSAI route for a home food business or cloud kitchen, including the April 2026 thresholds, activity classification and documents.",
       "content_text": "A food business does not become exempt from FSSAI registration or licensing because it runs from home or has no seating. FSSAI explicitly includes cloud kitchens. Start with the actual kitchen activity, premises and current FoSCoS eligibility criteria, then prepare the documents for that route.\n\nUse current guidance when comparing articles. FSSAI revised turnover thresholds from 1 April 2026, so an older guide using ₹12 lakh as the general registration threshold can send a new applicant in the wrong direction. Activity-specific categories still matter.",
       "image": "https://www.registerbox.in/images/blog/food-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -246,7 +264,7 @@
       "summary": "A practical company registration guide covering ownership, director and office documents, SPICe+, costs and the work that follows incorporation.",
       "content_text": "To register a private limited company, first settle who owns it, who manages it, what it will do and where its registered office will be. Those decisions shape the incorporation application. Collecting identity documents before agreeing the ownership plan often creates work that has to be done twice.\n\nA company can make sense when founders want share ownership and expect to bring in investors. It also creates an ongoing responsibility to keep company records and complete filings. Here is how to prepare a useful brief before starting the MCA process.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -264,7 +282,7 @@
       "summary": "Understand LLP registration, partner contributions, profit sharing, the LLP agreement, FiLLiP and the records needed to start with a clear arrangement.",
       "content_text": "An LLP is a separate business entity organised around its partners and their agreement. Registering one involves more than choosing a name: partners should agree on contributions, profit sharing, decision-making and what happens when somebody leaves.\n\nThe most useful preparation is a written account of how you expect the partnership to work. That helps the incorporation information and the LLP agreement tell the same story.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -282,7 +300,7 @@
       "summary": "Decide your business structure, map registrations, prepare an address record and set up everyday bookkeeping before your first sale.",
       "content_text": "Starting a small business usually means making several connected decisions, rather than obtaining one certificate called “business registration”. Your ownership, products, location and sales channels determine which registrations and permissions need review.\n\nA sole proprietorship is owned by one person and does not create a separate incorporated entity. It can be a straightforward way to organise a small operation, but the owner remains personally responsible for the business. Begin with the facts below before choosing the structure.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -300,7 +318,7 @@
       "summary": "Understand what to check for a Karnataka shop or office, how to organise establishment records and why GST and other permissions are separate.",
       "content_text": "Karnataka shop and establishment registration concerns the establishment and its applicable labour-law requirements. It is different from GST registration, a municipal trade permission or the incorporation of the owner’s company.\n\nBefore opening a shop, office or service location in Bengaluru, check whether the establishment falls within the current State requirements and whether an exemption applies. Then prepare information that matches the premises and the business actually operating there.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -318,7 +336,7 @@
       "summary": "Plan products, marketplace roles, warehouses, customer policies and registration checks before your online business takes its first order.",
       "content_text": "An online business needs a plan for who sells, where goods or services come from, how customers pay and what happens when an order goes wrong. There is no single registration that answers all of those questions.\n\nA website, marketplace account or social-media page is a sales channel. The business behind it still needs the registrations, product checks and customer information that apply to its actual role. Start with the order journey and work outwards.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -336,7 +354,7 @@
       "summary": "A clear manufacturing setup checklist covering process details, site suitability, approval stages, technical documents and changes in capacity.",
       "content_text": "Before starting a manufacturing unit, check whether the site can support the proposed product, process, machinery and workforce. Then map the approvals needed at each project stage. Incorporation or MSME registration alone does not answer whether a unit may be installed or operated.\n\nThe expensive mistake is often choosing a building first and asking about approvals later. A short process and premises review can uncover a problem while you still have choices.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -354,7 +372,7 @@
       "summary": "Plan a new shop, office or warehouse with clear location evidence, a GST review, local approval checks and a branch record that matches the business.",
       "content_text": "Opening a branch starts with a location and activity review. Record the State, address, people, stock and invoicing arrangements, then check what needs an amendment or a new registration. An existing certificate does not automatically cover every new premises.\n\nThe same-State versus another-State question matters particularly for GST. So does the difference between an office, a shop and a warehouse. Describe what will happen at the branch before deciding which forms to use.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -372,7 +390,7 @@
       "summary": "Review registrations, filings, locations and notices using real evidence, then turn gaps into a practical list of actions and responsible owners.",
       "content_text": "A useful business compliance check compares what the business does today with its registrations, filings and supporting records. A folder full of certificates is only the starting point. The scope, current status and evidence behind each item matter.\n\nBegin with a complete list of entities, locations and activities. Then look for missing registrations, overdue work, incorrect details and unanswered notices. Keep uncertain items visible until someone resolves them.",
       "image": "https://www.registerbox.in/images/blog/records-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -390,7 +408,7 @@
       "summary": "Learn how a trademark search, applicant choice, goods and services description and application status fit together before you spend on your brand.",
       "content_text": "Before applying for a trademark, decide who will own the mark, what you want to protect and which goods or services it identifies. Search for possible conflicts and review the result before spending heavily on a brand launch.\n\nA company name, domain name and trademark application are different records. Owning the first two does not mean the trademark will be accepted. A good preparation process makes those differences clear.",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
-      "date_published": "2026-10-20T00:00:00+05:30",
+      "date_published": "2026-10-22T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",

@@ -52,7 +52,7 @@ function readPage(file) {
   return result;
 }
 function publicPath(pathname) {
-  return pathname === '/' || /^\/(?:blog|services)(?:\/|$)/.test(pathname) || /^\/(?:contact|policies|privacy|delete-account)\/?$/.test(pathname);
+  return pathname === '/' || /^\/(?:blog|hi\/blog|services)(?:\/|$)/.test(pathname) || /^\/(?:contact|policies|privacy|delete-account)\/?$/.test(pathname);
 }
 function auditLink(raw, base, context, { asset = false, navigation = false } = {}) {
   checkedLinks += 1;

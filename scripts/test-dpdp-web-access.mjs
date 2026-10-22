@@ -11,11 +11,13 @@ const modules={
  '@/hooks/use-app':{useApp:()=>({session:null,loadingSession:false})},
  './brand.web':{WebBrand:'Brand'},
  './content':{contact:{whatsapp:'https://example.invalid'},safeNext:value=>value},
+ '../app-icon':{AppIcon:'AppIcon'},
+ './workspace-shell.css':{},
 };
 const code=ts.transpileModule(fs.readFileSync('src/components/website/shell.web.tsx','utf8'),{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
 const exports={};new Function('require','exports',code)(name=>modules[name]??assert.fail(name),exports);
 function nodes(value){if(Array.isArray(value))return value.flatMap(nodes);if(value&&typeof value==='object')return [value,...nodes(value.props?.children)];return [value];}
-for(pathname of ['/privacy','/policies','/delete-account','/privacy-operations']){
+for(pathname of ['/privacy','/policies','/delete-account','/privacy-operations','/hi/blog','/hi/blog/fast-gst-registration-three-hours']){
  const tree=nodes(exports.WebShell({children:'PRIVACY_CONTENT'}));
  assert.ok(tree.includes('PRIVACY_CONTENT'),pathname+' must not hide its public notice / staff access instructions');
  assert.equal(tree.some(n=>n?.type==='Redirect'),false);

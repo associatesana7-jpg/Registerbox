@@ -20,7 +20,21 @@ for(const article of articles){
   for(const section of article.sections)for(const id of section.sourceIds||[])assert.ok(article.sources.some(source=>source.id===id),`${article.slug}: source ${id}`);
   for(const slug of article.relatedSlugs)assert.ok(articles.some(item=>item.slug===slug),`${article.slug}: related ${slug}`);
   assert.ok(fs.readFileSync(path.join(root,'sitemap.xml'),'utf8').includes(`${site}/blog/${article.slug}`));
+  const hindiHtml=fs.readFileSync(path.join(root,'hi','blog',article.slug+'.html'),'utf8');
+  assert.equal((hindiHtml.match(/<h1\b/g)||[]).length,1,article.slug+' Hindi page needs one H1');
+  assert.match(hindiHtml,/<h1[^>]*>[^<]*[\u0900-\u097F]/,article.slug+' needs static Hindi text');
+  assert.match(hindiHtml,/name="robots" content="index,follow,max-image-preview:large"/,article.slug+' Hindi page must be indexable');
+  assert.ok(hindiHtml.includes(`rel="canonical" href="${site}/hi/blog/${article.slug}"`),article.slug+' Hindi canonical');
+  assert.ok(hindiHtml.includes(`href="${site}/blog/${article.slug}"`),article.slug+' English alternate');
+  assert.ok(hindiHtml.includes(`href="${site}/hi/blog/${article.slug}"`),article.slug+' Hindi alternate');
+  assert.doesNotMatch(hindiHtml,/name="robots" content="noindex/,article.slug+' Hindi article must not fall back to noindex');
+  const hindiGraph=[...hindiHtml.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].flatMap(match=>JSON.parse(match[1])['@graph']);
+  const hindiPost=hindiGraph.find(item=>item['@type']==='BlogPosting');
+  assert.ok(hindiPost,article.slug+' Hindi article schema');
+  assert.equal(hindiPost.inLanguage,'hi-IN');
+  assert.ok(hindiPost.headline.match(/[\u0900-\u097F]/));
+  assert.ok(fs.readFileSync(path.join(root,'sitemap.xml'),'utf8').includes(`${site}/hi/blog/${article.slug}`));
 }
-for(const url of ['blog/index.html','blog/editorial-policy.html'])assert.ok(fs.existsSync(path.join(root,url)),url);
+for(const url of ['blog/index.html','blog/editorial-policy.html','hi/blog/index.html'])assert.ok(fs.existsSync(path.join(root,url)),url);
 assert.ok(fs.readFileSync(path.join(root,'index.html'),'utf8').includes('href="/blog"'),'Homepage links to guides');
-console.log(`Verified ${articles.length} public articles: static text, canonical URLs, indexability, Article metadata, images, sources, related links and sitemap.`);
+console.log(`Verified ${articles.length} bilingual public articles: static text, canonical/hreflang URLs, indexability, Article metadata, images, sources, related links and sitemap.`);

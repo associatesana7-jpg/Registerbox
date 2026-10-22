@@ -74,7 +74,7 @@ export const gstFoodGuides: BlogArticle[] = [
       { id: 'cbic-registration', title: 'CBIC Instruction 03/2025-GST: registration application documents', url: 'https://cbic-gst.gov.in/pdf/ins-gst-no-03-2025.pdf' },
     ],
     searchQuestions: ['What documents are required for GST registration?', 'Can I use a rented house for GST registration?', 'What if my GST registration address proof does not match?', 'Is an owner consent letter accepted for GST registration?'],
-    relatedSlugs: ['gstr-1-vs-gstr-3b', 'no-sales-nil-gstr-3b'],
+    relatedSlugs: ['fast-gst-registration-three-hours', 'gstr-1-vs-gstr-3b', 'no-sales-nil-gstr-3b'],
   },
   {
     slug: 'gstr-1-vs-gstr-3b',
