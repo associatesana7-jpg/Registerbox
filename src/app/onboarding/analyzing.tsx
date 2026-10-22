@@ -25,6 +25,6 @@ export default function AnalyzingScreen() {
     <PageHeader title="Checking your business" subtitle="Matching your saved business details against available compliance rules." />
     {loading ? <Text>Checking…</Text> : null}
     <ErrorBanner message={error} />
-    {error ? <><Button title="Retry scan" onPress={scan} /><Button title="Update business details" variant="secondary" onPress={() => router.replace('/onboarding/intent')} /></> : null}
+    {error ? <><Button title="Retry scan" onPress={scan} /><Button title="Update business details" variant="secondary" onPress={() => router.replace({pathname:'/onboarding/application',params:{category:'existing'}})} /></> : null}
   </Screen>;
 }

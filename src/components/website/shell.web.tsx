@@ -9,7 +9,7 @@ import blogLocales from '@/data/blog/locales.json';
 import './workspace-shell.css';
 const nav: [string,string,AppIconName][] = [
   ['/dashboard', 'Home', 'home'], ['/compliance', 'Applications', 'grid'], ['/documents', 'Documents', 'folder'],
-  ['/gst', 'GST workspace', 'receipt'], ['/gst-purchases', 'Purchases & bills', 'document'], ['/ai', 'RegisterBox AI', 'spark'], ['/tally', 'Connect Tally', 'business'], ['/account', 'Account', 'person'],
+  ['/gst', 'GST workspace', 'receipt'], ['/gst-purchases', 'Purchases & bills', 'document'], ['/ai', 'RegisterBox AI', 'spark'], ['/account', 'Account', 'person'],
 ];
 export function WebShell({ children }: PropsWithChildren) {
   const pathname = usePathname();

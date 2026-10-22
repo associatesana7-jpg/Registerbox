@@ -1,6 +1,6 @@
 import { Link, type Href } from 'expo-router';
 import { WebBrand } from './brand.web';
-import { contact } from './content';
+import { SiteFooter } from './footer.web';
 import { blogImage, blogReadMinutes, type BlogArticle } from '@/data/blog';
 import { blogPath, blogUi, type BlogLocale } from '@/data/blog/localized';
 import { BlogLanguageSwitch } from './blog-language-switch.web';
@@ -12,7 +12,7 @@ export function BlogHeader({ locale = 'en', slug }: { locale?: BlogLocale; slug?
   return <><a className="rb-skip" href="#blog-main">{blogUi(locale, 'skip')}</a><header className="rbg-header"><WebBrand/><div className="rbg-header-right"><nav aria-label={blogUi(locale, 'guidesNavigation')}><Link href={blogPath(locale) as Href}>{blogUi(locale, 'guides')}</Link><Link href="/services">{blogUi(locale, 'services')}</Link><Link href="/contact">{blogUi(locale, 'contact')}</Link></nav><BlogLanguageSwitch locale={locale} slug={slug}/></div></header></>;
 }
 export function BlogFooter({ locale = 'en' }: { locale?: BlogLocale }) {
-  return <footer className="rbg-footer"><div><WebBrand/><p>{blogUi(locale, 'footerTagline')}</p></div><nav aria-label={blogUi(locale, 'footer')}><Link href={'/blog/editorial-policy' as Href}>{blogUi(locale, 'editorial')}</Link><Link href="/services">{blogUi(locale, 'exploreServices')}</Link><Link href="/contact">{blogUi(locale, 'contactBranches')}</Link><Link href="/privacy">{blogUi(locale, 'privacy')}</Link><a href={`mailto:${contact.email}`}>{contact.email}</a></nav></footer>;
+  return <div data-guide-language={locale}><SiteFooter/></div>;
 }
 export function BlogCard({ article, featured = false, locale = 'en' }: { article: BlogArticle; featured?: boolean; locale?: BlogLocale }) {
   const path = blogPath(locale, article.slug) as Href;

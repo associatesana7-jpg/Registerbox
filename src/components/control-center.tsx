@@ -30,6 +30,7 @@ import {
 } from '@/lib/control-center-api';
 import { supabase } from '@/lib/supabase';
 import { AdminFilingWorkspace } from '@/components/admin-filing-workspace';
+import { AdminClientRegister } from '@/components/admin-client-register';
 import { Link } from 'expo-router';
 import { useAuthCaptcha } from '@/hooks/use-auth-captcha';
 
@@ -37,10 +38,11 @@ const ADMIN_EMAIL = 'fekupsony@gmail.com';
 
 type AuthStep = 'checking' | 'email' | 'otp' | 'dashboard';
 
-type NavigationSection = 'overview' | ControlCenterSection;
+type NavigationSection = 'overview' | 'client-register' | ControlCenterSection;
 
 const navigation: { group: string; items: { label: string; icon: string; section?: NavigationSection }[] }[] = [
   { group: 'WORKSPACE', items: [
+    { label:'Clients & renewals', icon:'◷', section:'client-register' },
     { label:'Overview', icon:'⌂', section:'overview' }, { label:'Customers', icon:'◎', section:'customers' },
     { label:'Businesses', icon:'▣', section:'businesses' }, { label:'Business Intents', icon:'◇', section:'intents' },
   ] },
@@ -220,6 +222,7 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
   const [activeSection,setActiveSection]=useState<NavigationSection>('overview');
   const [filingBusiness,setFilingBusiness]=useState<string|null>(null);
   const [query,setQuery]=useState('');
+  const [registerRefresh,setRegisterRefresh]=useState(0);
   const [directoryData,setDirectoryData]=useState<ControlCenterDirectory|null>(null);
   const [directoryLoading,setDirectoryLoading]=useState(false);
   const [directoryError,setDirectoryError]=useState('');
@@ -229,8 +232,8 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
   const generatedTime = useMemo(() => new Date(data.generatedAt).getTime(), [data.generatedAt]);
 
   const loadDirectory=useCallback(async(section: ControlCenterSection,page=0)=>{const request=++directoryRequest.current;setDirectoryLoading(true);setDirectoryError('');try{const result=await loadControlCenterDirectory(section,page);if(request===directoryRequest.current)setDirectoryData(result);}catch(cause){if(request===directoryRequest.current){setDirectoryData(null);setDirectoryError(cause instanceof Error?cause.message:'Protected records could not be loaded.')}}finally{if(request===directoryRequest.current)setDirectoryLoading(false)}},[]);
-  const selectSection=useCallback((section: NavigationSection)=>{setFilingBusiness(null);setQuery('');setActiveSection(section);if(section!=='overview')void loadDirectory(section)},[loadDirectory]);
-  const refreshCurrent=useCallback(()=>{if(activeSection==='overview')onRefresh();else void loadDirectory(activeSection)},[activeSection,loadDirectory,onRefresh]);
+  const selectSection=useCallback((section: NavigationSection)=>{setFilingBusiness(null);setQuery('');setActiveSection(section);if(section!=='overview'&&section!=='client-register')void loadDirectory(section)},[loadDirectory]);
+  const refreshCurrent=useCallback(()=>{if(activeSection==='overview')onRefresh();else if(activeSection==='client-register')setRegisterRefresh(v=>v+1);else void loadDirectory(activeSection)},[activeSection,loadDirectory,onRefresh]);
 
   useEffect(()=>{let live=true;AccessibilityInfo.isReduceMotionEnabled().then((reduced)=>{if(!live)return;if(reduced){fade.setValue(1);translate.setValue(0);return;}Animated.parallel([Animated.timing(fade,{toValue:1,duration:420,useNativeDriver:process.env.EXPO_OS!=='web'}),Animated.timing(translate,{toValue:0,duration:420,useNativeDriver:process.env.EXPO_OS!=='web'})]).start();});return()=>{live=false}},[fade,translate]);
 
@@ -246,7 +249,7 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
     {data.staff.roles.some(role=>['SUPER_ADMIN','SECURITY_ADMIN'].includes(role))?<Link href="/privacy-operations" style={{padding:12,color:palette.blue}}>Privacy requests & grievances →</Link>:null}
     <View style={[styles.topbar,phone&&styles.topbarPhone]}>{phone?<BrandMark/>:<View style={styles.search}><Text style={styles.searchIcon}>⌕</Text><TextInput accessibilityLabel="Search Control Center" value={query} onChangeText={setQuery} editable={activeSection!=='overview'} placeholder={activeSection==='overview'?'Choose a workspace to search records':'Search the current workspace...'} placeholderTextColor="#8C9AB3" style={styles.searchInput}/><Text style={styles.searchHint}>⌘ K</Text></View>}<Pressable accessibilityLabel="Refresh dashboard" onPress={refreshCurrent} disabled={loading||directoryLoading} style={styles.iconButton}>{loading||directoryLoading?<ActivityIndicator color={palette.blue} size="small"/>:<Text style={styles.iconButtonText}>↻</Text>}</Pressable><View style={styles.avatar}><Text style={styles.avatarText}>{data.staff.displayName.slice(0,1).toUpperCase()}</Text></View>{!phone&&<View style={styles.staffTop}><Text style={styles.staffName}>{data.staff.displayName}</Text><Text style={styles.staffRole}>{humanStatus(data.staff.roles[0]||'staff')}</Text></View>}<Pressable accessibilityLabel="Sign out" onPress={onSignOut} style={[styles.signOut,phone&&styles.signOutPhone]}><Text style={styles.signOutText}>{phone?'Exit':'Sign out'}</Text></Pressable></View>
     {phone&&<ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileNav}>{navigation.flatMap((group)=>group.items).filter((item):item is {label:string;icon:string;section:NavigationSection}=>!!item.section).map((item)=><Pressable key={item.section} onPress={()=>selectSection(item.section)} style={[styles.mobileNavItem,activeSection===item.section&&styles.mobileNavItemActive]}><Text style={[styles.mobileNavText,activeSection===item.section&&styles.mobileNavTextActive]}>{item.label}</Text></Pressable>)}</ScrollView>}
-    {filingBusiness?<AdminFilingWorkspace key={filingBusiness} businessId={filingBusiness} onBack={()=>{setFilingBusiness(null);if(activeSection!=='overview')void loadDirectory(activeSection)}}/>:activeSection==='overview'?<ScrollView contentContainerStyle={[styles.dashboardScroll,singleColumn&&styles.dashboardScrollMobile]}>
+    {filingBusiness?<AdminFilingWorkspace key={filingBusiness} businessId={filingBusiness} onBack={()=>{setFilingBusiness(null);if(activeSection!=='overview'&&activeSection!=='client-register')void loadDirectory(activeSection)}}/>:activeSection==='client-register'?<AdminClientRegister query={query} refreshKey={registerRefresh} onOpenBusiness={setFilingBusiness}/>:activeSection==='overview'?<ScrollView contentContainerStyle={[styles.dashboardScroll,singleColumn&&styles.dashboardScrollMobile]}>
       <Animated.View style={{opacity:fade,transform:[{translateY:translate}]}}>
         <View style={[styles.headingRow,phone&&styles.headingRowPhone]}><View><Text style={styles.kicker}>OPERATIONS COMMAND CENTER</Text><Text style={styles.dashboardTitle}>Good day, {data.staff.displayName.split(' ')[0]}.</Text><Text style={styles.dashboardSubtitle}>Here is what needs attention across RegisterBox right now.</Text></View><View style={styles.liveBadge}><View style={styles.liveDot}/><Text style={styles.liveText}>LIVE · {new Date(data.generatedAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</Text></View></View>
         {!!error&&<View style={styles.dashboardError}><Text style={styles.dashboardErrorText}>{error}</Text></View>}

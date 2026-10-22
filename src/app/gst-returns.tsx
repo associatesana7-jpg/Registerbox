@@ -10,6 +10,7 @@ import { JourneyRail } from '@/components/workspace-ui';
 import { GstHeader } from '@/components/gst-ui';
 import { GstCheckbox } from '@/components/gst-checkbox';
 import { GstImsRecovery } from '@/components/gst-ims-recovery';
+import { GstRecoveryCard } from '@/components/gst-recovery-card';
 import { useGstRefresh } from '@/hooks/use-gst-refresh';
 import { GstFilingHistory } from '@/components/gst-filing-history';
 import type { FilingHistory } from '../../supabase/functions/_shared/gst-filing-history';
@@ -21,6 +22,8 @@ import { periodIsClosed } from '../../supabase/functions/gst-workspace/domain';
 import { palette } from '@/constants/design';
 import { useApp } from '@/hooks/use-app';
 import { returnAction, type ReturnDraft } from '@/lib/gst-returns-api';
+import { gstReturnRecovery } from '@/lib/gst-return-recovery';
+import { gstReconnectParams } from '@/lib/gst-return-route';
 import { blank3b } from '../../supabase/functions/_shared/gstr3b';
 import { GstNilReturn } from '@/components/gst-nil-return';
 import { addSellerPlatformDraft, addSellerPlatform3b, addOperatorPlatform3b } from '../../supabase/functions/_shared/gst-platform-draft';
@@ -38,7 +41,7 @@ const declarations: Record<string,string> = {
   resume_portal:'Load this period’s saved GSTR-3B and payment details from GST so I can review and continue filing.',
   ledger:'I approve fetching cash, credit and liability balances. Do not use any funds.',
   preview_offset:'I approve preparing this allocation for review. Do not send it to GST.',
-  offset:'I reviewed this exact allocation and authorize using these cash and ITC ledger balances to offset my liability.',
+  offset:'I reviewed this exact allocation and authorize using these cash and ITC ledger balances to offset my liability, then checking the outcome without repeating payment.',
   evc:'I reviewed this exact GST snapshot and authorize sending a filing OTP to my authorized signatory.',
   file:'I am authorized to file. I confirm this exact GSTIN, period and return snapshot are complete and correct and authorize filing using this OTP.',
 };
@@ -69,16 +72,36 @@ function Workspace({businessId}:{businessId:string}) {
   function invalidatePayment(){setAllocationHash('');setPaymentReview(null);setApproved('');}
   const [pan,setPan]=useState(''), [otp,setOtp]=useState('');
   const [approved,setApproved]=useState(''), [busy,setBusy]=useState(false), [error,setError]=useState('');
+  const [providerCode,setProviderCode]=useState(''),[supportReference,setSupportReference]=useState('');
   const [writes,setWrites]=useState(false), [books,setBooks]=useState(false), [itc,setItc]=useState(false), [prior,setPrior]=useState(false);
   const [evidence,setEvidence]=useState<unknown>(null);
   const active=useRef(true), running=useRef(false);
   const [imsOpen,setImsOpen]=useState(false);
+  const fundingRequested=useRef(false),readEpoch=useRef(0);
+  const visibleDraft=useRef(selected),visiblePayload=useRef(payload);
+  visibleDraft.current=selected;visiblePayload.current=payload;
+  const processingChecks=useRef(0);
+  function restore(next:ReturnDraft,previous:ReturnDraft|null,move=true){
+    const figuresChanged=!!previous&&(next.payload_hash!==previous.payload_hash||next.snapshot_hash!==previous.snapshot_hash);
+    setSelected(next);setPayload(JSON.stringify(next.payload,null,2));
+    if(figuresChanged){setBooks(false);setItc(false);setPrior(false);setApproved('');setOtp('');resetPayment();}
+    if(move)setPhase(returnPhase(next));
+  }
   async function refreshSaved(){
     if(running.current||!selected)return;
-    try{const data=await returnAction(businessId,'list');const next=data.drafts?.find(row=>row.id===selected.id);if(active.current&&next){setSelected(next);setDrafts(data.drafts||[]);setWrites(data.writesEnabled);}}
+    const epoch=readEpoch.current;
+    try{const data=await returnAction(businessId,'list');const next=data.drafts?.find(row=>row.id===selected.id);if(active.current&&!running.current&&epoch===readEpoch.current&&visibleDraft.current===selected&&visiblePayload.current===payload&&next){const clean=payload===JSON.stringify(selected.payload,null,2);if(clean)restore(next,selected,next.state!==selected.state||next.snapshot_hash!==selected.snapshot_hash);setDrafts(data.drafts||[]);setWrites(data.writesEnabled);}}
     catch(cause){if(active.current)setError(cause instanceof Error?cause.message:'Could not refresh GST status.');}
   }
-  useGstRefresh(()=>{void refreshSaved();});
+  useGstRefresh(()=>{if(fundingRequested.current&&!running.current){fundingRequested.current=false;void run('ledger',true);}else void refreshSaved();});
+  useEffect(()=>{
+    if(!selected?.state.endsWith('_pending')||busy||processingChecks.current>=20)return;
+    if(!selected.reference_id&&selected.state!=='offset_pending')return;
+    const timer=setTimeout(()=>{processingChecks.current++;void run('poll',true);},4000);
+    return()=>clearTimeout(timer);
+    // Only reads the existing request. Offset/file are never retried here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[selected,busy]);
   useEffect(()=>{
     active.current=true;
     returnAction(businessId,'list').then(data=>{if(active.current){setDrafts(data.drafts||[]);setWrites(data.writesEnabled);setGstin(data.gstin||'');const input=initialParams.current;const period=(input.month||'').padStart(2,'0')+(input.year||'');
@@ -87,7 +110,7 @@ function Workspace({businessId}:{businessId:string}) {
       else if(data.gstin&&/^\d{6}$/.test(period)&&['nil','regular','payment'].includes(input.mode||'')){setPayload(JSON.stringify(input.mode==='nil'?{gstin:data.gstin,ret_period:period,registerbox_nil:true,declarations:{}}:input.form==='gstr-1'?{gstin:data.gstin,fp:period,b2b:[]}:blank3b(data.gstin,period),null,2));}}}).catch(cause=>{if(active.current)setError(cause.message);});
     return()=>{active.current=false;};
   },[businessId]);
-  function choose(draft:ReturnDraft){setSelected(draft);setForm(draft.form);setYear(String(draft.year));setMonth(String(draft.month).padStart(2,'0'));setPayload(JSON.stringify(draft.payload,null,2));setApproved('');setBooks(false);setItc(false);setPrior(false);setPan(draft.signatory_pan||'');setOtp('');resetPayment();setEvidence(null);setPhase(returnPhase(draft));}
+  function choose(draft:ReturnDraft){readEpoch.current++;setError('');setProviderCode('');setSupportReference('');setSelected(draft);setForm(draft.form);setYear(String(draft.year));setMonth(String(draft.month).padStart(2,'0'));setPayload(JSON.stringify(draft.payload,null,2));setApproved('');setBooks(false);setItc(false);setPrior(false);setPan(draft.signatory_pan||'');setOtp('');resetPayment();setEvidence(null);setPhase(returnPhase(draft));}
   async function importJson() {
     setError('');
     try {
@@ -102,30 +125,31 @@ function Workspace({businessId}:{businessId:string}) {
       setApproved('');
     }catch(cause){setError(cause instanceof Error?cause.message:'Import failed.');}
   }
-  async function run(action:string,portalReadApproved=false){
-    if(running.current)return;running.current=true;setBusy(true);setError('');
+  async function run(action:string,readApproved=false){
+    if(running.current)return;readEpoch.current++;running.current=true;setBusy(true);setError('');setProviderCode('');setSupportReference('');
     try{
       if(['preview_offset','offset'].includes(action)&&(!/^\d+(\.\d{1,2})?$/.test(minimumCash)||Object.values(choices).some(v=>!/^\d+(\.\d{1,2})?$/.test(v))))throw new Error('Complete every credit amount and the minimum cash requirement. Enter 0 where applicable.');
-      const data=await returnAction(businessId,action,{consent:approved===action||(action==='resume_portal'&&portalReadApproved),draftId:selected?.id,revision:selected?.revision,approvedHash:['evc','file'].includes(action)?selected?.snapshot_hash:selected?.payload_hash,
+      const data=await returnAction(businessId,action,{consent:approved===action||(['resume_portal','recover_ims','reconcile','poll','ledger'].includes(action)&&readApproved),draftId:selected?.id,revision:selected?.revision,approvedHash:['evc','file'].includes(action)?selected?.snapshot_hash:selected?.payload_hash,
         ...(action==='draft'?{form,year:Number(year),month:Number(month),payload:JSON.parse(payload)}:{}),
         ...(['offset','preview_offset'].includes(action)?{paymentChoices:Object.fromEntries(Object.entries(choices).map(([k,v])=>[k,Number(v)])),minimumCash:Number(minimumCash),paymentRulesReviewed:paymentRules,allocationHash}:{}),pan,otp,booksReviewed:books,itcReviewed:itc,priorReturnsReviewed:prior});
       if(!active.current)return;
-      if(data.draft){setSelected(data.draft);setPayload(JSON.stringify(data.draft.payload,null,2));setDrafts(rows=>[data.draft!,...rows.filter(row=>row.id!==data.draft!.id)]);}
+      if(data.draft){restore(data.draft,selected,false);setDrafts(rows=>[data.draft!,...rows.filter(row=>row.id!==data.draft!.id)]);}
       if(data.paymentContext)setPayment(data.paymentContext);
-      if(['draft','save','reconcile','offset'].includes(action)||data.paymentState==='settled')setPayment(null);
+      if(['draft','save','reconcile','offset'].includes(action)||data.paymentState==='settled'&&!data.creditPostingRequired)setPayment(null);
       if(data.paymentReview)setPaymentReview(data.paymentReview);
       if(['draft','save','reconcile','ledger','offset'].includes(action)){setAllocationHash('');setPaymentReview(null);}
       if(data.allocationHash)setAllocationHash(data.allocationHash);
       if(action==='reconcile'){setBooks(false);setItc(false);setPrior(false);}
       setEvidence(data.ledger||data.providerStatus||null);setWrites(data.writesEnabled);setApproved('');setOtp('');
       if(action==='draft'||action==='save'||action==='proceed')setPhase('compare');
+      if(['save','proceed','offset'].includes(action))processingChecks.current=0;
       if(action==='poll'&&data.draft)setPhase(returnPhase(data.draft));
-      if(action==='reconcile'&&data.draft?.reconciliation?.matched)setPhase(data.draft.form==='gstr-3b'&&data.draft.payload.registerbox_nil!==true&&data.draft.state==='saved'?'payment':'review');
-      if(action==='ledger'||action==='preview_offset')setPhase(data.paymentState==='settled'?'review':'payment');
+      if(action==='reconcile'&&data.draft)setPhase(returnPhase(data.draft));
+      if(action==='ledger'||action==='preview_offset')setPhase(data.draft?.state==='prepared'&&data.paymentState==='settled'&&!data.creditPostingRequired?'review':'payment');
       if(action==='resume_portal'){resetPayment();setBooks(false);setItc(false);setPrior(false);if(data.draft)setPhase(returnPhase(data.draft));}
-      if(action==='offset')setPhase('compare');
+      if(action==='offset'||action==='recover_ims'){if(data.draft)setPhase(returnPhase(data.draft));}
       if(action==='evc'||action==='file')setPhase('authorize');
-    }catch(cause){if(active.current){try{const latest=await returnAction(businessId,'list');const next=latest.drafts?.find(row=>row.id===selected?.id);if(next){setSelected(next);setDrafts(latest.drafts||[]);}}catch{/* Keep original operation error; no write is retried. */}setError(cause instanceof Error?cause.message:'Operation failed.');}}
+    }catch(cause){if(active.current){try{const latest=await returnAction(businessId,'list');const next=latest.drafts?.find(row=>selected?row.id===selected.id:row.form===form&&row.year===Number(year)&&row.month===Number(month));if(next){if(action==='draft'&&selected&&next.payload_hash===selected.payload_hash)setSelected(next);else restore(next,selected);setDrafts(latest.drafts||[]);}}catch{/* Keep original operation error; no write is retried. */}setError(cause instanceof Error?cause.message:'Operation failed.');if(cause&&typeof cause==='object'){const meta=cause as {providerCode?:string;operationId?:string;providerRequestId?:string};setProviderCode(meta.providerCode||'');setSupportReference(meta.operationId||meta.providerRequestId||'');}}}
     finally{running.current=false;if(active.current)setBusy(false);}
   }
   const amendmentEvidence=selected?.source_evidence&&'links' in selected.source_evidence?selected.source_evidence:null;
@@ -133,6 +157,25 @@ function Workspace({businessId}:{businessId:string}) {
   const dirty=!!selected && payload!==JSON.stringify(selected.payload,null,2);
   const nil=selected?.payload.registerbox_nil===true;
   const periodOpen=!!selected&&!periodIsClosed(selected.year,selected.month);
+  const recovery=gstReturnRecovery(selected,error?{message:error,providerCode}:null);
+  async function afterIms(){
+    setImsOpen(false);
+    if(selected?.state==='blocked'&&selected.last_error?.includes('IMS002'))await run('recover_ims',true);
+    else await refreshSaved();
+  }
+  function resolveRecovery(){
+    if(!recovery||busy)return;
+    switch(recovery.target){
+      case 'ims':setImsOpen(true);break;
+      case 'reconnect':router.push({pathname:'/gst',params:gstReconnectParams({form,year,month,mode:'regular'},businessId)});break;
+      case 'saved-return':void run('resume_portal',true);break;
+      case 'payment':void run(selected&&['draft','saved','prepared','otp_sent'].includes(selected.state)?'reconcile':'resume_portal',true);break;
+      case 'reconcile':void run('reconcile',true);break;
+      case 'otp':setOtp('');setApproved('');setPhase('authorize');break;
+      case 'check':processingChecks.current=0;void run('poll',true);break;
+      case 'refresh':void refreshSaved();break;
+    }
+  }
   const nextPeriodStart=selected?new Date(Date.UTC(selected.year,selected.month,1)).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}):'';
   function action(name:string,disabled=false,reason?:string){
     const historyReason=returnHistoryReason(filingHistory,form,month.padStart(2,'0')+year,name);
@@ -163,13 +206,16 @@ function Workspace({businessId}:{businessId:string}) {
     <JourneyRail current={Math.max(0,phases.findIndex(([key])=>key===phase))} steps={phases.map(([,label])=>label)} completed={[]}/>
     {!writes?<SoftNotice title="Draft preparation only" detail="Live GST filing is release-locked pending provider acceptance testing. Saving figures here does not submit your return or meet a filing deadline."/>:null}
     <ErrorBanner message={error}/>
+    {supportReference?<Text selectable style={muted}>Support reference: {supportReference}</Text>:null}
+    {recovery&&phase!=='start'?<GstRecoveryCard key={recovery.target+selected?.revision+selected?.state} recovery={recovery} disabled={busy||dirty&&['saved-return','payment','reconcile'].includes(recovery.target)} onResolve={resolveRecovery}/>:null}
+    {processingChecks.current>=20&&selected?.state.endsWith('_pending')?<Text accessibilityLiveRegion="polite" style={muted}>Automatic checks are paused. The request is saved. Use “Check GST processing status” above to continue without repeating it.</Text>:null}
+    {form==='gstr-3b'?<GstImsRecovery businessId={businessId} year={Number(year)} month={Number(month)} visible={imsOpen} onClose={()=>setImsOpen(false)} onComplete={()=>void afterIms()} onReconnect={()=>router.push({pathname:'/gst',params:gstReconnectParams({form,year,month,mode:'regular'},businessId)})}/>:null}
     {selected&&selected.state!=='filed'&&phase!=='start'?<SoftNotice title={phase==='payment'?'Next: review payment, then offset':phase==='compare'&&selected.state.endsWith('_pending')?'GST is processing your last request':phase==='compare'?'Next: confirm the saved GST figures':phase==='review'?'Next: review your figures before filing':phase==='authorize'?'Last step: authorize with GST OTP':'Prepare this return'} detail={phase==='payment'?'1. Load balances. 2. Review the allocation. 3. Authorize offset. We will then guide you to filing. No funds are used without your approval.':phase==='compare'&&selected.state.endsWith('_pending')?'Check processing status below. Do not repeat the save or offset request. Your saved progress stays here.':phase==='compare'?'Fetch and compare the latest saved return below. Once it matches, continue to payment or final review.':phase==='review'?'Check the saved return and confirm the three review items below. No need to create another nil declaration.':phase==='authorize'?'Request or resend the filing OTP, then enter it exactly as received. Filing is complete only when GST returns an acknowledgement.':'Your draft is saved privately until you approve sending it to GST.'}/>:null}
-    {form==='gstr-3b'&&selected?.state!=='filed'&&phase!=='start'?<Card><Text style={heading}>{selected?.last_error?.includes('IMS002')?'GSTR-2B needs computation':'IMS & GSTR-2B'}</Text><Text style={muted}>Review supplier bills and compute GSTR-2B without leaving this return. Saving IMS actions does not file GSTR-3B.</Text><Button title="Open IMS dashboard →" variant="secondary" disabled={busy} onPress={()=>setImsOpen(true)}/><GstImsRecovery businessId={businessId} year={Number(year)} month={Number(month)} visible={imsOpen} onClose={()=>setImsOpen(false)} onComplete={()=>{setImsOpen(false);void run('resume_portal',true);}}/></Card>:null}
     {phase!=='start'&&amendmentEvidence?<Card><Text style={{fontWeight:'700'}}>Amendment original links</Text><Text>{amendmentEvidence.matched?'Original records linked to acknowledged filed archives. Review each change below.':'Original linkage is incomplete. This draft cannot be submitted.'}</Text>{amendmentEvidence.issues.map((issue,index)=><Text key={index} style={{color:palette.red}}>{issue}</Text>)}{amendmentEvidence.links.map((link,index)=><View key={index} style={{gap:4}}><Text>{link.section.toUpperCase()} · {link.reference} · original period {link.originalPeriod}</Text><Text>Taxable value: ₹{link.original.txval.toFixed(2)} → ₹{link.revised.txval.toFixed(2)}. Change: ₹{link.delta.txval.toFixed(2)}.</Text><Text>Tax change: IGST ₹{link.delta.iamt.toFixed(2)}, CGST ₹{link.delta.camt.toFixed(2)}, SGST ₹{link.delta.samt.toFixed(2)}, cess ₹{link.delta.csamt.toFixed(2)}.</Text></View>)}<Text>Linked against app filing archives only. GST amendment history verification is still pending. These changes have not been added automatically to GSTR-3B.</Text></Card>:null}
 
     {gstin?<GstFilingHistory businessId={businessId} year={year} month={month} onStatus={setFilingHistory}/>:null}
     {phase==='start'?<Card><Text style={heading}>Saved returns</Text>{drafts.length?drafts.map(draft=><Button key={draft.id} title={`${draft.form.toUpperCase()} · ${draft.month}/${draft.year} · ${draft.state}`} variant="secondary" disabled={busy} onPress={()=>choose(draft)}/>):<Text style={muted}>No saved drafts yet.</Text>}<Button title="Create a new return" disabled={busy} onPress={()=>{setSelected(null);resetPayment();setPayload('');setYear('');setMonth('');setApproved('');setEvidence(null);setBooks(false);setItc(false);setPrior(false);setPhase('prepare');}}/><Text style={muted}>Guided GSTR-1 sections, standard GSTR-3B tables and nil declarations are available. Purchase matching is under GST → ITC/2B. Special scenarios still require review; bank challan payments use the official GST portal.</Text></Card>:null}
-    {phase==='prepare'?<Card><Text style={heading}>1. Prepare your return</Text><Text style={muted}>Choose the period, then nil or regular. Linked GSTIN: {gstin||'Loading…'}</Text><View style={{flexDirection:'row',gap:8}}>{(['gstr-1','gstr-3b'] as const).map(value=><View key={value} style={{flex:1}}><Button title={value.toUpperCase()} variant={form===value?'primary':'secondary'} disabled={busy||!!selected||!!payload} onPress={()=>{setForm(value);setApproved('');}}/></View>)}</View>
+    {phase==='prepare'&&!(selected?.state==='blocked'&&recovery&&['ims','saved-return','reconnect','check'].includes(recovery.target))?<Card><Text style={heading}>1. Prepare your return</Text><Text style={muted}>Choose the period, then nil or regular. Linked GSTIN: {gstin||'Loading…'}</Text><View style={{flexDirection:'row',gap:8}}>{(['gstr-1','gstr-3b'] as const).map(value=><View key={value} style={{flex:1}}><Button title={value.toUpperCase()} variant={form===value?'primary':'secondary'} disabled={busy||!!selected||!!payload} onPress={()=>{setForm(value);setApproved('');}}/></View>)}</View>
       <Field label="Year (YYYY)" value={year} keyboardType="number-pad" maxLength={4} editable={!busy&&!selected&&!payload} onChangeText={value=>{setYear(value.replace(/\D/g,''));setApproved('');}}/><Field label="Month (MM)" value={month} keyboardType="number-pad" maxLength={2} editable={!busy&&!selected&&!payload} onChangeText={value=>{setMonth(value.replace(/\D/g,''));setApproved('');}}/>
       <GstGuidedEditor payload={payload} gstin={gstin} period={month.padStart(2,'0')+year} form={form} disabled={busy||!!selected&&!['draft','blocked'].includes(selected.state)} onChange={text=>{setPayload(text);setApproved('');setBooks(false);setItc(false);setPrior(false);}}/>
       <GstPlatformReview form={form} onAddToDraft={(rows,role)=>{setPayload(JSON.stringify((form==='gstr-1'?(role==='operator'?addOperatorPlatformGstr1:addSellerPlatformDraft):role==='operator'?addOperatorPlatform3b:addSellerPlatform3b)(JSON.parse(payload||'{}'),rows,{gstin,period:month.padStart(2,'0')+year,role}),null,2));setApproved('');setBooks(false);setItc(false);setPrior(false);}} businessId={businessId} key={businessId+gstin+year+month} gstin={gstin} period={month.padStart(2,'0')+year} disabled={busy||!!selected&&!['draft','blocked'].includes(selected.state)}/>
@@ -183,11 +229,11 @@ function Workspace({businessId}:{businessId:string}) {
     {selected?<>
       {phase!=='start'?<Card><Text selectable style={heading}>{selected.gstin} · {selected.month}/{selected.year}</Text><Badge label={`Version ${selected.revision} · ${selected.state}`}/>{periodOpen?<Text selectable style={muted}>This tax period is still open. You can prepare a draft now. Nil-return checks and filing can begin from {nextPeriodStart}; GST may not provide a final snapshot yet.</Text>:null}<ErrorBanner message={selected.last_error||undefined}/>{selected.reference_id?<Text selectable style={muted}>GST reference: {selected.reference_id}</Text>:null}{selected.acknowledgement?<Text selectable style={heading}>GST acknowledgement: {selected.acknowledgement}</Text>:null}</Card>:null}
       {phase==='compare'?<>
-      <Card><Text style={heading}>2. Save & compare</Text>{nil?<Text style={muted}>Nil returns skip invoice upload and payment offset. Fetch records to check for contradictory amounts before proceeding.</Text>:selected.state==='draft'?action('save',!writes):null}{['save_pending','proceed_pending','offset_pending','unknown'].includes(selected.state)?action('poll',!selected.reference_id):null}{selected.form==='gstr-1'?action('proceed',!writes||selected.state!==(nil?'draft':'saved')||(nil&&!selected.reconciliation?.matched)||(nil&&periodOpen),nil&&periodOpen?`Wait until ${nextPeriodStart} to prepare a nil return.`:undefined):null}{['draft','saved','prepared','otp_sent'].includes(selected.state)?action('reconcile',nil&&periodOpen,nil&&periodOpen?`Wait until ${nextPeriodStart} to check nil eligibility against GST.`:undefined):null}</Card>
+      <Card><Text style={heading}>2. Save & compare</Text>{nil?<Text style={muted}>Nil returns skip invoice upload and payment offset. Fetch records to check for contradictory amounts before proceeding.</Text>:selected.state==='draft'?action('save',!writes):null}{['save_pending','proceed_pending','offset_pending','unknown'].includes(selected.state)?action('poll',!selected.reference_id&&!['offset_pending','unknown'].includes(selected.state)):null}{selected.form==='gstr-1'?action('proceed',!writes||selected.state!==(nil?'draft':'saved')||(nil&&!selected.reconciliation?.matched)||(nil&&periodOpen),nil&&periodOpen?`Wait until ${nextPeriodStart} to prepare a nil return.`:undefined):null}{['draft','saved','prepared','otp_sent'].includes(selected.state)?action('reconcile',nil&&periodOpen,nil&&periodOpen?`Wait until ${nextPeriodStart} to check nil eligibility against GST.`:undefined):null}</Card>
       {selected.reconciliation?<Card><Badge label={selected.reconciliation.matched?'Compared fields match':'Differences need review'} tone={selected.reconciliation.matched?'green':'red'}/><Text style={muted}>{selected.reconciliation.scope}</Text>{selected.reconciliation.differences.map((difference,index)=><Text selectable key={index} style={muted}>{difference.field}: draft {difference.expected??'not supplied'} / GST {difference.actual??'not supplied'}</Text>)}<Text style={muted}>A match is not a tax-compliance certification or approval to file.</Text></Card>:null}
       {selected.snapshot?<GstReturnReview result={{details:selected.snapshot,gstin:selected.gstin,form:selected.form,year:selected.year,month:selected.month,fetchedAt:selected.snapshot_at!,filed:false}}/>:null}
       </>:null}
-      {phase==='payment'?(selected.form==='gstr-3b'&&!nil?<Card><Text style={heading}>3. Review payment & setoff</Text>{action('ledger',!['draft','saved'].includes(selected.state))}<GstPaymentReview context={payment} review={paymentReview} choices={choices} onChoices={v=>{setChoices(v);invalidatePayment();}} minimumCash={minimumCash} onMinimumCash={v=>{setMinimumCash(v);invalidatePayment();}} rulesReviewed={paymentRules} onRulesReviewed={()=>{setPaymentRules(!paymentRules);invalidatePayment();}} disabled={busy} />{payment?action('preview_offset',!paymentRules||!minimumCash,'Review credit eligibility and enter the minimum cash requirement above.'):null}{paymentReview?.ready?action('offset',!writes||!allocationHash||selected.state!=='saved'||!paymentRules):null}{['prepared','offset_pending'].includes(selected.state)?<Text style={muted}>After offset completes, fetch and reconcile again before requesting the filing OTP.</Text>:null}</Card>:<SoftNotice title="No payment offset for this return" detail="Nil declarations and GSTR-1 do not use the regular GSTR-3B payment review." />):null}
+      {phase==='payment'?(selected.form==='gstr-3b'&&!nil?<Card><Text style={heading}>3. Review payment & setoff</Text>{action('ledger',!['draft','saved'].includes(selected.state))}<GstPaymentReview context={payment} review={paymentReview} choices={choices} onChoices={v=>{setChoices(v);invalidatePayment();}} minimumCash={minimumCash} onMinimumCash={v=>{setMinimumCash(v);invalidatePayment();}} rulesReviewed={paymentRules} onRulesReviewed={()=>{setPaymentRules(!paymentRules);invalidatePayment();}} disabled={busy} onFundingStarted={()=>{fundingRequested.current=true;}} onRefreshBalances={()=>{fundingRequested.current=false;void run('ledger',true);}} />{payment?action('preview_offset',!paymentRules||!minimumCash,'Review credit eligibility and enter the minimum cash requirement above.'):null}{paymentReview?.ready?action('offset',!writes||!allocationHash||selected.state!=='saved'||!paymentRules):null}{['prepared','offset_pending'].includes(selected.state)?<Text style={muted}>We’ll check the existing offset, then continue to review when GST confirms it. No payment is repeated.</Text>:null}</Card>:<SoftNotice title="No payment offset for this return" detail="Nil declarations and GSTR-1 do not use the regular GSTR-3B payment review." />):null}
       {phase==='review'?<>
         {selected.snapshot?<GstReturnReview result={{details:selected.snapshot,gstin:selected.gstin,form:selected.form,year:selected.year,month:selected.month,fetchedAt:selected.snapshot_at!,filed:false}}/>:null}
         <Card><Text style={heading}>Review your return</Text><Check checked={books} disabled={busy} onPress={()=>{setBooks(!books);setApproved('');}} label="I reconciled all invoices and amounts with my complete books."/><Check checked={itc} disabled={busy} onPress={()=>{setItc(!itc);setApproved('');}} label="I verified ITC eligibility and GSTR-2B where relevant."/><Check checked={prior} disabled={busy} onPress={()=>{setPrior(!prior);setApproved('');}} label="I checked prior-return requirements, including GSTR-1 before GSTR-3B."/><Button title="Proceed to Authorize" disabled={!books||!itc||!prior} onPress={()=>setPhase('authorize')}/></Card>
@@ -202,6 +248,7 @@ function Workspace({businessId}:{businessId:string}) {
       </Card>}{evidence&&advanced?<Card><Text style={heading}>Latest provider response</Text><Text selectable style={{...muted,fontFamily:'monospace',fontSize:12}}>{JSON.stringify(evidence,null,2)}</Text></Card>:null}</>:null}
     </>:null}
     {selected?.form==='gstr-3b'&&phase!=='start'&&['draft','saved','prepared','blocked'].includes(selected.state)?<Card><Text style={heading}>{portalEvidence?'Saved GST portal return':'Already prepared or paid on GST?'}</Text><Text style={muted}>Load the latest saved return and payment status to continue here. Review the fetched figures before authorizing filing.</Text>{action('resume_portal',false)}</Card>:null}
+    {form==='gstr-3b'&&selected?.state!=='filed'&&phase!=='start'&&recovery?.target!=='ims'?<Button title="Review invoices in IMS / GSTR-2B" variant="ghost" disabled={busy} onPress={()=>setImsOpen(true)}/>:null}
     <Button title="Back to GST workspace" variant="ghost" onPress={()=>router.replace('/gst')}/>
   </View></Screen>;
 }

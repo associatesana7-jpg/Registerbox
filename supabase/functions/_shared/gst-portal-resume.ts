@@ -47,4 +47,14 @@ export function portal3bHasPayments(snapshot:Obj){
   const payment=obj(snapshot.tx_pmt),cash=Array.isArray(payment.pdcash)?payment.pdcash:[];
   return [...cash,payment.pditc].some(row=>Object.entries(obj(row)).some(([key,value])=>!['liab_ldg_id','trans_typ'].includes(key)&&typeof value==='number'&&value>0));
 }
+/** A zero payable table alone does not prove the Make payment / Post credit
+ * step happened. An initial zero-tax return can still have ITC to post. */
+export function portal3bOffsetComplete(snapshot:Obj,confirmedOffset=false){
+  if(portal3bPaymentState(snapshot)!=='settled')return false;
+  if(confirmedOffset||portal3bHasPayments(snapshot))return true;
+  const rows=obj(snapshot.tx_pmt).tx_py as unknown[];
+  // GST's documented post-offset rows carry actual liability-ledger IDs.
+  // Zero/absent identifiers are not evidence that a zero-value posting ran.
+  return rows.every(value=>Number.isSafeInteger(obj(value).liab_ldg_id)&&Number(obj(value).liab_ldg_id)>0);
+}
 export type PortalResumeEvidence={version:'gst-portal-resume-v1';scope:'gst_portal';checkedAt:string;paymentState:ReturnType<typeof portal3bPaymentState>;previousDraft:{revision:number;payload:Obj;payloadHash:string;lastError:string|null;sourceEvidence:unknown}};

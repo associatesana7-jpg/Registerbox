@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.117.1';
+import { clientRegister, uploadClientDocument } from './client-register.ts';
 
 const allowedOrigins = new Set([
   'https://admin.registerbox.in',
@@ -569,8 +570,13 @@ Deno.serve(async (request) => {
     const access = await authenticate(request, admin);
     if (!access) return json(request, { error: 'Control Center access is not available for this account.' }, 403);
 
-    if(request.headers.get('content-type')?.includes('multipart/form-data'))return await deliverCertificate(request,admin,access);
+    if(request.headers.get('content-type')?.includes('multipart/form-data')){
+      const form=await request.clone().formData();
+      if(form.get('action')==='crm_upload')return await uploadClientDocument(admin,access,form,(body,status)=>json(request,body,status));
+      return await deliverCertificate(request,admin,access);
+    }
     const body = await request.json().catch(() => ({})) as { action?: string; section?: string; page?: number; documentId?: string; businessId?: string; reason?: string };
+    if(body.action?.startsWith('crm_'))return await clientRegister(admin,access,body,(result,status)=>json(request,result,status));
     if (body.action === 'me') {
       return json(request, { staff: { email: access.email, displayName: access.displayName, roles: access.roles, permissions: [...access.permissions] } });
     }

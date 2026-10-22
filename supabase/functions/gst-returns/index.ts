@@ -8,7 +8,7 @@ import { paymentContext, preparePayment } from '../_shared/gst-payment.ts';
 import {fetchFilingHistory,filingBlock} from '../_shared/gst-filing-history.ts';
 import { validFilingOtp } from '../_shared/gst-filing-otp.ts';
 import { unpack2b } from '../_shared/gst-purchases.ts';
-import { portal3bPaymentState, portal3bPreparation, portal3bHasZeroEcommerce, portal3bHasPayments } from '../_shared/gst-portal-resume.ts';
+import { portal3bPaymentState, portal3bPreparation, portal3bHasZeroEcommerce, portal3bHasPayments, portal3bOffsetComplete } from '../_shared/gst-portal-resume.ts';
 
 class SafeError extends Error {}
 class Rejected extends SafeError {
@@ -29,6 +29,7 @@ Deno.serve(async (request) => {
   const writesEnabled = env.GST_RETURN_WRITES_ENABLED === 'true';
   let lockId: string | undefined, connectionId: string | undefined, operationId: string | undefined, uncertain = false;
   let draftId: string | undefined;
+  let providerRequestId:string|undefined;
   try {
     const raw = await request.text();
     if (new TextEncoder().encode(raw).length > 1048576) return json({error:'Import a JSON file smaller than 1 MB.'},413);
@@ -157,6 +158,7 @@ Deno.serve(async (request) => {
     const provider = async (path: string,payload?: unknown) => {
       const response = await fetch('https://api.sandbox.co.in'+path,{method:payload === undefined ? 'GET':'POST',headers:{authorization:token,'x-api-key':key,'x-api-version':'1.0.0','Content-Type':'application/json','x-source':'primary'},body:payload === undefined ? undefined : JSON.stringify(payload),signal:AbortSignal.timeout(25000)});
       const value = await response.json();
+      if(typeof value.transaction_id==='string'&&/^[A-Za-z0-9_-]{1,100}$/.test(value.transaction_id))providerRequestId=value.transaction_id;
       if (response.status >= 500) throw new SafeError('GST provider is unavailable. Check status before retrying.');
       if (!response.ok || value.code >= 400 || String(value.data?.status_cd) === '0' || value.data?.error) {
         const details = [value.data?.error?.message,value.data?.error_message,value.data?.message,value.message,typeof value.data?.error === 'string' ? value.data.error : null];
@@ -187,8 +189,13 @@ Deno.serve(async (request) => {
       }
       return value;
     };
+    const confirmedOffset=()=>draft.source_evidence?.paymentConfirmation?.payloadHash===draft.payload_hash;
+    const offsetComplete=(value:Record<string,unknown>)=>portal3bOffsetComplete(value,confirmedOffset());
+    const recordOffsetConfirmation=async()=>{
+      await update({source_evidence:{...draft.source_evidence,pendingOperation:null,paymentConfirmation:{payloadHash:draft.payload_hash,acceptedAt:new Date().toISOString()}}});
+    };
     const mutate = async (path: string,payload: unknown) => {
-      await update({state:'unknown',last_error:'Operation started. If interrupted, check GST status; do not repeat it.'});
+      await update({state:'unknown',reference_id:null,source_evidence:{...draft.source_evidence,pendingOperation:{action,payloadHash:draft.payload_hash,startedAt:new Date().toISOString()}},last_error:'Operation started. If interrupted, check GST status; do not repeat it.'});
       uncertain = true;
       const result = await provider(path,payload);
       return result;
@@ -199,8 +206,18 @@ Deno.serve(async (request) => {
       return data.reference_id;
     };
     if(action==='recover_ims'){
-      if(draft.form!=='gstr-3b'||!isNil(draft.payload)||draft.state!=='blocked'||!String(draft.last_error).includes('(IMS002_CD)'))throw new SafeError('This nil return does not have a GSTR-2B generation rejection. Refresh its status.');
+      if(draft.form!=='gstr-3b'||draft.state!=='blocked'||!String(draft.last_error).includes('(IMS002_CD)'))throw new SafeError('This return does not have a confirmed GSTR-2B generation rejection. Refresh its status.');
       try{unpack2b(await provider('/gst/compliance/tax-payer/gstrs/gstr-2b/'+draft.year+'/'+String(draft.month).padStart(2,'0')),draft.gstin,period);}catch{throw new SafeError('GSTR-2B is not available for this period yet. Complete IMS computation, then refresh.');}
+      if(!isNil(draft.payload)){
+        const latest=await snapshot(),comparison=reconcile(draft.payload,latest,draft.form),checkedAt=new Date().toISOString(),snapshotHash=await hash(latest);
+        const paymentState=portal3bPaymentState(latest),paymentComplete=offsetComplete(latest);
+        // A recomputed 2B can change the portal's ITC. Preserve the approved
+        // private return, expose differences, and never save/offset implicitly.
+        await update({state:comparison.matched&&paymentComplete?'prepared':'saved',snapshot:latest,snapshot_hash:snapshotHash,snapshot_at:checkedAt,reconciliation:comparison,
+          source_evidence:{...draft.source_evidence,imsRecovery:{checkedAt,previousError:draft.last_error,snapshotHash,matched:comparison.matched}},
+          last_error:null,otp_sent_at:null,signatory_pan:null,reference_id:null});
+        return await done({imsRecovered:true,paymentState,creditPostingRequired:paymentState==='settled'&&!paymentComplete,reviewRequired:!comparison.matched});
+      }
       await update({state:'prepared',last_error:null,otp_sent_at:null,signatory_pan:null});
       return await done();
     }
@@ -211,12 +228,16 @@ Deno.serve(async (request) => {
       let payload;try{payload=portal3bPreparation(latest);}catch(e){throw new SafeError((e as Error).message);}
       const paymentState=portal3bPaymentState(latest),checkedAt=new Date().toISOString();
       const previousDraft=draft.source_evidence?.version==='gst-portal-resume-v1'?draft.source_evidence.previousDraft:{revision:draft.revision,payload:draft.payload,payloadHash:draft.payload_hash,lastError:draft.last_error??null,sourceEvidence:draft.source_evidence??null};
-      const sourceEvidence={version:'gst-portal-resume-v1',scope:'gst_portal',checkedAt,paymentState,previousDraft};
+      const payloadHash=await hash(payload);
+      const sameApprovedReturn=payloadHash===draft.payload_hash;
+      const paymentComplete=portal3bOffsetComplete(latest,confirmedOffset()&&sameApprovedReturn);
+      const sourceEvidence={version:'gst-portal-resume-v1',scope:'gst_portal',checkedAt,paymentState,previousDraft,
+        ...(paymentComplete&&confirmedOffset()&&sameApprovedReturn?{paymentConfirmation:draft.source_evidence.paymentConfirmation}:{})};
       await update({payload,payload_hash:await hash(payload),revision:draft.revision+1,source_evidence:sourceEvidence,
-        state:paymentState==='settled'?'prepared':'saved',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:checkedAt,
+        state:paymentComplete?'prepared':'saved',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:checkedAt,
         reconciliation:{matched:true,differences:[],scope:'Figures imported from the saved GST portal return. Review them against your books before approving filing.'},
         otp_sent_at:null,signatory_pan:null,reference_id:null,last_error:null});
-      return await done({paymentState});
+      return await done({paymentState,creditPostingRequired:paymentState==='settled'&&!paymentComplete});
     }
     if (action === 'save') {
       if (isNil(draft.payload)) throw new SafeError('Nil returns do not use the invoice-save step. Review nil eligibility first.');
@@ -225,6 +246,21 @@ Deno.serve(async (request) => {
       await update({state:'save_pending',reference_id:reference(data),last_error:null}); uncertain=false; return await done();
     }
     if (action === 'poll') {
+      if(draft.state==='unknown'&&draft.form==='gstr-3b'&&draft.source_evidence?.pendingOperation?.action==='offset'&&draft.source_evidence.pendingOperation.payloadHash===draft.payload_hash){
+        const latest=await snapshot(),comparison=reconcile(draft.payload,latest,draft.form);
+        // Recover only from fresh authoritative posting evidence. A timeout
+        // does not make it safe to spend the same ledger balance a second time.
+        if(portal3bOffsetComplete(latest)){
+          await recordOffsetConfirmation();
+          await update({state:'prepared',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:new Date().toISOString(),reconciliation:comparison,last_error:null,otp_sent_at:null,signatory_pan:null});
+        }
+        return await done({paymentState:portal3bPaymentState(latest),paymentOutcomePending:draft.state==='unknown'});
+      }
+      if(draft.state==='offset_pending'&&!draft.reference_id&&confirmedOffset()){
+        const latest=await snapshot(),comparison=reconcile(draft.payload,latest,draft.form);
+        if(offsetComplete(latest))await update({state:'prepared',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:new Date().toISOString(),reconciliation:comparison,last_error:null});
+        return await done({paymentState:portal3bPaymentState(latest)});
+      }
       if (!['save_pending','proceed_pending','offset_pending','unknown'].includes(draft.state) || !draft.reference_id) throw new SafeError('No trackable GST operation. If its outcome is unknown, inspect the GST portal before any further action.');
       // Older clients poll accepted nil initialization. Resume to EVC without
       // querying the save-status endpoint, which may return RET13510 here.
@@ -236,7 +272,12 @@ Deno.serve(async (request) => {
       }
       const result = unwrap(await provider('/gst/compliance/tax-payer/gstrs/'+draft.year+'/'+String(draft.month).padStart(2,'0')+'/status?reference_id='+encodeURIComponent(draft.reference_id)));
       if (draft.state === 'unknown') return await done({providerStatus:result});
-      if (result.status_cd === 'P') await update({state:draft.state === 'save_pending' ? 'saved':'prepared',last_error:null});
+      if(result.status_cd==='P'&&draft.state==='offset_pending'){
+        await recordOffsetConfirmation();
+        const latest=await snapshot(),comparison=reconcile(draft.payload,latest,draft.form);
+        if(offsetComplete(latest))await update({state:'prepared',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:new Date().toISOString(),reconciliation:comparison,last_error:null});
+      }
+      else if (result.status_cd === 'P') await update({state:draft.state === 'save_pending' ? 'saved':'prepared',last_error:null});
       else if (['PE','ER','E'].includes(String(result.status_cd))) await update({state:'blocked',last_error:'GST reported processing errors. Review the source response and prepare a corrected draft.'});
       return await done({providerStatus:result});
     }
@@ -275,7 +316,8 @@ Deno.serve(async (request) => {
       const value = await snapshot();
       const nil = isNil(draft.payload);
       const comparison = nil ? reviewNil(value,draft.form) : reconcile(draft.payload,value,draft.form);
-      await update({snapshot:value,snapshot_hash:await hash(value),snapshot_at:new Date().toISOString(),reconciliation:comparison,otp_sent_at:null,signatory_pan:null,state:(nil && draft.form==='gstr-3b' && comparison.matched)||draft.state === 'otp_sent' ? 'prepared':draft.state});
+      const state=!nil&&draft.form==='gstr-3b'&&['prepared','otp_sent'].includes(draft.state)&&!offsetComplete(value)?'saved':(nil && draft.form==='gstr-3b' && comparison.matched)||draft.state === 'otp_sent' ? 'prepared':draft.state;
+      await update({snapshot:value,snapshot_hash:await hash(value),snapshot_at:new Date().toISOString(),reconciliation:comparison,otp_sent_at:null,signatory_pan:null,state});
       return await done();
     }
     if (['ledger','preview_offset','offset'].includes(action)) {
@@ -283,7 +325,7 @@ Deno.serve(async (request) => {
       if (!['draft','saved'].includes(draft.state)) throw new SafeError('Payment review is unavailable while processing or after offset.');
       const latest = await snapshot();
       const comparison = reconcile(draft.payload,latest,draft.form);
-      if(portal3bPaymentState(latest)==='settled'){
+      if(offsetComplete(latest)){
         await update({state:'prepared',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:new Date().toISOString(),reconciliation:comparison,otp_sent_at:null,signatory_pan:null,last_error:null});
         return await done({paymentState:'settled'});
       }
@@ -291,7 +333,7 @@ Deno.serve(async (request) => {
       const ledger = unwrap(await provider('/gst/compliance/tax-payer/ledgers/bal/'+draft.year+'/'+String(draft.month).padStart(2,'0')));
       let context;
       try { context = paymentContext(latest,ledger); } catch (e) { throw new SafeError((e as Error).message); }
-      if (action === 'ledger') return await done({paymentContext:context});
+      if (action === 'ledger') return await done({paymentContext:context,creditPostingRequired:portal3bPaymentState(latest)==='settled'});
       if (!comparison.matched) throw new SafeError('GST return differs from your draft. Reconcile the changed data before allocating payment.');
       if (body.paymentRulesReviewed !== true) throw new SafeError('Review ITC eligibility, cash-only liabilities and minimum cash restrictions first.');
       let review;
@@ -314,7 +356,13 @@ Deno.serve(async (request) => {
       if (typeof result.reference_id === 'string' && result.reference_id) {
         await update({state:'offset_pending',reference_id:result.reference_id,snapshot:null,snapshot_hash:null,reconciliation:null,last_error:null});
       } else if (result.Message === 'Payment of tax successfully done') {
-        await update({state:'prepared',reference_id:null,snapshot:null,snapshot_hash:null,reconciliation:null,last_error:null});
+        // Acknowledgement means the offset was accepted, not that the current
+        // payable snapshot has caught up. Preserve acceptance before this read.
+        await recordOffsetConfirmation();
+        await update({state:'offset_pending',reference_id:null,snapshot:null,snapshot_hash:null,reconciliation:null,last_error:null});
+        uncertain=false;
+        const latest=await snapshot(),comparison=reconcile(draft.payload,latest,draft.form);
+        if(offsetComplete(latest))await update({state:'prepared',snapshot:latest,snapshot_hash:await hash(latest),snapshot_at:new Date().toISOString(),reconciliation:comparison,last_error:null});
       } else throw new SafeError('Offset outcome is unrecognized. Check GST before repeating anything.');
       uncertain=false; return await done();
     }
@@ -333,7 +381,7 @@ Deno.serve(async (request) => {
       latest = await snapshot();
       if (await hash(latest) !== draft.snapshot_hash) { await update({state:'prepared',snapshot:null,snapshot_hash:null,reconciliation:null,otp_sent_at:null}); throw new SafeError('GST data changed since review. Reconcile and approve again.'); }
       if (draft.form==='gstr-3b'&&!latest.tx_pmt) throw new SafeError('GST payment details are missing. Offset and refresh before requesting filing authorization.');
-      if(draft.form==='gstr-3b'&&draft.source_evidence?.version==='gst-portal-resume-v1'&&portal3bPaymentState(latest)!=='settled')throw new SafeError('GST has not confirmed zero remaining payable for this saved return. Refresh its payment details after offset completes.');
+      if(draft.form==='gstr-3b'&&!offsetComplete(latest))throw new SafeError('GST has not confirmed payment / credit posting for this return. Refresh payment details and complete the offset step before requesting a filing OTP.');
     }
     if (action === 'evc') {
       if (typeof body.pan !== 'string' || !/^[A-Z]{5}\d{4}[A-Z]$/.test(body.pan)) throw new SafeError('Enter the authorized signatory PAN.');
@@ -369,7 +417,7 @@ Deno.serve(async (request) => {
     const message = cause instanceof SafeError ? cause.message : 'The operation could not be completed. Reload and inspect status; no automatic retry was made.';
     if (uncertain && draftId) await admin.from('gst_return_drafts').update({state:cause instanceof Rejected ? 'blocked':'unknown',last_error:message}).eq('id',draftId);
     if (operationId) await admin.from('gst_return_operations').update({outcome:uncertain && !(cause instanceof Rejected) ? 'unknown':'failed'}).eq('id',operationId);
-    return json({error:message},502);
+    return json({error:message,...(cause instanceof Rejected&&cause.providerCode?{providerCode:cause.providerCode}:{}),...(providerRequestId?{providerRequestId}:{}),...(operationId?{operationId}:{})},502);
   } finally {
     if (connectionId && lockId) await admin.from('gst_connections').update({lock_id:null,locked_until:null}).eq('id',connectionId).eq('lock_id',lockId);
   }

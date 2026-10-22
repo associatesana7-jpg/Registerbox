@@ -165,3 +165,55 @@
 .rb-preview-title,.rb-folder-title{font-weight:700;line-height:1.15}.rb-service-directory{padding-block:40px 72px}.rb-service-directory h1{font-size:clamp(30px,5vw,48px);line-height:1.15}.rb-service-directory .rb-services-grid{margin-top:32px}.rb-service-directory .rb-service-card h2{font-size:22px;line-height:1.3}.rb-service-actions{display:flex;flex-wrap:wrap;gap:12px;margin-block:28px}.rb-policy nav{font-size:13px;margin-bottom:24px}.rb-policy a{color:var(--rb-blue);text-decoration:underline}.rb-policy .rb-button{color:white;text-decoration:none}.rb-public-page{overflow-wrap:anywhere}.rb-service-directory .rb-service-card{min-width:0}@media(max-width:600px){.rb-service-directory{padding-top:24px}.rb-service-actions>a{width:100%;justify-content:center}.rb-form input,.rb-form select,.rb-form textarea{font-size:16px}}
 
 .rb-brand img,.rb-service-card img{object-fit:contain;flex-shrink:0}.rb-footer-grid h2{font-size:14px;letter-spacing:0}.rb-preview-title{margin:0 0 24px}.rb-folder-title{margin:20px 0}
+
+/* Focused desktop authentication: the website stays visible while sign-in happens in one calm modal. */
+.rb-auth-page{position:relative;height:100%;overflow:hidden;background:#f5f7fb}
+.rb-auth-site-preview{position:absolute;inset:0;overflow:hidden;pointer-events:none;user-select:none}
+.rb-auth-site-preview .rb-website{height:100%;overflow:hidden}
+.rb-auth-overlay{position:fixed;inset:0;z-index:80;display:grid;place-items:center;overflow:auto;padding:40px;background:rgba(8,18,36,.72);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.rb-auth-dialog{width:min(560px,calc(100vw - 48px));max-height:calc(100dvh - 56px);overflow:auto;border:1px solid rgba(255,255,255,.8);border-radius:24px;background:#fff;box-shadow:0 28px 90px rgba(4,12,28,.34);padding:24px 56px 28px;text-align:center;animation:rb-auth-enter 420ms cubic-bezier(.22,1,.36,1)}
+.rb-auth-dialog.is-otp{width:min(650px,calc(100vw - 48px));padding-inline:64px}
+.rb-auth-dialog-top{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;min-height:44px;margin-bottom:3px}
+.rb-auth-dialog-top>a{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;font-size:27px;line-height:1;color:var(--rb-ink);justify-self:start}
+.rb-auth-dialog-top>a:hover{background:#f2f5fa;color:var(--rb-blue)}
+.rb-auth-dialog-top strong{font-size:14px;letter-spacing:-.1px}
+.rb-auth-mark{position:relative;display:grid;place-items:center;width:64px;height:64px;margin:3px auto 18px;border-radius:18px;background:linear-gradient(145deg,#edf3ff,#dce8ff);color:var(--rb-blue);font-size:30px;font-weight:800;letter-spacing:-3px}
+.rb-auth-mark>span{position:absolute;right:9px;top:7px;color:var(--rb-yellow);font-size:12px;letter-spacing:0}
+.rb-auth-heading h1{margin:4px 0 7px;color:var(--rb-ink);font-size:31px;line-height:1.2;letter-spacing:-1.2px}
+.rb-auth-heading p{margin:0 auto 24px;color:var(--rb-muted);font-size:14px;line-height:1.7}
+.rb-auth-heading p strong{color:var(--rb-ink);font-weight:700}
+.rb-auth-form{gap:14px;text-align:left}
+.rb-auth-form label{font-size:13px}
+.rb-auth-form input:not(#rb-otp){min-height:58px;border-radius:12px;padding-inline:17px;font-size:16px}
+.rb-auth-form input:not(#rb-otp):focus{border-color:var(--rb-blue);outline:3px solid rgba(36,98,237,.14);outline-offset:0}
+.rb-auth-form .rb-button{min-height:56px;border-radius:12px;font-size:15px}
+.rb-auth-trust{margin:18px 0 0;color:#277f5f;font-size:12px}
+.rb-auth-code{position:relative;display:block!important;cursor:text}
+.rb-auth-code>input{position:absolute!important;inset:0!important;z-index:2;width:100%!important;height:100%!important;min-height:0!important;border:0!important;padding:0!important;opacity:.01!important;caret-color:transparent;color:transparent!important;background:transparent!important}
+.rb-code-cells{display:grid;grid-template-columns:repeat(6,58px);justify-content:center;gap:10px}
+.rb-code-cells>span{display:grid;place-items:center;height:64px;border:1.5px solid #d6dbe4;border-radius:12px;background:#fff;color:var(--rb-ink);font-size:25px;font-weight:700;font-variant-numeric:tabular-nums;transition:border-color 220ms,box-shadow 220ms,background-color 220ms,transform 220ms}
+.rb-auth-code.is-focused .rb-code-cells>span.is-active{border-color:var(--rb-blue);box-shadow:0 0 0 3px rgba(36,98,237,.13);transform:translateY(-1px)}
+.rb-code-cells>span.is-filled{border-color:#9eb8f6;background:#f8faff}
+.rb-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.rb-auth-actions{margin:17px 0 0;align-items:center}
+.rb-auth-actions :is(a,button){min-height:40px;display:inline-flex;align-items:center}
+.rb-auth-bottom{margin-top:20px;padding-top:17px;font-size:11px;line-height:1.7;text-align:center}
+.rb-auth-bottom p{margin:0 0 7px}
+.rb-auth-bottom>a,.rb-auth-bottom>span{display:inline-block;margin:0 4px}
+@keyframes rb-auth-enter{from{opacity:0;transform:translateY(16px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:600px){
+  .rb-auth-site-preview{display:none}
+  .rb-auth-overlay{position:absolute;align-items:start;padding:0;background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .rb-auth-dialog,.rb-auth-dialog.is-otp{width:100%;min-height:100dvh;max-height:none;border:0;border-radius:0;box-shadow:none;padding:18px 20px 28px;display:flex;flex-direction:column;justify-content:center}
+  .rb-auth-dialog-top{position:absolute;top:14px;left:20px;right:20px;width:auto}
+  .rb-auth-mark{width:58px;height:58px;margin-bottom:20px}
+  .rb-auth-heading h1{font-size:28px}
+  .rb-auth-heading p{font-size:13px;margin-bottom:22px}
+  .rb-auth-form{width:100%;max-width:440px;margin-inline:auto}
+  .rb-code-cells{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+  .rb-code-cells>span{height:54px;border-radius:10px;font-size:22px}
+  .rb-auth-actions,.rb-auth-bottom{width:100%;max-width:440px;margin-inline:auto}
+  .rb-auth-actions{margin-top:15px}
+  .rb-auth-bottom{margin-top:20px}
+}
+@media(prefers-reduced-motion:reduce){.rb-auth-dialog{animation:none}.rb-code-cells>span{transition:none}}

@@ -10,6 +10,8 @@ const modules={
  'expo-router/head':{default:'Head',__esModule:true},
  '@/hooks/use-app':{useApp:()=>({session:null,loadingSession:false})},
  './brand.web':{WebBrand:'Brand'},
+ '../app-icon':{AppIcon:'AppIcon'},
+ './workspace-shell.css':{},
  './content':{contact:{whatsapp:'https://example.invalid'},safeNext:value=>value},
  '../app-icon':{AppIcon:'AppIcon'},
  './workspace-shell.css':{},
