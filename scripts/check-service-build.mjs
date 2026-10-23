@@ -27,19 +27,25 @@ function html(path) {
 for (const [slug, category] of services) {
   const page = html('services/' + slug);
   assert.equal((page.match(/<h1\b/g) || []).length, 1, slug + ': one H1');
-  const primary = page.match(/<a\b[^>]*class="[^"]*rb-qs-primary[^"]*"[^>]*>/)?.[0];
+  const primary = page.match(/<a\b[^>]*class="[^"]*rb-sx-primary[^"]*"[^>]*>/)?.[0];
   assert(primary, slug + ': prominent application action');
   const href = primary.match(/href="([^"]+)"/)?.[1].replaceAll('&amp;', '&');
   assert(href, slug + ': action destination');
   if (category === 'trademark') {
-    assert.equal(href, '/contact?service=trademark');
+    assert.equal(href, '/services/trademark-registration#packages');
+  } else if (category === 'gst') {
+    assert.equal(href, '/gst', slug + ': GST workspace remains available before any package purchase');
+  } else if (['gst_registration', 'food', 'retail', 'udyam'].includes(category)) {
+    const target = new URL(href, 'https://www.registerbox.in');
+    assert.equal(target.pathname, '/onboarding/application', slug + ': registration before payment');
+    assert.equal(target.searchParams.get('category'), category, slug + ': preserve registration type');
   } else {
     const target = new URL(href, 'https://www.registerbox.in');
     assert.equal(target.pathname, '/auth', slug + ': public sign-in entry');
     assert.equal(target.searchParams.get('next'), category === 'gst' ? '/gst' : '/onboarding/application?category=' + category, slug + ': preserve service choice');
   }
   assert(page.indexOf(primary) < page.indexOf('id="documents"'), slug + ': action precedes long details');
-  assert(page.includes('rb-qs-mobile-action'), slug + ': mobile start action');
+  assert(page.includes('rb-sx-mobile-action'), slug + ': mobile start action');
   assert(!/<meta[^>]+name="robots"[^>]+content="noindex/.test(page), slug + ': public service remains indexable');
 }
 const directory = html('services');

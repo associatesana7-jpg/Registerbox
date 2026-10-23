@@ -187,6 +187,48 @@ export type Database = {
           },
         ]
       }
+      service_checkout_orders: {
+        Row: {
+          id: string
+          user_id: string
+          business_id: string | null
+          application_id: string | null
+          package_id: string
+          package_title: string
+          amount: number
+          currency: string
+          status: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          request_id: string
+          provider_create_token: string | null
+          trademark_json: Json
+          created_at: string
+          updated_at: string
+          paid_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          business_id?: string | null
+          application_id?: string | null
+          package_id: string
+          package_title: string
+          amount: number
+          currency?: string
+          status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          request_id: string
+          provider_create_token?: string | null
+          trademark_json?: Json
+          created_at?: string
+          updated_at?: string
+          paid_at?: string | null
+        }
+        Update: Partial<Database['public']['Tables']['service_checkout_orders']['Insert']>
+        Relationships: []
+      }
       applications: {
         Row: {
           application_number: string | null

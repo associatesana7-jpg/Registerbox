@@ -21,9 +21,30 @@ Application drafts are not government submissions. Confirm scope and fees with t
 - GST registration assistance: prepare business information and documents with RegisterBox. Confirm the service scope with the team before proceeding.
 - [GST registration support](https://www.registerbox.in/services/gst-registration)
 
+
+## Published service prices and secure payment
+
+RegisterBox service fees are final: no GST is added. Government fees, tax dues and statutory charges are separate where applicable. Registration details are submitted to RegisterBox first; the package review and Razorpay payment step follow. A payment receipt does not prove government submission, approval or filing.
+
+- [GST registration — ₹1,999](https://www.registerbox.in/services/gst-registration)
+- [FSSAI licence assistance — ₹2,999](https://www.registerbox.in/services/fssai-food-business)
+- [Udyam optional assistance — ₹499](https://www.registerbox.in/services/udyam-registration): official Udyam registration is free. The applicant completes official identity verification; never share OTPs.
+- [Shop & Establishment assistance — ₹4,499](https://www.registerbox.in/services/shop-establishment-registration)
+- [Income tax filing — ₹1,999 per agreed return](https://www.registerbox.in/services/income-tax-filing)
+- [MCA compliance — ₹9,999 for one agreed year](https://www.registerbox.in/services/mca-compliance)
+- [Trademark filing packages — from ₹1,899](https://www.registerbox.in/services/trademark-registration): government fees separate; single mark/class as described.
+- [Digital signature packages — ₹2,100](https://www.registerbox.in/services/digital-signature): individual or organisation signing, two-year certificate and USB token subject to issuing-authority verification.
+- [GST and proprietorship packages](https://www.registerbox.in/services/proprietorship): ₹1,499 registration and one agreed filing month; ₹7,899 proprietorship/GST for one agreed year; ₹19,899 one-year GST filing and ITR. No automatic renewal.
+- [Eligible nil GST filing — ₹0 RegisterBox service fee](https://www.registerbox.in/services/free-nil-gst-filing): complete books, period eligibility, filing authorisation and actual acknowledgement remain necessary.
+- [Machine-readable service catalogue](https://www.registerbox.in/service-feed.json): package amounts, inclusions and billing periods.
+
+Company, LLP and other services without published fixed packages require an agreed quote. Checkout and customer workspaces are private flows; public service and guide pages contain crawlable prices and scope.
+
 ## Business questions and guides
 
 These public guides contain preparation checklists, practical explanations and linked official sources. Complete language versions have separate crawlable URLs. Language availability is generated from published translations.
+
+- [GST registration for small e-commerce sellers: the 1 November 2026 update](https://www.registerbox.in/blog/gst-registration-small-ecommerce-sellers-november-2026): A reported 1 November start, the proposed Rule 14B warehouse route, and practical preparation for small goods sellers. Source status reviewed on 23 October 2026.
 
 - [Tatkal GST registration in 3 hours? RegisterBox’s fast service and the official rules](https://www.registerbox.in/blog/fast-gst-registration-three-hours): Need GST registration quickly? Learn what RegisterBox can prepare in 3–24 hours, who may qualify for the official three-working-day route, and when a GSTIN is actually issued.
   [हिन्दी](https://www.registerbox.in/hi/blog/fast-gst-registration-three-hours) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/fast-gst-registration-three-hours) · [தமிழ்](https://www.registerbox.in/ta/blog/fast-gst-registration-three-hours)

@@ -2,18 +2,20 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
 import vm from 'node:vm';
-import { readBlogArticles, readBlogModule } from './blog-catalog.mjs';
+import { readBlogArticles, readBlogModule, readLocalizedBlogCatalog } from './blog-catalog.mjs';
 const output = readBlogModule('src/lib/public-analytics.ts');
 const { publicAnalyticsUrl, analyticsPublicPaths } = output;
+const { availableBlogLocales, blogPath } = readLocalizedBlogCatalog();
 for (const path of analyticsPublicPaths) {
   assert.equal(publicAnalyticsUrl(`https://registerbox.in${path}?email=private@example.invalid#token`), `https://www.registerbox.in${path}`);
 }
 assert.ok(analyticsPublicPaths.includes('/hi/blog'));
 for (const article of readBlogArticles()) {
-  assert.ok(analyticsPublicPaths.includes(`/blog/${article.slug}`));
-  assert.ok(analyticsPublicPaths.includes(`/hi/blog/${article.slug}`));
+  for (const locale of availableBlogLocales(article.slug)) {
+    assert.ok(analyticsPublicPaths.includes(blogPath(locale.code, article.slug)), 'Published language versions remain public');
+  }
 }
-for (const path of ['/auth', '/auth/otp', '/onboarding/application', '/dashboard', '/documents', '/control-center', '/gst-returns', '/blog/private-secret', '/blog%2fsecret', '/hi/blog/private-secret', '/hi/blog%2fsecret']) {
+for (const path of ['/auth', '/auth/otp', '/onboarding/application', '/onboarding/payment', '/checkout', '/dashboard', '/documents', '/control-center', '/gst-returns', '/blog/private-secret', '/blog%2fsecret', '/hi/blog/private-secret', '/hi/blog%2fsecret', '/hi/blog/gst-registration-small-ecommerce-sellers-november-2026']) {
   assert.equal(publicAnalyticsUrl(`https://www.registerbox.in${path}?token=secret`), null);
 }
 for (const host of ['http://registerbox.in', 'https://admin.registerbox.in', 'https://preview.vercel.app', 'http://localhost:4187', 'https://registerbox.in.evil.invalid', 'https://user:pass@registerbox.in', 'https://registerbox.in:444']) assert.equal(publicAnalyticsUrl(`${host}/blog`), null);

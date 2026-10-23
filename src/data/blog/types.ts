@@ -11,7 +11,7 @@ export type BlogArticle = {
   howToSection?: string;
   availabilityNote?: string;
   publishedAt?: string;
-  image: 'formation' | 'food' | 'records' | 'gstr3b-process' | 'dir3-kyc' | 'esic-employer' | 'shop-registration' | 'fast-gst-registration';
+  image: 'formation' | 'food' | 'records' | 'gstr3b-process' | 'dir3-kyc' | 'esic-employer' | 'shop-registration' | 'fast-gst-registration' | 'ecommerce-gst-november-2026';
   imageAlt: string;
   intro: string[];
   sections: { id: string; heading: string; paragraphs: string[]; bullets?: string[]; sourceIds?: string[] }[];

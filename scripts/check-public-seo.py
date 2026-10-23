@@ -48,6 +48,26 @@ for loc in ET.parse(root/'sitemap.xml').iter('{http://www.sitemaps.org/schemas/s
 for path in ['/auth','/auth/otp','/dashboard','/control-center','/documents']:
  page=Page();page.feed(file_for(path).read_text())
  if not any('noindex' in v for v in page.meta.get('robots',[])):errors.append(f'{path}: missing private noindex')
+# Package offers must be visible in static HTML and agree with the public feed.
+feed=json.loads((root/'service-feed.json').read_text())
+if len(feed.get('services',[]))!=14:errors.append('service-feed: expected 14 paid packages')
+for item in feed.get('services',[]):
+ path=urlparse(item['canonical_url']).path
+ file=file_for(path)
+ if not file.exists():errors.append(f'{path}: missing package landing page');continue
+ page=Page();raw=file.read_text();page.feed(raw)
+ offers=[offer for graph in page.schema for node in graph.get('@graph',[]) if node.get('@type')=='Service' for offer in node.get('offers',[])]
+ offer=next((offer for offer in offers if offer.get('@id','').endswith('#package-'+item['id'])),None)
+ if not offer:errors.append(f'{path}: missing Service/Offer for {item["id"]}')
+ elif offer.get('price')!=item['price'] or offer.get('priceCurrency')!='INR':errors.append(f'{path}: offer price mismatch for {item["id"]}')
+ if item['id'] not in page.ids and 'package-'+item['id'] not in page.ids:errors.append(f'{path}: package anchor missing for {item["id"]}')
+ if '/checkout?package='+item['id'] not in page.links:errors.append(f'{path}: checkout link missing for {item["id"]}')
+ if item['price']<1:errors.append(f'{path}: paid package below minimum amount')
+ if 'No GST' not in raw:errors.append(f'{path}: service fee GST disclosure missing')
+if feed.get('free_service',{}).get('price')!=0:errors.append('service-feed: missing free nil GST offer')
+robots=(root/'robots.txt').read_text()
+if 'Sitemap: https://www.registerbox.in/sitemap.xml' not in robots:errors.append('robots: missing sitemap')
+if 'Disallow: /services' in robots:errors.append('robots: public service pages blocked')
 assert (root/'images/registerbox-og.jpg').exists()
 print(f'Checked {count} public pages and 5 private routes.');print('\n'.join(errors) if errors else 'All SEO and internal-link checks pass.')
 sys.exit(bool(errors))

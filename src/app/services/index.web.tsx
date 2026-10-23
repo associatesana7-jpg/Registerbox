@@ -1,73 +1,47 @@
+import { SiteFooter } from '@/components/website/footer.web';
 import { Link, type Href } from 'expo-router';
 import { useState } from 'react';
-import { WebBrand } from '@/components/website/brand.web';
-import { SiteFooter } from '@/components/website/footer.web';
-import { servicePath } from '@/components/website/content';
-import { Seo, siteUrl } from '@/components/website/seo.web';
-import { publicServices } from '@/components/website/service-pages';
 import { useApp } from '@/hooks/use-app';
-import '@/components/website/service-directory.css';
+import { WebBrand } from '@/components/website/brand.web';
+import { Seo, siteUrl } from '@/components/website/seo.web';
+import { contact } from '@/components/website/content';
+import '@/components/website/service-entry.css';
+import '@/components/website/service-experience.css';
+import { publicServices, publicServiceStartPath, servicePackagesForCategory } from '@/components/website/service-pages';
+import { serviceDetails } from '@/components/website/service-details';
+import { servicePresentation } from '@/components/website/service-presentation';
+import { packagePrice } from '@/components/website/service-packages.web';
 
 const groups = ['All services', 'Start a business', 'Registrations', 'Manage & comply'];
-
 export default function ServicesPage() {
   const { session } = useApp();
   const [group, setGroup] = useState('All services');
   const [query, setQuery] = useState('');
-  const search = query.trim().toLocaleLowerCase();
-  const visible = publicServices.filter(item => (group === 'All services' || item.group === group)
-    && `${item.title} ${item.detail} ${'tag' in item ? item.tag : ''} ${item.category}`.toLocaleLowerCase().includes(search));
-  const reset = () => { setQuery(''); setGroup('All services'); };
-
-  return <div className="rb-public-page rb-sd-page">
-    <Seo title="Business Registration & Compliance Services | RegisterBox" description="Explore company, LLP, GST, food business and shop registration preparation, plus business compliance workspaces. Find your next step with RegisterBox." path="/services" schema={[{'@type':'ItemList',itemListElement:publicServices.map((item,index)=>({'@type':'ListItem',position:index+1,name:item.title,url:`${siteUrl}/services/${item.slug}`}))}]}/>
-    <a href="#services-list" className="rb-skip">Skip to services</a>
-    <header className="rb-sd-header rb-container">
-      <WebBrand/>
-      <nav aria-label="Website"><Link href="/">Home</Link><Link href="/contact">Contact us <span aria-hidden="true">↗</span></Link></nav>
-    </header>
-    <main className="rb-container rb-sd-main">
-      <section className="rb-sd-intro" aria-labelledby="services-title">
-        <div>
-          <p className="rb-sd-eyebrow">YOUR NEXT BUSINESS STEP</p>
-          <h1 id="services-title">Choose your service.<br/><span>We’ll help you get started.</span></h1>
-          <p className="rb-sd-lead">From a new idea to your next GST return, find the right place to begin. Start your application or read the details first.</p>
-          <div className="rb-sd-intro-links"><a href="#services-list">Find my service <span aria-hidden="true">↓</span></a><Link href="/contact">Help me choose <span aria-hidden="true">↗</span></Link></div>
-        </div>
-        <aside className="rb-sd-how" aria-label="How to get started">
-          <p>ONE CLEAR PATH FORWARD</p>
-          <ol>
-            <li><span aria-hidden="true">01</span><div><strong>Choose what you need</strong><small>Start with your business or registration.</small></div></li>
-            <li><span aria-hidden="true">02</span><div><strong>Add your details</strong><small>Sign in and prepare your information.</small></div></li>
-            <li><span aria-hidden="true">03</span><div><strong>Review the next steps</strong><small>Confirm the scope and documents needed.</small></div></li>
-          </ol>
-        </aside>
+  const shown = publicServices.filter(service => (group === 'All services' || group === service.group) && `${service.title} ${service.detail} ${servicePresentation[service.category].title}`.toLowerCase().includes(query.trim().toLowerCase()));
+  return <div className="rb-public-page rb-sx-page rb-sx-catalog">
+    <Seo title="GST Filing, Registration & Business Services | RegisterBox" description="Compare GST, FSSAI, Udyam, shop licence, trademark, DSC, ITR and annual compliance packages. Clear RegisterBox fees with no GST added. Eligible nil GST filing is free." path="/services" schema={[{ '@type': 'ItemList', itemListElement: publicServices.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.title, url: `${siteUrl}/services/${item.slug}` })) }]}/>
+    <header className="rb-public-header rb-container"><WebBrand/><a href={contact.telephoneHref}>Call our team ↗</a></header>
+    <main className="rb-container rb-sx-main">
+      <section className="rb-sx-catalog-intro"><div className="rb-sx-kicker">BENGALURU BUSINESS SUPPORT</div><h1>Big plans.<br/><span>Simple next steps.</span></h1><p>Pick your service. See the checklist. Start online.</p><div className="rb-sx-catalog-count"><span className="rb-sx-count-dot"/> New Thippasandra & Marathahalli</div></section>
+      <aside className="rb-sx-catalog-help"><span aria-hidden="true">₹0</span><div><h2>Nil GST filing. Zero service fee.</h2><p>Eligible nil GSTR-1 and GSTR-3B returns stay free. Check eligibility and your filing period first.</p></div><Link className="rb-button" href={'/services/free-nil-gst-filing' as Href}>Explore free nil filing ↗</Link></aside>
+      <section aria-label="Find a service">
+        <div className="rb-sx-catalog-tools"><div className="rb-sx-catalog-filters" role="group" aria-label="Service category">{groups.map(item => <button type="button" key={item} aria-pressed={group === item} onClick={() => setGroup(item)}>{item}</button>)}</div><label className="rb-sx-catalog-search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Try GST, FSSAI or company" aria-label="Search services"/></label></div>
+        <p className="rb-sx-result-count" role="status">{shown.length} {shown.length === 1 ? 'service' : 'services'}{query.trim() ? ` matching “${query.trim()}”` : ' to help you move forward'}</p>
+        <div className="rb-sx-catalog-grid">{shown.map(service => {
+          const ui = servicePresentation[service.category];
+          const packages = servicePackagesForCategory(service.category);
+          const registration = ['gst_registration', 'food', 'retail', 'udyam'].includes(service.category);
+          const pricing = service.category === 'gst_nil' ? '₹0' : packages.length ? `${packages.length > 1 ? 'From ' : ''}${packagePrice(Math.min(...packages.map(item => item.amountPaise)))}` : ['company', 'llp'].includes(service.category) ? serviceDetails[service.category]?.pricing?.value : undefined;
+          const destination = publicServiceStartPath(service.category);
+          const startHref: Href = packages.length || session ? destination as Href : { pathname: '/auth', params: { next: destination } };
+          return <article key={service.slug} className={`rb-sx-catalog-card rb-sx-${ui.tone}`}>
+            <div className="rb-sx-catalog-art"><img src={`/images/${ui.icon}-v1-136.webp`} width="76" height="76" alt="" loading="lazy"/><span>{service.group}</span></div>
+            <div className="rb-sx-catalog-card-body"><h2><Link href={`/services/${service.slug}` as Href}>{ui.title}</Link></h2><p>{ui.audience}</p><div className="rb-sx-catalog-card-fee"><small>{pricing && !/quotation|quote/.test(pricing) ? 'Assistance fee' : 'For your business'}</small><b>{pricing && !/quotation|quote/.test(pricing) ? pricing : 'Get a clear quote'}</b>{packages.length > 0 && <small>No GST added · Government fees separate where applicable</small>}</div><div className="rb-entry-actions"><Link className="rb-entry-start" href={startHref} aria-label={`Start: ${ui.title}`}>{registration ? 'Start application' : packages.length ? packages.length > 1 ? 'Compare packages' : 'Continue to checkout' : service.category === 'gst_nil' ? 'Check nil eligibility' : service.category === 'gst' ? 'Open GST workspace' : 'Start application'} <span aria-hidden="true">↗</span></Link><Link className="rb-entry-details" href={`/services/${service.slug}` as Href}>View details →</Link></div></div>
+          </article>;
+        })}</div>
+        {!shown.length && <div className="rb-sx-no-results"><h2>No match yet.</h2><p>Try a different service name or ask our team.</p><button type="button" onClick={() => { setQuery(''); setGroup('All services'); }}>Show all services</button></div>}
       </section>
-
-      <section id="services-list" className="rb-sd-directory" aria-labelledby="directory-title">
-        <div className="rb-sd-list-heading"><div><p className="rb-sd-eyebrow">FIND YOUR STARTING POINT</p><h2 id="directory-title">Services for your business</h2></div><label className="rb-sd-search"><span className="rb-sd-search-symbol" aria-hidden="true">⌕</span><span className="rb-sd-sr-only">Search services</span><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search GST, company, food…" aria-controls="service-results"/></label></div>
-        <div className="rb-sd-filter-row"><div className="rb-sd-filters" role="group" aria-label="Filter services by category">{groups.map(item => <button type="button" key={item} aria-pressed={group === item} onClick={() => setGroup(item)}>{item}</button>)}</div><p className="rb-sd-count" role="status" aria-live="polite">{visible.length} {visible.length === 1 ? 'service' : 'services'}</p></div>
-        <div className="rb-sd-grid" id="service-results">
-          {visible.map(item => {
-            const enquiry = item.category === 'trademark';
-            const gst = item.category === 'gst';
-            const destination = servicePath(item.category);
-            const startHref: Href = enquiry || session ? destination as Href : { pathname: '/auth', params: { next: destination } };
-            const action = enquiry ? 'Send an enquiry' : gst ? 'Open GST workspace' : 'Start application';
-            return <article className="rb-sd-card" key={item.slug} aria-labelledby={`service-${item.category}`}>
-              <div className="rb-sd-card-top"><img src={`/images/${'icon' in item ? item.icon : 'business-check'}-v1.webp`} width={72} height={72} alt="" loading="lazy" decoding="async"/><span>{item.group}</span></div>
-              <h3 id={`service-${item.category}`}>{item.title}</h3>
-              <p>{item.detail}</p>
-              <small>{enquiry ? 'Discuss the application with our team' : gst ? 'Connect, prepare and review' : 'Guided application preparation'}</small>
-              <div className="rb-sd-card-actions"><Link href={startHref} className="rb-sd-start" aria-label={`${action}: ${item.title}`}>{action}<span aria-hidden="true">→</span></Link><Link href={`/services/${item.slug}` as Href} className="rb-sd-details" aria-label={`View details: ${item.title}`}>View details <span aria-hidden="true">↗</span></Link></div>
-            </article>;
-          })}
-        </div>
-        {visible.length === 0 && <div className="rb-sd-empty"><h3>No services match that search</h3><p>Try “GST”, “company” or “food”, or see the full list.</p><button type="button" onClick={reset}>Show all services</button><Link href="/contact">Ask our team for help →</Link></div>}
-        <p className="rb-sd-preparation-note">Applications begin with preparation. Government submission, review and approval are separate steps, confirmed for your business and the service you choose.</p>
-      </section>
-
-      <section className="rb-sd-support" aria-labelledby="help-title"><div><p className="rb-sd-eyebrow">A LITTLE CLARITY HELPS</p><h2 id="help-title">Not sure which service fits?</h2><p>Tell us what your business does and what you’re planning next. We’ll help you find a starting point.</p></div><Link href="/contact">Discuss your business <span aria-hidden="true">↗</span></Link></section>
+      <aside className="rb-sx-catalog-help"><span aria-hidden="true">✦</span><div><h2>Not sure what you need?</h2><p>Just tell us what your business does. We’ll discuss your options.</p></div><a className="rb-button" href={`${contact.whatsapp}?text=${encodeURIComponent('Hi RegisterBox, I need help choosing a service for my Bengaluru business. My business does: ')}`} target="_blank" rel="noopener noreferrer">Help me choose ↗</a></aside>
     </main>
     <SiteFooter/>
   </div>;

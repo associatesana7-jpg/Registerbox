@@ -1,97 +1,155 @@
+import { SiteFooter } from './footer.web';
 import { Link, type Href } from 'expo-router';
+import { useState, type ReactNode } from 'react';
 import { useApp } from '@/hooks/use-app';
 import { WebBrand } from './brand.web';
-import { SiteFooter } from './footer.web';
 import { BlogServiceLinks } from './blog-service-links.web';
-import { contact, servicePath } from './content';
-import { serviceDetails } from './service-details';
-import { publicServices } from './service-pages';
+import { contact } from './content';
+import { contentReview, serviceDetails } from './service-details';
+import { publicServices, publicServiceStartPath, servicePackagesForCategory } from './service-pages';
+import { ServicePackages, packagePrice } from './service-packages.web';
+import { serviceActionLabels, servicePresentation } from './service-presentation';
 import { Seo, siteUrl } from './seo.web';
-import './service-quick-start.css';
+import { BranchDetails, CustomerFeedback } from './local-support.web';
+import './service-experience.css';
 
-type Presentation = { title: string; promise: string; action: string; icon: string; documents: string[] };
-const presentation: Record<string, Presentation> = {
-  company: { title: 'Private limited company', promise: 'Your idea. A company of its own.', action: 'Start company registration', icon: 'company', documents: ['Director & shareholder details', 'Business & ownership plan', 'Registered-office proof'] },
-  llp: { title: 'LLP registration', promise: 'Build your partnership with a clear plan.', action: 'Start LLP registration', icon: 'llp', documents: ['Partner details', 'Contribution & profit-sharing plan', 'Office address proof'] },
-  gst_registration: { title: 'GST registration', promise: 'Get your GST application in good order.', action: 'Start GST registration', icon: 'gst-registration', documents: ['Business identity', 'Owner or entity details', 'Business-address proof'] },
-  udyam: { title: 'Udyam (MSME) registration', promise: 'Application support, one clear step at a time.', action: 'Apply with RegisterBox', icon: 'new-business', documents: ['Enterprise name & activities', 'Business address & unit locations', 'Existing Udyam or GST certificate, if available'] },
-  food: { title: 'FSSAI & food licence', promise: 'You bring the flavour. We help with the paperwork.', action: 'Start FSSAI application', icon: 'food', documents: ['Food activity & products', 'Business details', 'Kitchen or premises information'] },
-  retail: { title: 'Shop & establishment', promise: 'A clear next step for your shop or office.', action: 'Start shop registration', icon: 'retail', documents: ['Owner & establishment details', 'Premises information', 'Workforce details'] },
-  gst: { title: 'GST return support', promise: 'Bring your records together. See what comes next.', action: 'Open GST workspace', icon: 'gst-return', documents: ['GST account information', 'Sales & purchase records', 'Previous filing acknowledgements'] },
-  new: { title: 'Start a business', promise: 'A big idea starts with one clear next step.', action: 'Start my business', icon: 'new-business', documents: ['Your business idea', 'Owners or partners', 'Planned location'] },
-  online: { title: 'Online & e-commerce', promise: 'Take your business beyond the shopfront.', action: 'Start online-business setup', icon: 'online', documents: ['Products & sales channels', 'Business information', 'Dispatch & storage locations'] },
-  manufacturing: { title: 'Manufacturing business', promise: 'Make room for what you want to make.', action: 'Start manufacturing setup', icon: 'manufacturing', documents: ['Products & production process', 'Premises information', 'Workforce & existing registrations'] },
-  branch: { title: 'Open a new branch', promise: 'More room for your growing business.', action: 'Start branch application', icon: 'branch', documents: ['Existing business registrations', 'New premises information', 'Proposed branch activities'] },
-  existing: { title: 'Business compliance check', promise: 'Know what is in place and what needs attention.', action: 'Start compliance check', icon: 'business-check', documents: ['Current registrations', 'Recent acknowledgements', 'Deadlines & open questions'] },
-  trademark: { title: 'Trademark application', promise: 'Your brand has a name. Give it a plan.', action: 'Discuss my trademark', icon: 'business-check', documents: ['Brand name or logo', 'Applicant details', 'Goods or services'] },
-};
-
-function Arrow() {
-  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>;
+export function ServiceIcon({ name }: { name: 'check' | 'file' | 'arrow' | 'phone' | 'spark' }) {
+  const paths = { check: 'm5 12 4 4L19 6', file: 'M14 3H6a1 1 0 0 0-1 1v16h14V8l-5-5Zm0 0v6h5M8 13h8M8 17h5', arrow: 'M5 12h14m-6-6 6 6-6 6', phone: 'M8 3H4v4c0 7.2 5.8 13 13 13h3v-5l-5-1-2 2a12 12 0 0 1-5-5l2-2-2-6Z', spark: 'm12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z' };
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]}/></svg>;
 }
 
-function Check() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>;
+function DetailList({ items }: { items: string[] }) {
+  return <ul className="rb-sx-detail-list">{items.map(item => <li key={item}>{item}</li>)}</ul>;
 }
+
+function MoreDetail({ title, children, id }: { title: string; children: ReactNode; id?: string }) {
+  return <details className="rb-sx-disclosure" id={id}><summary><span>{title}</span><span className="rb-sx-plus" aria-hidden="true">+</span></summary><div className="rb-sx-disclosure-body">{children}</div></details>;
+}
+
+const readiness = [
+  { label: 'Just starting', description: 'Start with your business activity and location. We’ll help you organise the questions and documents for review.' },
+  { label: 'Documents ready', description: 'Tell us what you have. We’ll discuss the checklist, agreed scope and charges before any work begins.' },
+  { label: 'Not sure yet', description: 'You don’t need to know every requirement. Tell us your goal and ask the team about your options.' },
+];
 
 export default function ServicePage({ slug }: { slug: string }) {
   const { session } = useApp();
-  const service = publicServices.find(item => item.slug === slug);
-  if (!service) return <div className="rb-public-page rb-qs-page"><header className="rb-public-header rb-container"><WebBrand/></header><main className="rb-container rb-qs-missing"><h1>Let’s find the right service.</h1><p>Explore the services available for your business.</p><Link className="rb-button" href="/services">View all services <Arrow/></Link></main><SiteFooter/></div>;
-  const ui = presentation[service.category] || { title: service.title, promise: service.detail, action: 'Discuss this service', icon: 'business-check', documents: ['Business details', 'Your requirement', 'Existing registrations'] };
-  const details = serviceDetails[service.category] || { audience: 'Business owners preparing brand information and documents for a scoped discussion.', prepare: ui.documents, question: 'Does an application guarantee registration?', answer: 'Filing and authority approval are separate stages. Discuss the scope and appropriate professional review before proceeding.' };
-  const isEnquiry = service.category === 'trademark' || !presentation[service.category];
-  const isUdyam = service.category === 'udyam';
-  const startHref: Href = isEnquiry ? `/contact?service=${encodeURIComponent(service.category)}` as Href : session ? servicePath(service.category) as Href : { pathname: '/auth', params: { next: servicePath(service.category) } };
+  const service = publicServices.find(item => item.slug === slug)!;
+  const details = serviceDetails[service.category];
+  const ui = servicePresentation[service.category];
+  const [stage, setStage] = useState(0);
+  const review = service.category === 'trademark' ? { ...contentReview, date: '16 October 2026', isoDate: '2026-10-16' } : contentReview;
   const path = `/services/${service.slug}`;
-  const steps = isEnquiry ? [
-    ['Tell us about your brand', 'Share your proposed name or logo and the goods or services it will identify.'],
-    ['Discuss the scope', 'The team confirms the preparation, documents and separate charges involved.'],
-    ['Review your next step', 'Check the applicant information before authorising the agreed work.'],
-  ] : isUdyam ? [
-    ['Choose your business', 'Sign in and start your Udyam assistance application.'],
-    ['Share the enterprise details', 'Answer questions about your activity, locations and registration status. Add existing certificates if available.'],
-    ['Review & send to RegisterBox', 'Check your answers and send them to our team. We confirm the assistance scope and guide your next steps.'],
-  ] : service.category === 'gst' ? [
-    ['Choose your business', 'Sign in and select the business you want to manage.'],
-    ['Prepare the return', 'Connect the GST account and review records for the correct period.'],
-    ['Review the real status', 'Check the final figures and the actual filing acknowledgement.'],
-  ] : [
-    ['Choose your business', 'Sign in, then select an existing business or add a new one.'],
-    ['Answer simple questions', 'Tell us about your activity, people and business location.'],
-    ['Add documents & save', 'Follow your checklist and return to your application when you are ready.'],
-  ];
-  return <div className="rb-public-page rb-qs-page">
-    <Seo title={`${ui.title} in Bengaluru | RegisterBox`} description={isUdyam ? 'Apply for paid Udyam registration assistance from RegisterBox. Prepare enterprise details, add existing certificates and get guidance on the official process.' : `${ui.title} support from RegisterBox. See the document checklist, understand the next steps and start your application online.`} path={path} schema={[
-      { '@type': 'Service', name: ui.title, description: service.detail, url: `${siteUrl}${path}`, provider: { '@id': `${siteUrl}/#organization` }, areaServed: { '@type': 'Country', name: 'India' } },
-      { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` }, { '@type': 'ListItem', position: 2, name: 'Services', item: `${siteUrl}/services` }, { '@type': 'ListItem', position: 3, name: ui.title, item: `${siteUrl}${path}` }] },
-    ]}/>
-    <a className="rb-qs-skip" href="#application-start">Skip to application steps</a>
-    <header className="rb-public-header rb-container rb-qs-header"><WebBrand/><Link href="/services">All services <span aria-hidden="true">↗</span></Link></header>
-    <main className="rb-container rb-qs-main">
-      <nav className="rb-qs-breadcrumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/services">Services</Link><span aria-hidden="true">/</span><span>{ui.title}</span></nav>
-      <section className="rb-qs-hero" aria-labelledby="service-title">
-        <div className="rb-qs-intro"><p className="rb-qs-eyebrow"><span aria-hidden="true"/> {service.group} · RegisterBox</p><h1 id="service-title">{ui.title}<span className="rb-qs-dot">.</span></h1><p className="rb-qs-promise">{ui.promise}</p><p className="rb-qs-summary">{service.detail}</p>
-          {isUdyam && <aside className="rb-qs-authority-note" aria-label="Udyam application assistance scope"><strong>Guidance from application to next steps.</strong><p>We help prepare and review your enterprise information. You complete the official verification and declarations yourself; the government issues the certificate.</p><a href="https://udyamregistration.gov.in/" target="_blank" rel="noopener noreferrer">Official Udyam reference <span aria-hidden="true">↗</span></a></aside>}
-          <div className="rb-qs-main-actions"><Link className="rb-button rb-qs-primary" href={startHref}>{ui.action}<Arrow/></Link><a className="rb-qs-help" href={`tel:${contact.phone.replace(/[^+\d]/g, '')}`}>Call us first <span aria-hidden="true">↗</span></a></div>
-          <p className="rb-qs-action-note">{isEnquiry ? 'Share your requirement. The team will discuss the scope with you.' : session ? 'Continue with your business in the RegisterBox workspace.' : 'Sign in to keep your business information and documents together.'}</p>
-          <div className="rb-qs-fee"><span>{isUdyam ? 'Paid application assistance' : 'Service scope'}</span><strong>{isUdyam ? 'A quote for your application' : 'Support for your business'}</strong><p>{isUdyam ? 'Your quote covers the agreed preparation, review and guidance. Confirm the scope and assistance fee before work begins.' : 'Tell us what you need. Scope and fees are agreed before paid work begins.'}</p></div>
+  const packages = servicePackagesForCategory(service.category);
+  const destination = publicServiceStartPath(service.category);
+  const startHref: Href = packages.length || session ? destination as Href : { pathname: '/auth', params: { next: destination } };
+  const registration = ['gst_registration', 'food', 'retail', 'udyam'].includes(service.category);
+  const actionLabel = registration || service.category === 'gst' ? serviceActionLabels[service.category] : packages.length > 1 ? 'Choose a package' : packages.length ? 'Continue to checkout' : serviceActionLabels[service.category];
+  const price = packages.length ? `${packages.length > 1 ? 'From ' : ''}${packagePrice(Math.min(...packages.map(item => item.amountPaise)))}` : ['company', 'llp'].includes(service.category) ? details.pricing?.value || 'Ask for a quote' : 'Ask for a quote';
+  const isQuoted = /quotation|quote/.test(price);
+  const whatsapp = `${contact.whatsapp}?text=${encodeURIComponent(`Hi RegisterBox, I need help with ${ui.title} in Bengaluru. ${readiness[stage].label}. My business type and area are: `)}`;
+  const serviceSchema = {
+    '@type': 'Service', name: service.title, description: details.intro, url: `${siteUrl}${path}`,
+    provider: { '@id': `${siteUrl}/#organization` }, areaServed: { '@type': 'City', name: 'Bengaluru' },
+    dateModified: packages.length ? '2026-10-22' : review.isoDate,
+    ...(packages.length ? { offers: packages.map(item => ({
+      '@type': 'Offer', '@id': `${siteUrl}${path}#package-${item.id}`, name: item.title,
+      description: `${item.description} ${item.feeNote}`, price: item.amountPaise / 100,
+      priceCurrency: item.currency, url: `${siteUrl}${path}#package-${item.id}`,
+      seller: { '@id': `${siteUrl}/#organization` },
+      priceSpecification: { '@type': 'UnitPriceSpecification', price: item.amountPaise / 100, priceCurrency: item.currency, description: `${item.billingLabel}. No GST added to the RegisterBox service fee.` },
+    })) } : {}),
+  };
+  const breadcrumbs = { '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Services', item: `${siteUrl}/services` },
+    { '@type': 'ListItem', position: 3, name: service.title, item: `${siteUrl}${path}` },
+  ] };
+  return <div className={`rb-public-page rb-sx-page rb-sx-${ui.tone}`}>
+    <Seo title={`${ui.title} in Bengaluru | RegisterBox`} description={`${ui.title} support in Bengaluru.${packages.length ? ` Packages ${price.toLowerCase()}. No GST added to the RegisterBox service fee.` : ' See what to prepare and how RegisterBox helps.'} New Thippasandra and Marathahalli.`} path={path} schema={[serviceSchema, breadcrumbs]}/>
+    <header className="rb-public-header rb-container"><WebBrand/><Link href="/services">All services <span aria-hidden="true">↗</span></Link></header>
+    <main className="rb-container rb-sx-main">
+      <nav className="rb-sx-breadcrumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href="/services">Services</Link><span>/</span><span>{ui.title}</span></nav>
+      <section className="rb-sx-hero" aria-labelledby="service-title">
+        <div className="rb-sx-intro">
+          <div className="rb-sx-kicker"><span/> BENGALURU · {service.group.toUpperCase()}</div>
+          <h1 id="service-title">{ui.title}<span className="rb-sx-title-dot">.</span><span className="rb-sx-sr"> in Bengaluru</span></h1>
+          <p className="rb-sx-promise">{ui.promise}</p>
+          <div className="rb-service-actions"><Link className="rb-button" href={startHref}>{actionLabel} <ServiceIcon name="arrow"/></Link><a className="rb-secondary-button" href={`tel:${contact.phone.replace(/[^+0-9]/g, '')}`}>Talk to our team</a></div>
+          <p className="rb-sx-audience">{registration ? 'Complete your registration details and send them to RegisterBox. Your package and secure payment step follow submission.' : packages.length ? 'Choose your package, review your details and pay securely with Razorpay.' : session ? 'Continue directly to your selected service.' : 'One email sign-in, then straight to this service. Save and continue later.'}</p>
+          {service.category === 'udyam' && <p className="rb-sx-audience">RegisterBox is an independent assistance provider. Official Udyam registration is free. You complete government identity verification and declarations yourself; never share an OTP. Existing Udyam or GST certificates are optional supporting records.</p>}
+          <p className="rb-sx-audience">{ui.audience}</p>
+          <ul className="rb-sx-benefits">{ui.benefits.map(item => <li key={item}><span><ServiceIcon name="check"/></span>{item}</li>)}</ul>
+          <a className="rb-sx-doc-link" href="#documents">See what to prepare <span aria-hidden="true">↓</span></a>
         </div>
-        <aside className="rb-qs-preview" aria-labelledby="prepare-preview-title"><div className="rb-qs-preview-top"><span className="rb-qs-preview-label">YOUR NEXT CHAPTER</span><img src={`/images/${ui.icon}-v1.webp`} width="160" height="160" alt="" fetchPriority="high"/></div><div className="rb-qs-paper"><span className="rb-qs-paper-tag">A little preparation goes a long way</span><h2 id="prepare-preview-title">Keep these handy.</h2><ul>{ui.documents.map(item => <li key={item}><span><Check/></span>{item}</li>)}</ul><a href="#documents">See the full checklist <span aria-hidden="true">↓</span></a></div></aside>
+        <aside className="rb-sx-start-card" aria-label="Your next step">
+          <div className="rb-sx-card-visual"><div className="rb-sx-visual-ring"/><img src={`/images/${ui.icon}-v1-136.webp`} width="112" height="112" alt="" fetchPriority="high"/><span className="rb-sx-visual-label"><ServiceIcon name="spark"/> YOUR NEXT CHAPTER</span></div>
+          <div className="rb-sx-card-body">
+            <div className="rb-sx-price-label">{isQuoted ? 'LET’S UNDERSTAND YOUR REQUIREMENT' : 'REGISTERBOX ASSISTANCE FEE'}</div>
+            <div className="rb-sx-price">{isQuoted ? 'A quote for your business.' : price}</div>
+            <p>{isQuoted ? 'Start your details online. Scope and fees are confirmed before paid work begins.' : packages.length ? packages[0].feeNote : 'Government charges, where applicable, are separate. Confirm scope before proceeding.'}</p>
+            <Link className="rb-button rb-sx-primary" href={startHref}>{actionLabel} <ServiceIcon name="arrow"/></Link>
+            <small>{packages.length ? 'Secure Razorpay checkout · Clear service scope' : 'Secure workspace · Save and continue later'}</small>
+            <a className="rb-sx-call" href={whatsapp} target="_blank" rel="noopener noreferrer"><ServiceIcon name="phone"/> Need help first? Chat with us ↗</a>
+          </div>
+        </aside>
       </section>
-      <div className="rb-qs-reassurance"><span><Check/> Save and return to your details</span><span><Check/> Clear scope before work begins</span><span><Check/> Help from our Bengaluru team</span></div>
-      <section className="rb-qs-steps" id="application-start" aria-labelledby="start-title"><div className="rb-qs-section-head"><div><p className="rb-qs-eyebrow">HOW TO GET STARTED</p><h2 id="start-title">Your next three steps.</h2></div><p>{isEnquiry ? 'Start with a conversation about your brand.' : 'Use the blue button above to begin. Your service choice follows you into your account.'}</p></div><ol>{steps.map(([title, description], index) => <li key={title}><span className="rb-qs-step-number">0{index + 1}</span><h3>{title}</h3><p>{description}</p></li>)}</ol><div className="rb-qs-step-footer"><span>{isUdyam ? 'Sending to RegisterBox creates a preparation case. It does not submit an official Udyam registration or issue a certificate.' : isEnquiry ? 'The enquiry does not submit a government application.' : 'Saving your details prepares a draft. Review and government submission are later steps.'}</span></div></section>
-      <section className="rb-qs-details" id="documents" aria-labelledby="details-title"><div className="rb-qs-section-head"><div><p className="rb-qs-eyebrow">A FEW USEFUL DETAILS</p><h2 id="details-title">Start informed.</h2></div><p>Open the questions you need. Your next step stays within reach.</p></div>
-        <details><summary>What should I prepare?<span aria-hidden="true">+</span></summary><div className="rb-qs-detail-body"><ul>{details.prepare.map(item => <li key={item}>{item}</li>)}</ul><p>{isUdyam ? 'Upload an existing Udyam or GST certificate only if available. These supporting records are optional. Keep Aadhaar copies, identity numbers and OTPs out of the application.' : 'The final checklist depends on your activity and application route. Share private documents through the agreed secure workspace.'}</p></div></details>
-        <details><summary>Is this the right service for my business?<span aria-hidden="true">+</span></summary><div className="rb-qs-detail-body"><p>{details.audience}</p><p>If you are unsure, tell our team your activity and location before confirming the application scope.</p></div></details>
-        <details><summary>How do fees, review and submission work?<span aria-hidden="true">+</span></summary><div className="rb-qs-detail-body"><p>{isUdyam ? 'RegisterBox charges for the agreed application preparation, review and guidance. The government does not charge a filing fee for official Udyam registration. Your assistance fee is not a government charge.' : 'Ask for a written quote covering the work you need. Assistance, government charges and taxes should be identified separately.'}</p><p>{isUdyam ? 'Sending this application starts your RegisterBox case. You complete official verification and declarations on the government portal; its issuing decision is separate from our assistance.' : 'Confirm the agreed scope before paid work begins. Saving a draft, professional review, government submission and an issued approval are separate stages. Requirements and processing depend on the authority and business. An application does not guarantee an approval or a date.'}</p></div></details>
-        <details><summary>{details.question}<span aria-hidden="true">+</span></summary><div className="rb-qs-detail-body"><p>{details.answer}</p></div></details>
+
+      <ServicePackages category={service.category}/>
+
+      <div className="rb-sx-confidence"><span><ServiceIcon name="check"/> Bengaluru team</span><span><ServiceIcon name="check"/> Clear scope before work</span><span><ServiceIcon name="check"/> No guaranteed approvals</span></div>
+
+      <section className="rb-sx-journey" id="application-start" aria-labelledby="journey-title">
+        <div className="rb-sx-section-heading"><div><div className="rb-sx-kicker">THREE SIMPLE STEPS</div><h2 id="journey-title">Your next steps, made simple.</h2></div><p>{packages.length ? 'Clear prices, secure payment and an agreed scope.' : 'Start in your existing RegisterBox workspace.'}</p></div>
+        <ol className="rb-sx-step-grid">{(registration ? [
+          ['Share your business details', 'Sign in, choose your business and complete the guided registration questions.'],
+          ['Review & send to RegisterBox', 'Check your answers and add the requested documents. For Udyam, existing certificates are optional. Sending creates your preparation case.'],
+          ['Review your package & pay', 'The payment step follows submission. Pay securely with Razorpay; government filing and approval remain separate.'],
+        ] : service.category === 'gst' ? [
+          ['Choose your business', 'Sign in and select your business in the GST workspace.'],
+          ['Prepare & review', 'Organise records and review the relevant return draft.'],
+          ['Track the real status', 'A draft is not filed. Check the actual acknowledgement.'],
+        ] : packages.length ? [
+          ['Choose your package', 'Compare the service fee, agreed period and included support.'],
+          ['Review & pay securely', 'Share your service details and complete Razorpay checkout.'],
+          ['Prepare & review', 'Our team confirms documents and scope before any authorised filing. Payment does not mean a government approval.'],
+        ] : [
+          ['Choose your business', 'Sign in, then select or add your business profile.'],
+          ['Answer simple questions', 'The existing application gathers your business details.'],
+          ['Upload & save your draft', 'Add supporting documents and continue when you’re ready.'],
+        ]).map(([title, text], i) => <li key={title}><span className="rb-sx-step-no">0{i + 1}</span><div><h3>{title}</h3><p>{text}</p></div>{i < 2 && <span className="rb-sx-step-arrow" aria-hidden="true">→</span>}</li>)}</ol>
       </section>
+
+      <section className="rb-sx-documents" id="documents" aria-labelledby="documents-title">
+        <div className="rb-sx-section-heading"><div><div className="rb-sx-kicker">A HEAD START, NOT HOMEWORK</div><h2 id="documents-title">Keep these handy.</h2></div><span className="rb-sx-soft-tag">Exact checklist after review</span></div>
+        <div className="rb-sx-document-grid">{ui.documents.map((item, i) => <div className="rb-sx-document" key={item}><span className="rb-sx-file-icon"><ServiceIcon name="file"/></span><span><small>0{i + 1}</small><h3>{item}</h3></span></div>)}</div>
+        <MoreDetail title="See the full document checklist"><DetailList items={details.documents}/><p>Send private documents only through an agreed secure channel—not a general enquiry.</p></MoreDetail>
+      </section>
+
+      <section className="rb-sx-readiness" aria-labelledby="readiness-title">
+        <div><div className="rb-sx-kicker">START WHERE YOU ARE</div><h2 id="readiness-title">Where are you right now?</h2><div className="rb-sx-stage-options" role="group" aria-label="Your preparation stage">{readiness.map((item, i) => <button type="button" key={item.label} aria-pressed={stage === i} onClick={() => setStage(i)}>{stage === i && <ServiceIcon name="check"/>}{item.label}</button>)}</div></div>
+        <div className="rb-sx-stage-answer" aria-live="polite"><span className="rb-sx-step-no"><ServiceIcon name="spark"/></span><p>{readiness[stage].description}</p><Link href={startHref}>Continue to {registration ? 'my application' : service.category === 'gst' ? 'my GST workspace' : packages.length ? 'packages & checkout' : 'my workspace'} <span aria-hidden="true">↗</span></Link></div>
+      </section>
+
+      <section className="rb-sx-finer-details" aria-labelledby="details-title">
+        <div className="rb-sx-section-heading"><div><div className="rb-sx-kicker">WHEN YOU WANT TO GO DEEPER</div><h2 id="details-title">The details, on your terms.</h2></div><p>Open only what you need.</p></div>
+        <MoreDetail title="Is this service right for my business?" id="eligibility"><p>{details.intro}</p><DetailList items={details.eligibility}/></MoreDetail>
+        <MoreDetail title="What’s included in RegisterBox support?" id="registerbox-help"><DetailList items={details.registerBoxHelp}/><p>Work is limited to the scope agreed with you. A saved draft is not a filed or approved application.</p></MoreDetail>
+        <MoreDetail title="Fees, charges & what’s separate" id="fees">{details.pricing && <p><strong>{details.pricing.label}: {details.pricing.value}.</strong> {details.pricing.note}</p>}<DetailList items={details.governmentFees}/></MoreDetail>
+        <MoreDetail title="How long does it take?" id="timeline"><DetailList items={details.timeline}/></MoreDetail>
+        <MoreDetail title="Full process & common delays" id="process"><ol className="rb-sx-detail-list">{details.process.map(item => <li key={item}>{item}</li>)}</ol><h3>What can slow things down?</h3><DetailList items={details.rejectionReasons}/></MoreDetail>
+        <MoreDetail title="Local requirements & a common question" id="states"><DetailList items={details.stateNotes}/><h3>{details.question}</h3><p>{details.answer}</p></MoreDetail>
+        <MoreDetail title="Official sources & content review" id="official-sources"><ul className="rb-source-list">{details.sources.map(source => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer">{source.label} ↗</a><span>{source.note}</span></li>)}</ul><p>Source-reviewed {review.date}. {review.author}. {review.note} Requirements can change; check the authority at the time of filing.</p></MoreDetail>
+      </section>
+
+      <section className="rb-sx-bottom" aria-labelledby="next-title"><div><div className="rb-sx-kicker">ONE CLEAR NEXT STEP</div><h2 id="next-title">Ready for your next chapter?</h2><p>{registration ? 'Submit your business details, then review your package and secure payment.' : service.category === 'gst' ? 'Review your return in the GST workspace. Eligible nil filing has a ₹0 service fee.' : packages.length ? 'Choose your package and review everything before secure payment.' : 'Start online. Save your progress. Pick up where you left off.'}</p></div><div><Link className="rb-button" href={startHref}>{actionLabel} <ServiceIcon name="arrow"/></Link><a href={contact.callback} target="_blank" rel="noopener noreferrer">Need a hand? Request a callback ↗</a></div></section>
+
+      <details className="rb-sx-location-details"><summary>Visit our Bengaluru branches <span aria-hidden="true">+</span></summary><BranchDetails/></details>
+      <CustomerFeedback/>
       <BlogServiceLinks category={service.category}/>
-      <section className="rb-qs-next" aria-labelledby="next-title"><div><p className="rb-qs-eyebrow">WHEN YOU ARE READY</p><h2 id="next-title">Let’s take the next step.</h2><p>{isEnquiry ? 'Tell us about your brand and the help you need.' : 'Bring your business details together, one question at a time.'}</p></div><Link className="rb-button" href={startHref}>{ui.action}<Arrow/></Link></section>
-      <section className="rb-qs-related" aria-labelledby="related-title"><h2 id="related-title">Explore other services.</h2><div>{publicServices.filter(item => item.category !== service.category).map(item => <Link key={item.slug} href={`/services/${item.slug}` as Href}><span>{presentation[item.category]?.title || item.title}</span><Arrow/></Link>)}</div></section>
+      <section className="rb-sx-related"><h2>Looking for something else?</h2><div>{publicServices.filter(item => item.category !== service.category && item.group === service.group).slice(0, 4).map(item => <Link key={item.slug} href={`/services/${item.slug}` as Href}>{servicePresentation[item.category].title}<ServiceIcon name="arrow"/></Link>)}</div></section>
     </main>
     <SiteFooter/>
-    <div className="rb-qs-mobile-action" aria-label="Start this service"><span><small>{ui.title}</small><strong>{isUdyam ? 'Paid application assistance' : 'Guided application support'}</strong></span><Link className="rb-button" href={startHref}>{isUdyam ? ui.action : isEnquiry ? 'Enquire' : service.category === 'gst' ? 'Open workspace' : 'Start application'}<Arrow/></Link></div>
+    <div className="rb-sx-mobile-action"><span><small>{ui.title}</small><b>{isQuoted ? 'Scope & quote first' : price}</b></span><Link className="rb-button" href={startHref}>{actionLabel} ↗</Link></div>
   </div>;
 }

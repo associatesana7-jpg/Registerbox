@@ -6,10 +6,17 @@ import { readBlogArticles, readLocalizedBlogCatalog } from './blog-catalog.mjs';
 const root = process.argv[2] || 'dist';
 const articles = readBlogArticles();
 const { availableBlogLocales, localizedArticle, blogPath, blogAlternates } = readLocalizedBlogCatalog();
+const englishOnlySlugs = new Set(['gst-registration-small-ecommerce-sellers-november-2026']);
+const translatedBaseline = articles.filter(article => !englishOnlySlugs.has(article.slug));
+assert.ok(translatedBaseline.length >= 23, 'Preserve the existing 23 fully translated guides');
 const origin = 'https://www.registerbox.in';
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 for (const locale of ['en', 'hi', 'kn', 'ta']) {
-  assert.equal(articles.filter(article => localizedArticle(article.slug, locale)).length, articles.length, `${locale} must cover the full published guide catalogue`);
+  assert.equal(translatedBaseline.filter(article => localizedArticle(article.slug, locale)).length, translatedBaseline.length, `${locale} must preserve the complete translated baseline`);
+}
+for (const slug of englishOnlySlugs) {
+  assert.ok(articles.some(article => article.slug === slug), `Published English guide ${slug}`);
+  assert.deepEqual(availableBlogLocales(slug).map(locale => locale.code), ['en'], `${slug}: publish only an actually authored language`);
 }
 const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
 assert.equal(new Set(sitemapUrls).size, sitemapUrls.length, 'Sitemap URL uniqueness');

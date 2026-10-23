@@ -1,3 +1,4 @@
+import { BlogPriceSummary } from './blog-offers.web';
 import { Link, type Href } from 'expo-router';
 import { WebBrand } from './brand.web';
 import { SiteFooter } from './footer.web';
@@ -23,6 +24,7 @@ export function BlogCard({ article, featured = false, locale = 'en' }: { article
       <h2 className="rbg-card-title"><Link href={path} asChild><a>{article.title}</a></Link></h2>
       <p>{article.description}</p>
       <Link href={path} asChild><a className="rbg-read">{blogUi(locale, 'readGuide')} <span aria-hidden="true">↗</span></a></Link>
+      <BlogPriceSummary article={article} path={blogPath(locale, article.slug)}/>
     </div>
   </article>;
 }
