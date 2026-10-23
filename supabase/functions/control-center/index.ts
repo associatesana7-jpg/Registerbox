@@ -1,5 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.117.1';
 import { clientRegister, uploadClientDocument } from './client-register.ts';
+import { paymentOperations } from './payments.ts';
 
 const allowedOrigins = new Set([
   'https://admin.registerbox.in',
@@ -478,7 +479,8 @@ async function dashboard(request: Request, admin: ReturnType<typeof createClient
 
   const now = new Date();
   const startOfDay = new Date(now);
-  startOfDay.setUTCHours(0, 0, 0, 0);
+  // Business reporting day is Asia/Kolkata, independent of the Edge UTC clock.
+  startOfDay.setTime(Math.floor((now.getTime() + 330 * 60000) / 86400000) * 86400000 - 330 * 60000);
   const fourHoursFromNow = new Date(now.getTime() + 4 * 60 * 60 * 1000).toISOString();
   const activeStatuses = ['DRAFT','NEEDS_CUSTOMER_INFO','READY_FOR_REVIEW','READY_TO_FILE','WAITING_FOR_OTP','SUBMITTING','SUBMITTED','UNDER_REVIEW','GOVERNMENT_QUERY','RESPONSE_REQUIRED','RESPONSE_SUBMITTED'];
 
@@ -495,7 +497,7 @@ async function dashboard(request: Request, admin: ReturnType<typeof createClient
     admin.from('government_queries').select('id', { count: 'exact', head: true }).in('status', ['open','response_required']),
     admin.from('applications').select('id', { count: 'exact', head: true }).in('status', activeStatuses).lte('sla_due_at', fourHoursFromNow).is('deleted_at', null),
     admin.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'APPROVED').gte('approved_at', startOfDay.toISOString()).is('deleted_at', null),
-    admin.from('payments').select('amount').eq('status', 'PAID').gte('paid_at', startOfDay.toISOString()),
+    admin.from('service_checkout_orders').select('amount').eq('status', 'paid').eq('provider_mode','live').gte('paid_at', startOfDay.toISOString()),
     admin.from('applications').select('id,application_number,status,priority,sla_due_at,updated_at,business_profiles(legal_name,trade_name),services(name)').in('status', activeStatuses).is('deleted_at', null).order('sla_due_at', { ascending: true, nullsFirst: false }).order('updated_at', { ascending: true }).limit(12),
     admin.from('licenses').select('id', { count: 'exact', head: true }).eq('status', 'active').gte('expiry_date', now.toISOString().slice(0,10)).lte('expiry_date', new Date(now.getTime() + 30 * 86400000).toISOString().slice(0,10)),
     admin.from('licenses').select('id', { count: 'exact', head: true }).eq('status', 'active').lt('expiry_date', now.toISOString().slice(0,10)),
@@ -509,7 +511,7 @@ async function dashboard(request: Request, admin: ReturnType<typeof createClient
   const firstError = responses.find((response) => response.error)?.error;
   if (firstError) throw new Error(`Dashboard query failed: ${firstError.message}`);
 
-  const revenue = (revenueToday.data ?? []).reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const revenue = (revenueToday.data ?? []).reduce((sum, row) => sum + Number(row.amount || 0), 0) / 100;
   const groqStatus = (aiFailure.count ?? 0) > (aiSuccess.count ?? 0) && (aiFailure.count ?? 0) > 0 ? 'Degraded' : (aiSuccess.count ?? 0) > 0 ? 'Operational' : 'Unknown';
 
   await admin.from('audit_events').insert({
@@ -576,6 +578,7 @@ Deno.serve(async (request) => {
       return await deliverCertificate(request,admin,access);
     }
     const body = await request.json().catch(() => ({})) as { action?: string; section?: string; page?: number; documentId?: string; businessId?: string; reason?: string };
+    if(body.action?.startsWith('payment_'))return await paymentOperations(admin,access,body,(result,status)=>json(request,result,status),env);
     if(body.action?.startsWith('crm_'))return await clientRegister(admin,access,body,(result,status)=>json(request,result,status));
     if (body.action === 'me') {
       return json(request, { staff: { email: access.email, displayName: access.displayName, roles: access.roles, permissions: [...access.permissions] } });

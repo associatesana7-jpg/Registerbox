@@ -37,6 +37,7 @@ export type PendingCheckoutPayment = RazorpayPaymentResponse & {
   user_id: string;
   is_test_mode?: boolean;
   application_id?: string;
+  business_id?: string;
 };
 
 type RazorpayOptions = {
@@ -108,6 +109,7 @@ export async function createCheckoutOrder(input: {
   idempotency_key: string;
   business_id?: string;
   application_id?: string;
+  journey_id?: string;
   trademark?: TrademarkCheckoutDetails;
 }): Promise<CheckoutOrder> {
   const order = await checkoutRequest<CheckoutOrder>('create-order', input);

@@ -1,6 +1,7 @@
 import { normalizeEmail } from '@/lib/registerbox-api';
 import { supabase } from '@/lib/supabase';
 import { adaptiveAuthRequest, rememberAuthenticatedDevice, type AuthCaptchaVerifier } from '@/lib/auth-gateway';
+import type { PaymentOperationsDetail, PaymentOperationsFilters, PaymentOperationsList, PaymentOperationsRow, PaymentFollowUpStatus } from '@/lib/payment-operations-types';
 
 export type ControlCenterStaff = {
   email: string;
@@ -88,7 +89,7 @@ export async function verifyControlCenterOtp(email: string, token: string) {
 }
 
 export async function controlCenterRequest<T>(
-  action: 'me' | 'dashboard' | 'directory' | 'document_link' | 'filing_workspace' | `crm_${string}`,
+  action: 'me' | 'dashboard' | 'directory' | 'document_link' | 'filing_workspace' | `crm_${string}` | `payment_${string}`,
   payload: Record<string, unknown> = {},
 ): Promise<T> {
   const { data, error } = await supabase.functions.invoke<T>('control-center', { body: { action, ...payload } });
@@ -107,6 +108,30 @@ export async function loadControlCenterDirectory(section: ControlCenterSection, 
 
 export async function createControlCenterDocumentLink(documentId: string, reason: string) {
   return controlCenterRequest<{ url: string; filename: string; expiresIn: number }>('document_link', { documentId, reason });
+}
+
+export function loadPaymentOperations(filters: PaymentOperationsFilters) {
+  return controlCenterRequest<PaymentOperationsList>('payment_list', { ...filters });
+}
+
+export function loadPaymentOperation(id: string) {
+  return controlCenterRequest<PaymentOperationsDetail>('payment_detail', { id });
+}
+
+export function reconcilePaymentOperation(id: string, reason: string) {
+  return controlCenterRequest<{ message?: string }>('payment_reconcile', { id, reason });
+}
+
+export function addPaymentOperationNote(id: string, body: string) {
+  return controlCenterRequest('payment_note', { id, body });
+}
+
+export function updatePaymentOperationCase(id: string, status: PaymentFollowUpStatus) {
+  return controlCenterRequest('payment_case_update', { id, status });
+}
+
+export function exportPaymentOperations(filters: PaymentOperationsFilters, reason: string) {
+  return controlCenterRequest<{ rows: PaymentOperationsRow[]; hasMore: boolean; limit?: number; total?: number }>('payment_export', { ...filters, reason });
 }
 
 export async function signOutControlCenter() {

@@ -5,6 +5,7 @@ import { useApp } from '@/hooks/use-app';
 import { getServicePackage, servicePackages, type ServicePackage } from '@/lib/service-catalog';
 import { applicationCategory, applicationCheckoutPackageIds, applicationPaymentPath, isApplicationId, loadApplicationCheckout, type ApplicationCheckout } from '@/lib/application-checkout.web';
 import { ApplicationPaymentCard } from '@/components/application-payment-card.web';
+import { createPaymentJourney, usePaymentJourney } from '@/lib/payment-journey.web';
 import {
   clearPendingCheckout, createCheckoutOrder, loadRazorpayCheckout, openRazorpayCheckout,
   readPendingCheckout, rememberPendingCheckout, verifyCheckoutPayment,
@@ -50,8 +51,8 @@ export default function WebCheckout() {
   const requestedId = hydrated ? (Array.isArray(requested) ? requested[0] : requested) : undefined;
   const applicationId = hydrated ? (Array.isArray(requestedApplication) ? requestedApplication[0] : requestedApplication) : undefined;
   const selected: ServicePackage = (requestedId ? getServicePackage(requestedId) : undefined) ?? servicePackages[0];
-  const { session } = useApp();
-  return <CheckoutPage key={`${session?.user.id || 'public'}:${selected.id}:${applicationId || ''}`} selected={selected} requestedId={requestedId} applicationId={applicationId}/>;
+  const { session, business } = useApp();
+  return <CheckoutPage key={`${session?.user.id || 'public'}:${business.id || ''}:${selected.id}:${applicationId || ''}`} selected={selected} requestedId={requestedId} applicationId={applicationId}/>;
 }
 
 function CheckoutPage({ selected, requestedId, applicationId }: { selected: ServicePackage; requestedId?: string; applicationId?: string }) {
@@ -91,6 +92,14 @@ function CheckoutPage({ selected, requestedId, applicationId }: { selected: Serv
   const needsApplication = !applicationId && ['gst_registration', 'food', 'retail', 'udyam'].includes(selected.serviceCategory);
   const applicationLoading = Boolean(applicationId && !application && !applicationError);
   const invalidApplication = Boolean(applicationId && !isApplicationId(applicationId));
+  const journey = usePaymentJourney(userId ? {
+    userId, packageId: selected.id,
+    businessId: application?.business_id || business.id || undefined,
+    applicationId: application?.id,
+  } : null, !loadingSession && !needsApplication && !applicationLoading && !applicationError && !invalidApplication
+    && selected.amountPaise >= 100 && (!requestedId || Boolean(getServicePackage(requestedId)))
+    && !application?.orders.some(order => order.status === 'paid' || order.status === 'authorized')
+    && !['APPROVED', 'CANCELLED', 'REJECTED'].includes(application?.status || '') && !confirmed);
   const name = enteredName ?? business.ownerName;
   const identifier = enteredIdentifier ?? (business.pan || business.gstin);
   const brandName = enteredBrand ?? business.tradeName ?? '';
@@ -100,11 +109,16 @@ function CheckoutPage({ selected, requestedId, applicationId }: { selected: Serv
   const authHref: Href = { pathname: '/auth', params: { next } };
 
   async function verify(payment: PendingCheckoutPayment) {
+    const paymentJourney = createPaymentJourney({ userId: payment.user_id, packageId: payment.package_id,
+      businessId: payment.business_id, applicationId: payment.application_id });
+    paymentJourney.record('verification_started', { checkoutId: payment.checkout_token });
     setState('verifying');
     setError('');
     setMessage('Confirming your payment securely…');
     try {
       const result = await verifyCheckoutPayment(payment);
+      paymentJourney.record('verification_succeeded_client', { checkoutId: payment.checkout_token,
+        safeCode: result.status === 'paid' ? 'VERIFIED_PAID' : 'CAPTURE_PENDING' });
       setConfirmed({ result, payment });
       if (result.status === 'paid') {
         clearPendingCheckout(payment.user_id);
@@ -114,6 +128,7 @@ function CheckoutPage({ selected, requestedId, applicationId }: { selected: Serv
         setMessage('Your payment is authorized and is awaiting capture. Check its status here before making another payment.');
       }
     } catch (cause) {
+      paymentJourney.record('verification_error_client', { checkoutId: payment.checkout_token, safeCode: 'VERIFICATION_UNAVAILABLE' });
       setError(cause instanceof Error ? cause.message : 'We could not confirm this payment yet.');
       setMessage('Your payment details are saved in this tab. Check the payment status below before paying again.');
     } finally { submitLock.current = false; setState('idle'); }
@@ -137,37 +152,48 @@ function CheckoutPage({ selected, requestedId, applicationId }: { selected: Serv
     if (trademark && !/^([A-Z]{5}[0-9]{4}[A-Z]|[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][A-Z0-9]Z[A-Z0-9])$/.test(identifier)) { setError('Enter a valid PAN or GSTIN for the trademark applicant.'); return; }
     if (trademark && brandName.trim().length < 2) { setError('Enter the brand name you want to file.'); return; }
     submitLock.current = true;
+    journey?.record('checkout_cta_clicked');
     setState('preparing');
     setError('');
     setMessage('Preparing your secure checkout…');
+    let failureStage: 'SCRIPT_UNAVAILABLE' | 'ORDER_UNAVAILABLE' | 'OPEN_UNAVAILABLE' = 'SCRIPT_UNAVAILABLE';
     try {
       const trademarkDetails: TrademarkCheckoutDetails | undefined = trademark ? { applicant_type: applicant, pan_or_gstin: identifier, brand_name: brandName.trim(), trademark_class: Number(trademarkClass) } : undefined;
       const input = { package_id: selected.id, business_id: application?.business_id || business.id || undefined, application_id: application?.id, trademark: trademarkDetails };
       const fingerprint = JSON.stringify(input);
       if (intent.current?.fingerprint !== fingerprint) intent.current = { fingerprint, key: window.crypto.randomUUID() };
       await loadRazorpayCheckout();
-      const order = intent.current.order || await createCheckoutOrder({ ...input, idempotency_key: intent.current.key });
+      failureStage = 'ORDER_UNAVAILABLE';
+      if (!intent.current.order) journey?.record('order_creation_requested');
+      const order = intent.current.order || await createCheckoutOrder({ ...input, idempotency_key: intent.current.key, journey_id: journey?.id() });
       intent.current.order = order;
       if (order.amount !== selected.amountPaise) throw new Error('This package fee has changed. Refresh this page to review the current fee before paying.');
       setTestMode(order.is_test_mode);
       setState('open');
       setMessage(order.is_test_mode ? 'Test checkout is open. No real payment will be collected.' : 'Secure checkout is open. Choose your preferred payment method.');
+      failureStage = 'OPEN_UNAVAILABLE';
       openRazorpayCheckout(order, {
         title: selected.title, name: name.trim(), email: session.user.email || '', contact: phone.replace(/[\s()-]/g, '') || undefined,
         onSuccess: payment => {
-          const saved: PendingCheckoutPayment = { ...payment, checkout_token: order.checkout_token, package_id: selected.id, user_id: session.user.id, is_test_mode: order.is_test_mode, application_id: application?.id };
+          const saved: PendingCheckoutPayment = { ...payment, checkout_token: order.checkout_token, package_id: selected.id, user_id: session.user.id, is_test_mode: order.is_test_mode, application_id: application?.id, business_id: input.business_id };
           rememberPendingCheckout(saved);
           setPending(saved);
           void verify(saved);
         },
         onDismiss: () => {
+          journey?.record('checkout_dismissed', { checkoutId: order.checkout_token });
           submitLock.current = false;
           setState('idle');
           setMessage('Checkout closed. Your package is still selected, so you can continue when you’re ready.');
         },
-        onFailure: failure => { setError(failure); setMessage('The payment was not completed. You can retry inside the secure payment window.'); },
+        onFailure: failure => {
+          journey?.record('payment_failed_client', { checkoutId: order.checkout_token, safeCode: 'PAYMENT_ATTEMPT_FAILED' });
+          setError(failure); setMessage('The payment was not completed. You can retry inside the secure payment window.');
+        },
       });
+      journey?.record('checkout_opened', { checkoutId: order.checkout_token });
     } catch (cause) {
+      journey?.record('checkout_error_client', { checkoutId: intent.current?.order?.checkout_token, safeCode: failureStage });
       submitLock.current = false;
       setState('idle');
       setMessage('');

@@ -31,6 +31,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { AdminFilingWorkspace } from '@/components/admin-filing-workspace';
 import { AdminClientRegister } from '@/components/admin-client-register';
+import { AdminPayments } from '@/components/admin-payments';
 import { Link } from 'expo-router';
 import { useAuthCaptcha } from '@/hooks/use-auth-captcha';
 
@@ -52,7 +53,7 @@ const navigation: { group: string; items: { label: string; icon: string; section
   ] },
   { group: 'CONTROL', items: [
     { label:'Documents', icon:'▧', section:'documents' }, { label:'Groq AI Center', icon:'✦', section:'ai' },
-    { label:'Integrations', icon:'⌁', section:'integrations' }, { label:'Finance', icon:'₹', section:'finance' }, { label:'Audit Logs', icon:'◉', section:'audit' }, { label:'Staff Access', icon:'⌾', section:'security' },
+    { label:'Integrations', icon:'⌁', section:'integrations' }, { label:'Payments & recovery', icon:'₹', section:'finance' }, { label:'Audit Logs', icon:'◉', section:'audit' }, { label:'Staff Access', icon:'⌾', section:'security' },
     { label:'Notification Jobs', icon:'◷', section:'notifications' },
   ] },
 ];
@@ -221,6 +222,7 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
   const [filingBusiness,setFilingBusiness]=useState<string|null>(null);
   const [query,setQuery]=useState('');
   const [registerRefresh,setRegisterRefresh]=useState(0);
+  const [paymentRefresh,setPaymentRefresh]=useState(0);
   const [directoryData,setDirectoryData]=useState<ControlCenterDirectory|null>(null);
   const [directoryLoading,setDirectoryLoading]=useState(false);
   const [directoryError,setDirectoryError]=useState('');
@@ -230,8 +232,8 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
   const generatedTime = useMemo(() => new Date(data.generatedAt).getTime(), [data.generatedAt]);
 
   const loadDirectory=useCallback(async(section: ControlCenterSection,page=0)=>{const request=++directoryRequest.current;setDirectoryLoading(true);setDirectoryError('');try{const result=await loadControlCenterDirectory(section,page);if(request===directoryRequest.current)setDirectoryData(result);}catch(cause){if(request===directoryRequest.current){setDirectoryData(null);setDirectoryError(cause instanceof Error?cause.message:'Protected records could not be loaded.')}}finally{if(request===directoryRequest.current)setDirectoryLoading(false)}},[]);
-  const selectSection=useCallback((section: NavigationSection)=>{setFilingBusiness(null);setQuery('');setActiveSection(section);if(section!=='overview'&&section!=='client-register')void loadDirectory(section)},[loadDirectory]);
-  const refreshCurrent=useCallback(()=>{if(activeSection==='overview')onRefresh();else if(activeSection==='client-register')setRegisterRefresh(v=>v+1);else void loadDirectory(activeSection)},[activeSection,loadDirectory,onRefresh]);
+  const selectSection=useCallback((section: NavigationSection)=>{setFilingBusiness(null);setQuery('');setActiveSection(section);if(section!=='overview'&&section!=='client-register'&&section!=='finance')void loadDirectory(section)},[loadDirectory]);
+  const refreshCurrent=useCallback(()=>{if(activeSection==='overview')onRefresh();else if(activeSection==='client-register')setRegisterRefresh(v=>v+1);else if(activeSection==='finance')setPaymentRefresh(v=>v+1);else void loadDirectory(activeSection)},[activeSection,loadDirectory,onRefresh]);
 
   useEffect(()=>{let live=true;AccessibilityInfo.isReduceMotionEnabled().then((reduced)=>{if(!live)return;if(reduced){fade.setValue(1);translate.setValue(0);return;}Animated.parallel([Animated.timing(fade,{toValue:1,duration:420,useNativeDriver:process.env.EXPO_OS!=='web'}),Animated.timing(translate,{toValue:0,duration:420,useNativeDriver:process.env.EXPO_OS!=='web'})]).start();});return()=>{live=false}},[fade,translate]);
 
@@ -246,8 +248,8 @@ function Dashboard({ data, loading, error, onRefresh, onSignOut }: { data: Contr
   return <View style={styles.dashboardRoot}>{!phone&&<Sidebar compact={compactSidebar} active={activeSection} onSelect={selectSection}/>}<View style={styles.main}>
     {data.staff.roles.some(role=>['SUPER_ADMIN','SECURITY_ADMIN'].includes(role))?<Link href="/privacy-operations" style={{padding:12,color:palette.blue}}>Privacy requests & grievances →</Link>:null}
     <View style={[styles.topbar,phone&&styles.topbarPhone]}>{phone?<BrandMark/>:<View style={styles.search}><Text style={styles.searchIcon}>⌕</Text><TextInput accessibilityLabel="Search Control Center" value={query} onChangeText={setQuery} editable={activeSection!=='overview'} placeholder={activeSection==='overview'?'Choose a workspace to search records':'Search the current workspace...'} placeholderTextColor="#8C9AB3" style={styles.searchInput}/><Text style={styles.searchHint}>⌘ K</Text></View>}<Pressable accessibilityLabel="Refresh dashboard" onPress={refreshCurrent} disabled={loading||directoryLoading} style={styles.iconButton}>{loading||directoryLoading?<ActivityIndicator color={palette.blue} size="small"/>:<Text style={styles.iconButtonText}>↻</Text>}</Pressable><View style={styles.avatar}><Text style={styles.avatarText}>{data.staff.displayName.slice(0,1).toUpperCase()}</Text></View>{!phone&&<View style={styles.staffTop}><Text style={styles.staffName}>{data.staff.displayName}</Text><Text style={styles.staffRole}>{humanStatus(data.staff.roles[0]||'staff')}</Text></View>}<Pressable accessibilityLabel="Sign out" onPress={onSignOut} style={[styles.signOut,phone&&styles.signOutPhone]}><Text style={styles.signOutText}>{phone?'Exit':'Sign out'}</Text></Pressable></View>
-    {phone&&<ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.mobileNav}>{navigation.flatMap((group)=>group.items).filter((item):item is {label:string;icon:string;section:NavigationSection}=>!!item.section).map((item)=><Pressable key={item.section} onPress={()=>selectSection(item.section)} style={[styles.mobileNavItem,activeSection===item.section&&styles.mobileNavItemActive]}><Text style={[styles.mobileNavText,activeSection===item.section&&styles.mobileNavTextActive]}>{item.label}</Text></Pressable>)}</ScrollView>}
-    {filingBusiness?<AdminFilingWorkspace key={filingBusiness} businessId={filingBusiness} onBack={()=>{setFilingBusiness(null);if(activeSection!=='overview'&&activeSection!=='client-register')void loadDirectory(activeSection)}}/>:activeSection==='client-register'?<AdminClientRegister query={query} refreshKey={registerRefresh} onOpenBusiness={setFilingBusiness}/>:activeSection==='overview'?<ScrollView contentContainerStyle={[styles.dashboardScroll,singleColumn&&styles.dashboardScrollMobile]}>
+    {phone&&<ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.mobileNavScroll} contentContainerStyle={styles.mobileNav}>{navigation.flatMap((group)=>group.items).filter((item):item is {label:string;icon:string;section:NavigationSection}=>!!item.section).map((item)=><Pressable key={item.section} onPress={()=>selectSection(item.section)} style={[styles.mobileNavItem,activeSection===item.section&&styles.mobileNavItemActive]}><Text style={[styles.mobileNavText,activeSection===item.section&&styles.mobileNavTextActive]}>{item.label}</Text></Pressable>)}</ScrollView>}
+    {filingBusiness?<AdminFilingWorkspace key={filingBusiness} businessId={filingBusiness} onBack={()=>{setFilingBusiness(null);if(activeSection!=='overview'&&activeSection!=='client-register'&&activeSection!=='finance')void loadDirectory(activeSection)}}/>:activeSection==='finance'?<AdminPayments staff={data.staff} query={query} refreshKey={paymentRefresh} onOpenBusiness={setFilingBusiness}/>:activeSection==='client-register'?<AdminClientRegister query={query} refreshKey={registerRefresh} onOpenBusiness={setFilingBusiness}/>:activeSection==='overview'?<ScrollView contentContainerStyle={[styles.dashboardScroll,singleColumn&&styles.dashboardScrollMobile]}>
       <Animated.View style={{opacity:fade,transform:[{translateY:translate}]}}>
         <View style={[styles.headingRow,phone&&styles.headingRowPhone]}><View><Text style={styles.kicker}>OPERATIONS COMMAND CENTER</Text><Text style={styles.dashboardTitle}>Good day, {data.staff.displayName.split(' ')[0]}.</Text><Text style={styles.dashboardSubtitle}>Here is what needs attention across RegisterBox right now.</Text></View><View style={styles.liveBadge}><View style={styles.liveDot}/><Text style={styles.liveText}>LIVE · {new Date(data.generatedAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</Text></View></View>
         {!!error&&<View style={styles.dashboardError}><Text style={styles.dashboardErrorText}>{error}</Text></View>}
@@ -452,7 +454,8 @@ const styles=StyleSheet.create({
   securityTitle:{fontSize:10,fontWeight:'900',color:'#0A1943'},
   securityText:{fontSize:8.5,lineHeight:13,color:'#75849B',marginTop:2},
   securityRole:{fontSize:8,fontWeight:'900',color:'#0865F7',backgroundColor:'#EAF3FF',borderRadius:999,paddingHorizontal:9,paddingVertical:6},
-  mobileNav:{paddingHorizontal:12,paddingVertical:9,gap:7,backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#E4EAF3'},
+  mobileNavScroll:{flexGrow:0,flexShrink:0,width:'100%',maxHeight:52,overflow:'hidden'},
+  mobileNav:{alignItems:'center',paddingHorizontal:12,paddingVertical:9,gap:7,backgroundColor:'#fff',borderBottomWidth:1,borderBottomColor:'#E4EAF3'},
   mobileNavItem:{borderRadius:999,paddingHorizontal:12,paddingVertical:7,backgroundColor:'#F2F5FA'},
   mobileNavItemActive:{backgroundColor:'#0B3370'},
   mobileNavText:{fontSize:9,fontWeight:'800',color:'#657692'},

@@ -1,9 +1,10 @@
 import { getServicePackage } from './service-catalog.ts';
 import { applicationCategory, applicationCheckoutPackageIds } from './application-checkout.ts';
+import { paymentMode, safeProviderPayment } from './payment-operations.ts';
 
 type Env = Record<string, string | undefined>;
 type Dependencies = { env: Env; fetch?: typeof fetch; now?: () => number; uuid?: () => string };
-type CheckoutOrder = { id: string; user_id: string; business_id?: string | null; application_id?: string | null; provider_create_token?: string | null; package_id: string; package_title: string; amount: number; currency: string; status: string; razorpay_order_id: string | null; razorpay_payment_id: string | null; created_at: string };
+type CheckoutOrder = { id: string; user_id: string; business_id?: string | null; application_id?: string | null; journey_id?: string | null; provider_create_token?: string | null; package_id: string; package_title: string; amount: number; currency: string; status: string; razorpay_order_id: string | null; razorpay_payment_id: string | null; created_at: string };
 type CheckoutApplication = { id: string; business_id: string; status: string; services: { slug: string | null } | null };
 class CheckoutError extends Error {
   readonly status: number;
@@ -101,6 +102,15 @@ export function createCheckoutHandler(action: 'create' | 'verify', dependencies:
           const businesses = await db(`business_profiles?id=eq.${businessId}&user_id=eq.${user.id}&deleted_at=is.null&select=id`) as unknown[];
           if (!businesses.length) throw new CheckoutError('Choose a business profile belonging to your account.', 403);
         }
+        let journeyId: string | null = null;
+        if (typeof body.journey_id === 'string' && uuidPattern.test(body.journey_id)) {
+          // Analytics can arrive after checkout. Missing/unavailable telemetry never blocks a payment.
+          try {
+            const journeys = await db(`payment_journeys?id=eq.${body.journey_id}&user_id=eq.${user.id}&package_id=eq.${selected.id}&select=id,business_id,application_id`) as {id:string;business_id:string|null;application_id:string|null}[];
+            const journey=journeys[0];
+            if (journey && journey.business_id === businessId && journey.application_id === applicationId) journeyId=journey.id;
+          } catch { /* Owner-bound checkout still proceeds without analytics. */ }
+        }
         const activeApplicationOrder = async () => {
           const orders = await db(`service_checkout_orders?user_id=eq.${user.id}&application_id=eq.${applicationId}&status=in.(created,pending_payment,authorized,paid)&select=*&limit=1`) as CheckoutOrder[];
           return orders[0];
@@ -124,7 +134,7 @@ export function createCheckoutHandler(action: 'create' | 'verify', dependencies:
             trademark = { applicant_type: tm.applicant_type, pan_or_gstin: tm.pan_or_gstin, brand_name: tm.brand_name.trim(), trademark_class: tm.trademark_class };
           }
           try {
-            const rows = await db('service_checkout_orders', 'POST', { user_id: user.id, business_id: businessId, application_id: applicationId, request_id: requestId, package_id: selected.id, package_title: selected.title, amount: selected.amountPaise, currency: selected.currency, status: 'created', trademark_json: trademark }) as CheckoutOrder[];
+            const rows = await db('service_checkout_orders', 'POST', { user_id: user.id, business_id: businessId, application_id: applicationId, journey_id: journeyId, provider_mode: paymentMode(env), request_id: requestId, package_id: selected.id, package_title: selected.title, amount: selected.amountPaise, currency: selected.currency, status: 'created', trademark_json: trademark }) as CheckoutOrder[];
             order = rows[0];
           } catch (error) {
             // The partial unique index chooses one winner even when different
@@ -163,7 +173,7 @@ export function createCheckoutHandler(action: 'create' | 'verify', dependencies:
         }
         if (typeof created.id !== 'string' || !/^order_[A-Za-z0-9]+$/.test(created.id) || created.amount !== order.amount || created.currency !== order.currency) throw new CheckoutError('Payment provider returned an unexpected order. Please contact RegisterBox.');
         const claimFilter = applicationId ? `&provider_create_token=eq.${order.provider_create_token}` : '';
-        const saved = await db(`service_checkout_orders?id=eq.${order.id}&user_id=eq.${user.id}&status=eq.created${claimFilter}`, 'PATCH', { razorpay_order_id: created.id, status: 'pending_payment', updated_at: new Date(now()).toISOString() }) as CheckoutOrder[];
+        const saved = await db(`service_checkout_orders?id=eq.${order.id}&user_id=eq.${user.id}&status=eq.created${claimFilter}`, 'PATCH', { razorpay_order_id: created.id, provider_mode: paymentMode(env), status: 'pending_payment', updated_at: new Date(now()).toISOString() }) as CheckoutOrder[];
         if (!saved[0]) throw new CheckoutError('Checkout changed while being prepared. Please retry.', 409);
         return response(resultForOrder(saved[0]));
       }
@@ -181,13 +191,16 @@ export function createCheckoutHandler(action: 'create' | 'verify', dependencies:
       const paid = payment.status === 'captured';
       // Captured payment is required for fulfilment; authorization alone is pending.
       const states = paid ? '(pending_payment,authorized,paid)' : '(pending_payment,authorized)';
-      const saved = await db(`service_checkout_orders?id=eq.${order.id}&user_id=eq.${user.id}&status=in.${states}&or=(razorpay_payment_id.is.null,razorpay_payment_id.eq.${paymentId})`, 'PATCH', { razorpay_payment_id: paymentId, status: paid ? 'paid' : 'authorized', paid_at: paid ? new Date(now()).toISOString() : null, updated_at: new Date(now()).toISOString() }) as CheckoutOrder[];
+      const saved = await db(`service_checkout_orders?id=eq.${order.id}&user_id=eq.${user.id}&status=in.${states}&or=(razorpay_payment_id.is.null,razorpay_payment_id.eq.${paymentId})`, 'PATCH', { razorpay_payment_id: paymentId, provider_mode: paymentMode(env), status: paid ? 'paid' : 'authorized', paid_at: paid ? new Date(now()).toISOString() : null, updated_at: new Date(now()).toISOString() }) as CheckoutOrder[];
       let status = paid ? 'paid' : 'authorized';
       if (!saved[0]) {
         const latest = await db(`service_checkout_orders?id=eq.${order.id}&user_id=eq.${user.id}&select=*`) as CheckoutOrder[];
         if (latest[0]?.status !== 'paid' || latest[0]?.razorpay_payment_id !== paymentId) throw new CheckoutError('Could not record the payment. Retry verification; do not pay again.');
         status = 'paid';
       }
+      // The receipt above already requires signature + provider GET capture evidence.
+      // Append provider attempt details too; a transient analytics failure must not hide a valid receipt.
+      try { await db('rpc/apply_payment_observation','POST',{p_checkout:order.id,p_payment:safeProviderPayment(payment),p_source:'verification',p_observation:`verification:${paymentId}:${payment.status}`,p_mode:paymentMode(env)}); } catch { /* Webhook/reconciliation repairs the operations projection. */ }
       return response({ success: true, status, order_id: order.razorpay_order_id, payment_id: paymentId, checkout_token: order.id, application_id: order.application_id ?? null, package_id: order.package_id, amount: order.amount, currency: order.currency });
     } catch (error) {
       if (error instanceof CheckoutError) return response({ error: error.message }, error.status);
