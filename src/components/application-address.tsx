@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
-import {Text,View} from 'react-native';
-import {Choice,ErrorBanner,Field} from './registerbox-ui';
-import {GstSelect,gstStyles} from './gst-ui';
+import {View} from 'react-native';
+import {ErrorBanner} from './registerbox-ui';
+import {ApplicationField as Field,ApplicationSelect as GstSelect,ApplicationRow,ApplicationHint,ApplicationConfirm} from './application-controls';
 import {indianStates,parsePostalLocations,type PostalLocation} from '@/data/india-address';
 type Answers=Record<string,string>;
 export function ApplicationAddress({value,onChange,disabled}:{value:Answers;onChange:(a:Answers)=>void;disabled:boolean}){
@@ -21,14 +21,22 @@ export function ApplicationAddress({value,onChange,disabled}:{value:Answers;onCh
     return()=>{active=false;clearTimeout(timer);controller.abort();};
   },[pin]);
   const update=(key:string,text:string)=>onChange({...value,[key]:text,address_confirmed:'No'});
-  return <View style={{gap:14}}><Field label="PIN code" value={pin} keyboardType="number-pad" maxLength={6} editable={!disabled} onChangeText={text=>{setLocations([]);setError('');onChange({...value,pincode:text.replace(/\D/g,''),state:'',district:'',city:'',post_office:'',address_lookup_pin:'',address_source:'Manual',address_confirmed:'No'});}}/>
-    <Text style={gstStyles.caption}>{busy?'Looking up postal locations…':'Only your PIN is sent to a public postal directory. Suggestions are not government verification. Confirm your exact address below.'}</Text><ErrorBanner message={error}/>
-    {locations.length?<GstSelect label="Post office / locality" value={value.post_office||''} options={locations.map(r=>({value:r.name,label:r.name+' · '+r.district}))} disabled={disabled||busy} onChange={name=>{const r=locations.find(item=>item.name===name)!;onChange({...value,post_office:r.name,state:r.state,district:r.district,address_confirmed:'No'});}}/>:null}
-    <GstSelect label="State / union territory" value={value.state||''} options={indianStates.map(state=>({value:state,label:state}))} disabled={disabled||busy} onChange={state=>onChange({...value,state,district:'',city:'',post_office:'',address_source:'Manual correction',address_confirmed:'No'})}/>
-    <Field label="District" value={value.district||''} editable={!disabled&&!busy} onChangeText={v=>update('district',v)}/>
-    <Field label="City / town / village (confirm actual location)" value={value.city||''} editable={!disabled} onChangeText={v=>update('city',v)}/>
-    <Field label="Building / house number and street" value={value.address_line_1||''} editable={!disabled} onChangeText={v=>update('address_line_1',v)}/>
-    <Field label="Area / landmark (optional)" value={value.address_line_2||''} editable={!disabled} onChangeText={v=>update('address_line_2',v)}/>
-    <Choice label="I checked this address against the premises proof" selected={value.address_confirmed==='Yes'} onPress={()=>{if(!disabled&&!busy)onChange({...value,address_confirmed:value.address_confirmed==='Yes'?'No':'Yes'});}}/>
+  return <View style={{gap:14}}>
+    <ApplicationRow>
+      <Field label="PIN code" placeholder="6-digit PIN code" value={pin} keyboardType="number-pad" autoComplete="postal-code" maxLength={6} editable={!disabled} onChangeText={text=>{setLocations([]);setError('');onChange({...value,pincode:text.replace(/\D/g,''),state:'',district:'',city:'',post_office:'',address_lookup_pin:'',address_source:'Manual',address_confirmed:'No'});}}/>
+      {locations.length?<GstSelect label="Post office / locality" value={value.post_office||''} options={locations.map(r=>({value:r.name,label:r.name+' · '+r.district}))} disabled={disabled||busy} onChange={name=>{const r=locations.find(item=>item.name===name)!;onChange({...value,post_office:r.name,state:r.state,district:r.district,address_confirmed:'No'});}}/>:null}
+    </ApplicationRow>
+    <ApplicationHint>{busy?'Looking up postal locations…':'Only your PIN is sent to a public postal directory. Suggestions are not government verification. Confirm your exact address below.'}</ApplicationHint>
+    <ErrorBanner message={error}/>
+    <ApplicationRow>
+      <GstSelect label="State / union territory" value={value.state||''} options={indianStates.map(state=>({value:state,label:state}))} disabled={disabled||busy} onChange={state=>onChange({...value,state,district:'',city:'',post_office:'',address_source:'Manual correction',address_confirmed:'No'})}/>
+      <Field label="District" placeholder="Enter your district" value={value.district||''} editable={!disabled&&!busy} onChangeText={v=>update('district',v)}/>
+    </ApplicationRow>
+    <ApplicationRow>
+      <Field label="City / town / village" placeholder="Confirm the actual location" value={value.city||''} editable={!disabled} onChangeText={v=>update('city',v)}/>
+      <Field label="Area / landmark (optional)" placeholder="Add a nearby landmark, if helpful" value={value.address_line_2||''} editable={!disabled} onChangeText={v=>update('address_line_2',v)}/>
+    </ApplicationRow>
+    <Field label="Building / house number and street" placeholder="Building, floor and street" multiline textAlignVertical="top" style={{minHeight:80}} value={value.address_line_1||''} editable={!disabled} onChangeText={v=>update('address_line_1',v)}/>
+    <ApplicationConfirm label="I checked this address against the premises proof" selected={value.address_confirmed==='Yes'} disabled={disabled||busy} onPress={()=>{if(!disabled&&!busy)onChange({...value,address_confirmed:value.address_confirmed==='Yes'?'No':'Yes'});}}/>
   </View>;
 }

@@ -13,7 +13,7 @@ export function ApplicationProgress({step,documentStep,reviewStep,hasDocuments=t
   </View>;
 }
 
-export function ApplicationChoices({options,value,onChange,disabled}:{options:string[];value:string;onChange:(value:string)=>void;disabled:boolean}){
+export function ApplicationChoices({options,value,onChange,disabled}:{options:string[];value:string;onChange:(value:string)=>void;disabled:boolean;label?:string}){
   return <View style={{gap:10}}>{options.map(option=><Pressable key={option} accessibilityRole="radio" accessibilityState={{checked:option===value,disabled}} disabled={disabled} onPress={()=>onChange(option)} style={({pressed})=>[styles.choice,option===value&&styles.selected,pressed&&{opacity:0.85},disabled&&{opacity:0.6}]}><Text style={[styles.choiceLabel,option===value&&{color:palette.blue}]}>{option}</Text><View style={[styles.radio,option===value&&{borderColor:palette.blue}]}>{option===value&&<View style={styles.radioFill}/>}</View></Pressable>)}</View>;
 }
 

@@ -100,6 +100,8 @@ function applicationHarness({ os = 'web', category = 'gst_registration' } = {}) 
     },
     '@/components/registerbox-ui': Object.fromEntries(['Button', 'Card', 'ErrorBanner', 'Field', 'PageHeader', 'Screen'].map(name => [name, name])),
     '@/components/gst-ui': { GstSelect: 'GstSelect' },
+    '@/components/application-controls': { ApplicationField: 'Field', ApplicationSelect: 'GstSelect', ApplicationCard: 'Card', ApplicationReviewItem: 'ApplicationReviewItem' },
+    '@/components/application-layout': { ApplicationLayout: 'ApplicationLayout' },
     '@/components/application-address': { ApplicationAddress: 'ApplicationAddress' },
     '@/data/india-address': { validateAddress: () => '' },
     '@/components/application-form-ui': Object.fromEntries(['ApplicationChoices', 'ApplicationFooter', 'ApplicationProgress'].map(name => [name, name])),
