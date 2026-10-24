@@ -1,0 +1,181 @@
+{
+  "staticLayouts": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scroll": 1440,
+        "client": 1440
+      },
+      "main": {
+        "x": 130,
+        "y": 123.9375,
+        "width": 1180,
+        "height": 8597.734375,
+        "bottom": 8721.671875,
+        "scroll": 1180,
+        "client": 1180
+      },
+      "h1": [
+        "FSSAI registration.For your food business."
+      ],
+      "sticky": null,
+      "overflow": []
+    },
+    {
+      "name": "tablet",
+      "viewport": {
+        "w": 1024,
+        "h": 768
+      },
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 768,
+        "bottom": 768,
+        "scroll": 1024,
+        "client": 1024
+      },
+      "main": {
+        "x": 32,
+        "y": 123.9375,
+        "width": 960,
+        "height": 8944.34375,
+        "bottom": 9068.28125,
+        "scroll": 960,
+        "client": 960
+      },
+      "h1": [
+        "FSSAI registration.For your food business."
+      ],
+      "sticky": null,
+      "overflow": []
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scroll": 390,
+        "client": 390
+      },
+      "main": {
+        "x": 20,
+        "y": 106,
+        "width": 350,
+        "height": 13165.734375,
+        "bottom": 13271.734375,
+        "scroll": 350,
+        "client": 350
+      },
+      "h1": [
+        "FSSAI registration.For your food business."
+      ],
+      "sticky": {
+        "x": 0,
+        "y": 774,
+        "width": 390,
+        "height": 70,
+        "bottom": 844,
+        "scroll": 390,
+        "client": 390
+      },
+      "overflow": []
+    },
+    {
+      "name": "mobile360",
+      "viewport": {
+        "w": 360,
+        "h": 800
+      },
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 360,
+        "height": 800,
+        "bottom": 800,
+        "scroll": 360,
+        "client": 360
+      },
+      "main": {
+        "x": 20,
+        "y": 106,
+        "width": 320,
+        "height": 14001.640625,
+        "bottom": 14107.640625,
+        "scroll": 320,
+        "client": 320
+      },
+      "h1": [
+        "FSSAI registration.For your food business."
+      ],
+      "sticky": {
+        "x": 0,
+        "y": 730,
+        "width": 360,
+        "height": 70,
+        "bottom": 800,
+        "scroll": 360,
+        "client": 360
+      },
+      "overflow": []
+    }
+  ],
+  "faq": {
+    "openWithEnter": true,
+    "answerText": "It covers assistance with one eligible new Basic Registration at one premises, document review, application preparation and coordination, plus the first-year government registration fee. No GST is added under the current RegisterBox pricing policy. State and Central licences require a separate quote.",
+    "focus": {
+      "active": true,
+      "outline": "solid",
+      "outlineWidth": "2px",
+      "minHeight": "64px"
+    },
+    "closesWithSpace": true
+  },
+  "schema": {
+    "service": 1,
+    "faq": 12,
+    "breadcrumb": 1,
+    "price": [
+      {
+        "@type": "Offer",
+        "@id": "https://www.registerbox.in/services/fssai-food-business#package-fssai-licence",
+        "name": "FSSAI Basic Registration",
+        "price": 1999,
+        "priceCurrency": "INR",
+        "description": "Application assistance for one eligible premises, including the first annual government registration fee. Final package price. No GST is added. Covers one new Basic Registration at one eligible premises and the first annual government fee. State and Central licences require a separate quote. Future annual fees, additional premises, modifications, testing, audits and local permissions are excluded. Approval is subject to the competent authority.",
+        "url": "https://www.registerbox.in/services/fssai-food-business#package-fssai-licence",
+        "seller": {
+          "@id": "https://www.registerbox.in/#organization"
+        }
+      }
+    ]
+  },
+  "hydrated": {
+    "h1": [
+      "FSSAI registration.For your food business."
+    ],
+    "faq": 12,
+    "bodyPrice": "\u20b91,999\nfirst-year package",
+    "consistency": "BASIC REGISTRATION\nFSSAI Basic Registration\n\n\u20b91,999\nfirst-year package\n\nFinal package price. No GST is added. Covers one new Basic Registration at one eligible premises and the first annual government fee. State and Central licences require a separate quote. Future annual fees, additional premises, modifications, testing, audits and local permissions are excluded. Approval is subject to the competent authority.\n\nStart my application\n\u2197\nIncluded\nBasic Registration eligibility review\nDocument checklist and application preparation\nSubmission and query coordination for one new registration\nFirst annual government registration fee of \u20b9100\nQuoted separately\n\nState or Central licensing, additional premises, modifications, testing, technical reports, other permissions and later annual government fees. No automatic annual subscription."
+  },
+  "external": [],
+  "errors": [],
+  "failed": []
+}

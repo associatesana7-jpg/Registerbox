@@ -1,0 +1,11 @@
+{
+  "src/components/website/fssai-service-page.web.tsx": "fce87e24d7485fe82213c711a684de6605c3f3674c85eef06ed9919a6ea640f8",
+  "src/components/website/fssai-page-data.ts": "7b5012337f5f6dcf45b4504f650fa13e7ef66bc3aa5bcd81cd1e5f7d246a69f9",
+  "src/components/website/fssai-service.css": "68779fee446ffa50195d55c02efdfd1d1f73e0a99b77c0a31efe36fbf2ae0c18",
+  "supabase/functions/_shared/service-catalog.ts": "f951923d7c9f41a4f20b687fd1c637cb73fcde2516d90567f77ce23a1a16e337",
+  "scripts/check-service-build.mjs": "5cf2cafd85501fd8d0eb3a599d4f26c578d9927cd33810d482bd2245dcd8e770",
+  "scripts/check-public-seo.py": "402149428f3a7e57d56bddacab9550bfe87d9134065eb548ab45e153ffd89bee",
+  "public/sitemap.xml": "c53613f59acd46162ce97e00680435700c3b33dc67a081432ecc6b88bd8d5b0b",
+  "public/llms.txt": "5d804dade271917a5870d684ea342e87efb6613dfa4ea22813f76ec399b334c2",
+  "public/service-feed.json": "a0519bd3395db75b6c5edfa9b201924a21cef23a5ed6534267b07da468e1991d"
+}

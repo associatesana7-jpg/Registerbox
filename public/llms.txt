@@ -24,10 +24,10 @@ Application drafts are not government submissions. Confirm scope and fees with t
 
 ## Published service prices and secure payment
 
-RegisterBox service fees are final: no GST is added. Government fees, tax dues and statutory charges are separate where applicable. Registration details are submitted to RegisterBox first; the package review and Razorpay payment step follow. A payment receipt does not prove government submission, approval or filing.
+RegisterBox service fees are final: no GST is added. Government fees, tax dues and statutory charges are separate unless a package explicitly includes them. Registration details are submitted to RegisterBox first; the package review and Razorpay payment step follow. A payment receipt does not prove government submission, approval or filing.
 
 - [GST registration — ₹1,999](https://www.registerbox.in/services/gst-registration)
-- [FSSAI licence assistance — ₹2,999](https://www.registerbox.in/services/fssai-food-business)
+- [FSSAI Basic Registration — ₹1,999](https://www.registerbox.in/services/fssai-food-business): application assistance for one new registration at one eligible premises, including the first annual ₹100 government registration fee. No GST is added. State/Central licences are quoted separately. New certificates issued from 1 April 2026 have perpetual validity; annual fees and applicable compliance continue. Future annual fees, extra premises, modifications, testing, audits and local permissions are outside this package.
 - [Udyam optional assistance — ₹499](https://www.registerbox.in/services/udyam-registration): official Udyam registration is free. The applicant completes official identity verification; never share OTPs.
 - [Shop & Establishment assistance — ₹4,499](https://www.registerbox.in/services/shop-establishment-registration)
 - [Income tax filing — ₹1,999 per agreed return](https://www.registerbox.in/services/income-tax-filing)

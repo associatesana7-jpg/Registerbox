@@ -1,0 +1,189 @@
+{
+  "layouts": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "root": {
+        "scroll": 390,
+        "client": 390
+      },
+      "main": {
+        "x": 20,
+        "y": 106,
+        "right": 370,
+        "bottom": 13419.515625,
+        "width": 350,
+        "height": 13313.515625,
+        "scroll": 350,
+        "client": 350
+      },
+      "buttons": [
+        {
+          "box": {
+            "x": 20,
+            "y": 603.09375,
+            "right": 370,
+            "bottom": 651.09375,
+            "width": 350,
+            "height": 48,
+            "scroll": 348,
+            "client": 348
+          },
+          "arrow": {
+            "x": 266.78125,
+            "y": 619.59375,
+            "right": 276.296875,
+            "bottom": 634.59375,
+            "width": 9.515625,
+            "height": 15,
+            "scroll": 10,
+            "client": 10
+          }
+        },
+        {
+          "box": {
+            "x": 20,
+            "y": 661.09375,
+            "right": 370,
+            "bottom": 710.28125,
+            "width": 350,
+            "height": 49.1875,
+            "scroll": 348,
+            "client": 348
+          },
+          "arrow": null
+        }
+      ],
+      "label": {
+        "text": "Basic · govt fee included",
+        "x": 18,
+        "y": 790.75,
+        "right": 168,
+        "bottom": 806.75,
+        "width": 150,
+        "height": 16,
+        "scroll": 150,
+        "client": 150
+      },
+      "registrationWordRectCount": 1,
+      "overscroll": "contain",
+      "footer": {
+        "stickyTop": 774,
+        "lastLinks": [
+          {
+            "text": "Request a callback ↗",
+            "bottom": 661.46875
+          },
+          {
+            "text": "Privacy & data",
+            "bottom": 763.65625
+          },
+          {
+            "text": "Service information",
+            "bottom": 763.65625
+          },
+          {
+            "text": "Data deletion",
+            "bottom": 763.65625
+          }
+        ]
+      }
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "root": {
+        "scroll": 360,
+        "client": 360
+      },
+      "main": {
+        "x": 20,
+        "y": 106,
+        "right": 340,
+        "bottom": 14252.015625,
+        "width": 320,
+        "height": 14146.015625,
+        "scroll": 320,
+        "client": 320
+      },
+      "buttons": [
+        {
+          "box": {
+            "x": 20,
+            "y": 538.609375,
+            "right": 340,
+            "bottom": 586.609375,
+            "width": 320,
+            "height": 48,
+            "scroll": 318,
+            "client": 318
+          },
+          "arrow": {
+            "x": 251.78125,
+            "y": 555.109375,
+            "right": 261.296875,
+            "bottom": 570.109375,
+            "width": 9.515625,
+            "height": 15,
+            "scroll": 10,
+            "client": 10
+          }
+        },
+        {
+          "box": {
+            "x": 20,
+            "y": 596.609375,
+            "right": 340,
+            "bottom": 645.796875,
+            "width": 320,
+            "height": 49.1875,
+            "scroll": 318,
+            "client": 318
+          },
+          "arrow": null
+        }
+      ],
+      "label": {
+        "text": "Basic · govt fee included",
+        "x": 18,
+        "y": 746.75,
+        "right": 138,
+        "bottom": 762.75,
+        "width": 120,
+        "height": 16,
+        "scroll": 120,
+        "client": 120
+      },
+      "registrationWordRectCount": 1,
+      "overscroll": "contain",
+      "footer": {
+        "stickyTop": 730,
+        "lastLinks": [
+          {
+            "text": "Request a callback ↗",
+            "bottom": 578.21875
+          },
+          {
+            "text": "Privacy & data",
+            "bottom": 680.40625
+          },
+          {
+            "text": "Service information",
+            "bottom": 680.40625
+          },
+          {
+            "text": "Data deletion",
+            "bottom": 720.40625
+          }
+        ]
+      }
+    }
+  ],
+  "external": [],
+  "errors": [],
+  "failed": []
+}

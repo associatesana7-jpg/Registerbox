@@ -40,7 +40,7 @@ function fixture(options = {}) {
       return json(order ? [order] : []);
     }
     if (url.includes('/rest/v1/applications')) return json(options.application ? [options.application] : []);
-    if (url.includes('/rest/v1/business_profiles')) return json(options.ownsBusiness ? [{ id: businessId }] : []);
+    if (url.includes('/rest/v1/business_profiles')) return json(options.ownsBusiness ? [{ id: businessId, questionnaire: options.questionnaire }] : []);
     if (url.endsWith('/v1/orders')) {
       if (options.providerStatus) return new Response('{}', { status: options.providerStatus });
       return json({ id: 'order_fixture', amount: JSON.parse(init.body).amount, currency: 'INR' });
@@ -57,17 +57,67 @@ const verifyBody = { checkout_token: token, razorpay_order_id: 'order_fixture', 
 const application = { id: applicationId, business_id: businessId, status: 'READY_FOR_REVIEW', services: { slug: 'gst-registration' } };
 const applicationBody = { package_id: 'gst-registration', application_id: applicationId, business_id: businessId, idempotency_key: requestId };
 const linkedOrder = { ...pendingOrder, business_id: businessId, application_id: applicationId, request_id: otherRequestId };
+const basicFoodAnswers = { food_route: 'Registration', food_activity: 'Cloud kitchen', existing_fssai: 'No', multi_state: 'No', turnover: '1200000', food_products: 'Freshly prepared meals' };
+const foodQuestionnaire = (answers = basicFoodAnswers, draft = {}) => ({ application_drafts: { food: { status: 'submitted_to_registerbox', application_id: applicationId, answers, ...draft } } });
+const foodApplication = { ...application, services: { slug: 'fssai' } };
+
 
 test('application packages use authoritative service slugs and never invent quoted prices', () => {
   for (const [slug, category, id] of [['gst-registration', 'gst_registration', 'gst-registration'], ['fssai', 'food', 'fssai-licence'], ['shops-establishment', 'retail', 'shop-establishment'], ['udyam', 'udyam', 'udyam-registration']]) {
     assert.equal(applicationCategory({ services: { slug }, form_data: { category: 'wrong' } }), category);
-    assert.deepEqual(applicationCheckoutPackageIds(category), [id]);
+    assert.deepEqual(applicationCheckoutPackageIds(category, { ...foodApplication, questionnaire: foodQuestionnaire() }), [id]);
   }
   for (const slug of ['private-limited-registration', 'llp-registration', 'business-setup', 'compliance-review']) {
     assert.equal(applicationCategory({ services: { slug }, form_data: { category: 'gst_registration' } }), null);
   }
   assert.deepEqual(applicationCheckoutPackageIds('company'), []);
   assert.equal(applicationCategory({ form_data: { category: 'food' } }), 'food');
+});
+test('Basic food package scope uses only a matched submitted intake, never unknown or specialist facts', () => {
+  const ids = (questionnaire) => applicationCheckoutPackageIds('food', { ...foodApplication, questionnaire });
+  for (const food_activity of ['Restaurant', 'Cloud kitchen', 'Retail']) {
+    assert.deepEqual(ids(foodQuestionnaire({ ...basicFoodAnswers, food_activity, turnover: '15000000' })), ['fssai-licence']);
+  }
+  assert.deepEqual(ids(foodQuestionnaire({ ...basicFoodAnswers, turnover: '0' })), ['fssai-licence']);
+  for (const questionnaire of [undefined, null, [], {}, { application_drafts: null }, { application_drafts: { food: [] } }, foodQuestionnaire(null), foodQuestionnaire([]), foodQuestionnaire(basicFoodAnswers, { application_id: otherRequestId }), foodQuestionnaire(basicFoodAnswers, { status: 'draft' })]) {
+    assert.deepEqual(ids(questionnaire), [], 'Missing, malformed or unlinked intake requires review');
+  }
+  for (const patch of [
+    { food_route: 'State licence' }, { food_route: 'Central licence' }, { food_route: 'Need eligibility review' }, { food_route: undefined },
+    { existing_fssai: 'Yes' }, { existing_fssai: undefined }, { multi_state: 'Yes' }, { multi_state: undefined },
+    { food_activity: 'Catering' }, { food_activity: 'Manufacturing' }, { food_activity: 'Importer' }, { food_activity: undefined },
+    { turnover: '15000000.01' }, { turnover: '-1' }, { turnover: '' }, { turnover: 'NaN' }, { turnover: '12,00,000' }, { turnover: 1000 }, { food_products: '' },
+  ]) assert.deepEqual(ids(foodQuestionnaire({ ...basicFoodAnswers, ...patch })), [], JSON.stringify(patch));
+  assert.deepEqual(applicationCheckoutPackageIds('food'), [], 'A category alone does not establish Basic package scope');
+  assert.deepEqual(applicationCheckoutPackageIds('food', { form_data: { category: 'food', answers: basicFoodAnswers } }), [], 'Legacy form data has no exact submitted-draft association');
+});
+test('food checkout rejects quote routes, existing or unknown scope and direct purchases before order creation', async () => {
+  for (const questionnaire of [undefined, {}, foodQuestionnaire(null), foodQuestionnaire(basicFoodAnswers, { application_id: otherRequestId }), ...[
+    { food_route: 'State licence' }, { food_route: 'Central licence' }, { food_route: 'Need eligibility review' },
+    { existing_fssai: 'Yes' }, { food_activity: 'Catering' }, { food_activity: 'Manufacturing' }, { multi_state: 'Yes' }, { turnover: '15000001' },
+  ].map(patch => foodQuestionnaire({ ...basicFoodAnswers, ...patch }))]) {
+    const f = fixture({ application: foodApplication, ownsBusiness: true, questionnaire });
+    const result = await f.handler('create')(f.request({ ...applicationBody, package_id: 'fssai-licence', food_route: 'Registration' }));
+    assert.equal(result.status, 400); assert.equal(f.getOrder(), null);
+    assert.equal(f.calls.some(call => call.url.includes('api.razorpay') || call.method === 'POST'), false);
+  }
+  const f = fixture({ ownsBusiness: true, questionnaire: foodQuestionnaire() });
+  const result = await f.handler('create')(f.request({ package_id: 'fssai-licence', business_id: businessId, idempotency_key: requestId }));
+  assert.equal(result.status, 400); assert.equal(f.getOrder(), null);
+  assert.equal(f.calls.some(call => call.url.includes('api.razorpay') || call.method === 'POST'), false);
+});
+test('previous food payments verify against their stored amount and retain the original scope', async () => {
+  for (const paymentStatus of ['captured', 'authorized']) {
+    const original = { ...linkedOrder, package_id: 'fssai-licence', package_title: 'FSSAI Licence', amount: 299900 };
+    const f = fixture({ order: original, application: foodApplication, ownsBusiness: true, questionnaire: foodQuestionnaire({ ...basicFoodAnswers, food_route: 'State licence' }), paymentAmount: 299900, paymentStatus });
+    const result = await f.handler('verify')(f.request(verifyBody));
+    assert.equal(result.status, 200);
+    const receipt = await result.json();
+    assert.equal(receipt.amount, 299900); assert.equal(receipt.package_id, 'fssai-licence');
+    assert.equal(f.getOrder().package_title, 'FSSAI Licence');
+    assert.equal(f.getOrder().amount, 299900);
+    assert.equal(f.calls.some(call => call.url.includes('/applications') || call.url.includes('/business_profiles') || call.url.endsWith('/v1/orders')), false);
+  }
 });
 test('linked checkout validates application ownership, business association and submitted state before provider creation', async () => {
   for (const [options, body, status] of [
@@ -90,8 +140,8 @@ test('application checkout cannot select another service or pay a service awaiti
   }
 });
 test('each published registration persists its application and owner business with its exact price', async () => {
-  for (const [slug, package_id, amount] of [['gst-registration', 'gst-registration', 199900], ['fssai', 'fssai-licence', 299900], ['shops-establishment', 'shop-establishment', 449900], ['udyam', 'udyam-registration', 49900]]) {
-    const f = fixture({ application: { ...application, services: { slug } }, ownsBusiness: true });
+  for (const [slug, package_id, amount] of [['gst-registration', 'gst-registration', 199900], ['fssai', 'fssai-licence', 199900], ['shops-establishment', 'shop-establishment', 449900], ['udyam', 'udyam-registration', 49900]]) {
+    const f = fixture({ application: { ...application, services: { slug } }, ownsBusiness: true, questionnaire: slug === 'fssai' ? foodQuestionnaire() : undefined });
     const result = await f.handler('create')(f.request({ ...applicationBody, package_id, business_id: undefined }));
     assert.equal(result.status, 200); assert.equal((await result.json()).application_id, applicationId);
     assert.equal(f.getOrder().application_id, applicationId); assert.equal(f.getOrder().business_id, businessId); assert.equal(f.getOrder().amount, amount);

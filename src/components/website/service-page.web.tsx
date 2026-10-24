@@ -1,4 +1,5 @@
 import { SiteFooter } from './footer.web';
+import FssaiServicePage from './fssai-service-page.web';
 import { Link, type Href } from 'expo-router';
 import { useState, type ReactNode } from 'react';
 import { useApp } from '@/hooks/use-app';
@@ -65,6 +66,7 @@ export default function ServicePage({ slug }: { slug: string }) {
     { '@type': 'ListItem', position: 2, name: 'Services', item: `${siteUrl}/services` },
     { '@type': 'ListItem', position: 3, name: service.title, item: `${siteUrl}${path}` },
   ] };
+  if (service.category === 'food') return <FssaiServicePage/>;
   return <div className={`rb-public-page rb-sx-page rb-sx-${ui.tone}`}>
     <Seo title={`${ui.title} in Bengaluru | RegisterBox`} description={`${ui.title} support in Bengaluru.${packages.length ? ` Packages ${price.toLowerCase()}. No GST added to the RegisterBox service fee.` : ' See what to prepare and how RegisterBox helps.'} New Thippasandra and Marathahalli.`} path={path} schema={[serviceSchema, breadcrumbs]}/>
     <header className="rb-public-header rb-container"><WebBrand/><Link href="/services">All services <span aria-hidden="true">↗</span></Link></header>

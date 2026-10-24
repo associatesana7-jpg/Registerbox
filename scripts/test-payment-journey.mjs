@@ -190,3 +190,43 @@ test('the submitted-application fee card records a page view before its review-a
   link.props.onPress();
   assert.equal(activity[1].event, 'checkout_cta_clicked');
 });
+
+
+test('food fee card offers Basic only for matched intake and keeps quote and existing-payment paths', () => {
+  const helpers = load('supabase/functions/_shared/application-checkout.ts', {});
+  const catalogue = load('supabase/functions/_shared/service-catalog.ts', {});
+  const answers = { food_route: 'Registration', food_activity: 'Cloud kitchen', existing_fssai: 'No', multi_state: 'No', turnover: '900000', food_products: 'Meals' };
+  const makeApplication = (patch = {}, options = {}) => ({
+    id: APPLICATION, business_id: BUSINESS, status: 'READY_FOR_REVIEW', businessName: 'Fixture kitchen', orders: [], services: { name: 'FSSAI', slug: 'fssai' },
+    questionnaire: { application_drafts: { food: { application_id: APPLICATION, status: 'submitted_to_registerbox', answers: { ...answers, ...patch } } } }, ...options,
+  });
+  function render(application, pending = null) {
+    let hook = 0;
+    const { ApplicationPaymentCard } = load('src/components/application-payment-card.web.tsx', {
+      'react/jsx-runtime': { jsx, jsxs: jsx },
+      react: { useEffect() {}, useState(initial) { return [hook++ === 0 ? application : initial, () => {}]; } },
+      'expo-router': { Link: 'Link' }, '@/hooks/use-app': { useApp: () => ({ session: { user: { id: USER } } }) },
+      '@/lib/application-checkout.web': { ...helpers, applicationCheckoutPath: (id, packageId) => `/checkout?application=${id}&package=${packageId}`, isApplicationId: () => true, loadApplicationCheckout: () => assert.fail('No network in render') },
+      '@/lib/service-catalog': catalogue, '@/lib/razorpay-checkout.web': { readPendingCheckout: () => pending },
+      '@/lib/payment-journey.web': { usePaymentJourney() { return null; } },
+      './website/content': { contact: { whatsapp: 'https://example.test' } }, './website/application-payment.css': {},
+    });
+    const wrapper = ApplicationPaymentCard({ applicationId: APPLICATION });
+    return nodes(wrapper.type(wrapper.props));
+  }
+  const basic = render(makeApplication());
+  assert.ok(basic.some(node => node.type === 'Link' && node.props.className === 'rb-ap-button'));
+  for (const value of [makeApplication({ food_route: 'State licence' }), makeApplication({ food_route: 'Central licence' }), makeApplication({ existing_fssai: 'Yes' }), makeApplication({}, { questionnaire: null })]) {
+    const tree = render(value);
+    assert.equal(tree.some(node => node.type === 'Link' && node.props.className === 'rb-ap-button'), false);
+    assert.ok(tree.some(node => node.type === 'a' && node.props.children?.[0] === 'Request my service quote '));
+  }
+  const original = { id: CHECKOUT, package_id: 'fssai-licence', package_title: 'FSSAI Licence', amount: 299900, status: 'paid', razorpay_payment_id: 'pay_fixture' };
+  const paid = render(makeApplication({ food_route: 'State licence' }, { orders: [original] }));
+  assert.ok(JSON.stringify(paid).includes('2,999'), 'Receipt renders the stored old price');
+  assert.equal(JSON.stringify(paid).includes('1,999'), false, 'Receipt does not substitute today’s package price');
+  const pending = { checkout_token: CHECKOUT, package_id: 'fssai-licence', application_id: APPLICATION };
+  const waiting = render(makeApplication({ food_route: 'State licence' }, { orders: [{ ...original, status: 'authorized' }] }), pending);
+  const verifyLink = waiting.find(node => node.type === 'Link' && node.props.className === 'rb-ap-button');
+  assert.ok(verifyLink); assert.ok(verifyLink.props.href.includes('package=fssai-licence'));
+});

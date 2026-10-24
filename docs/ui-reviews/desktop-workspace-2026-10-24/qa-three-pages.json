@@ -1,0 +1,1417 @@
+{
+  "layouts": [
+    {
+      "name": "application-details-desktop",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1279,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "application-details-mobile",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 390,
+            "height": 714,
+            "bottom": 778,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 2001,
+            "clientHeight": 714
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "account-desktop",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1235,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "account-mobile",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 390,
+            "height": 714,
+            "bottom": 778,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 2046,
+            "clientHeight": 714
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-desktop",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 232,
+            "y": 137,
+            "width": 1208,
+            "height": 455.3125,
+            "bottom": 592.3125,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 488,
+            "clientHeight": 455
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 452,
+            "y": 664.3125,
+            "width": 768,
+            "height": 52,
+            "bottom": 716.3125,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-mobile",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 0,
+            "y": 121,
+            "width": 390,
+            "height": 339.625,
+            "bottom": 460.625,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 425,
+            "clientHeight": 340
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 30,
+            "y": 523.625,
+            "width": 330,
+            "height": 54.375,
+            "bottom": 578,
+            "scrollWidth": 330,
+            "clientWidth": 330,
+            "scrollHeight": 54,
+            "clientHeight": 54
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "detail-approved-unlinked",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1248,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "detail-action",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1279,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "detail-unknown",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1311,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "account-long",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 390,
+            "height": 714,
+            "bottom": 778,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 2110,
+            "clientHeight": 714
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "account-no-business",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1007,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "account-attention",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1247,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "account-tally-details",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1959,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-consent-required",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 232,
+            "y": 137,
+            "width": 1208,
+            "height": 455.3125,
+            "bottom": 592.3125,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 567,
+            "clientHeight": 455
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 452,
+            "y": 664.3125,
+            "width": 768,
+            "height": 52,
+            "bottom": 716.3125,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-answer",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 232,
+            "y": 137,
+            "width": 1208,
+            "height": 455.3125,
+            "bottom": 592.3125,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 455,
+            "clientHeight": 455
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 452,
+            "y": 664.3125,
+            "width": 768,
+            "height": 52,
+            "bottom": 716.3125,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-error",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 232,
+            "y": 137,
+            "width": 1208,
+            "height": 455.3125,
+            "bottom": 592.3125,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 455,
+            "clientHeight": 455
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 452,
+            "y": 664.3125,
+            "width": 768,
+            "height": 52,
+            "bottom": 716.3125,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-loading",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 232,
+            "y": 137,
+            "width": 1208,
+            "height": 455.3125,
+            "bottom": 592.3125,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 455,
+            "clientHeight": 455
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 452,
+            "y": 664.3125,
+            "width": 768,
+            "height": 52,
+            "bottom": 716.3125,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-actions",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 232,
+            "y": 137,
+            "width": 1208,
+            "height": 455.3125,
+            "bottom": 592.3125,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 455,
+            "clientHeight": 455
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 452,
+            "y": 664.3125,
+            "width": 768,
+            "height": 52,
+            "bottom": 716.3125,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "detail-reflow-720",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 450,
+        "bottom": 450,
+        "scrollWidth": 720,
+        "clientWidth": 720,
+        "scrollHeight": 450,
+        "clientHeight": 450
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 720,
+        "height": 320,
+        "bottom": 384,
+        "scrollWidth": 720,
+        "clientWidth": 720,
+        "scrollHeight": 320,
+        "clientHeight": 320
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 720,
+            "height": 320,
+            "bottom": 384,
+            "scrollWidth": 720,
+            "clientWidth": 720,
+            "scrollHeight": 1723,
+            "clientHeight": 320
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "account-reflow-720",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 450,
+        "bottom": 450,
+        "scrollWidth": 720,
+        "clientWidth": 720,
+        "scrollHeight": 450,
+        "clientHeight": 450
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 720,
+        "height": 320,
+        "bottom": 384,
+        "scrollWidth": 720,
+        "clientWidth": 720,
+        "scrollHeight": 320,
+        "clientHeight": 320
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 720,
+            "height": 320,
+            "bottom": 384,
+            "scrollWidth": 720,
+            "clientWidth": 720,
+            "scrollHeight": 1558,
+            "clientHeight": 320
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-reflow-720",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 450,
+        "bottom": 450,
+        "scrollWidth": 720,
+        "clientWidth": 720,
+        "scrollHeight": 450,
+        "clientHeight": 450
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 720,
+        "height": 320,
+        "bottom": 384,
+        "scrollWidth": 720,
+        "clientWidth": 720,
+        "scrollHeight": 624,
+        "clientHeight": 320
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-page",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 720,
+            "height": 320,
+            "bottom": 384,
+            "scrollWidth": 720,
+            "clientWidth": 720,
+            "scrollHeight": 859,
+            "clientHeight": 320
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 42,
+            "y": 687.578125,
+            "width": 636,
+            "height": 52,
+            "bottom": 739.578125,
+            "scrollWidth": 636,
+            "clientWidth": 636,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    }
+  ],
+  "detail": {
+    "populated": {
+      "h1": [
+        "FSSAI registration"
+      ],
+      "complete": 2,
+      "current": [
+        "3ProcessingIn reviewYour recorded status is in the processing stage."
+      ],
+      "next": [
+        "Your application is with the team."
+      ],
+      "text": "Applications\n\nAPPLICATION PROGRESS\n\nFSSAI registration\n\nReference\nRB-SAMPLE-002\n\nIn review\n\nWHAT HAPPENS NEXT\n\nYour application is with the team.\n\nYour application is being processed. We’ll contact you if anything else is needed.\n\nReview documents\n\nAny required OTP, signature, payment or final filing approval stays with you.\n\nYour application journey\n\nA clear view of the stage recorded for your case.\n\nStep 3 of 4\nDetails\nCompleted\n\nApplication record saved in your workspace.\n\nTeam review\nCompleted\n\nThe case has moved beyond initial review.\n\n3\nProcessing\nIn review\n\nYour recorded status is in the processing stage.\n\n4\nCertificate\n\nAny issued certificate will be linked when available.\n\n✓\nAPPLICATION SAVED · NEXT STEP\nYour service payment is confirmed.\n\nSample Kitchen · FSSAI registration\nReference: RB-SAMPLE-002\n\nPayment verified · ₹1,999\n\nYour payment is linked to this application. Our team can continue with the agreed service.\n\nPayment covers RegisterBox’s agreed assistance. Government submission, approval, statutory dues and any additional fees remain separate.\n\nView application & documents ↗\nApplication record\nReference\nRB-SAMPLE-002\nCreated\n20 Oct 2026\nGovernment submission\nNo date recorded\nCertificate document\nNot linked yet\n\nA saved case or status update does not establish a government-submission date.\n\nApplication documents\nUpload or review supporting files\nA question about this case?\n\nYour RegisterBox team can help with updates or corrections.\n\nTalk to the team\n↗",
+      "overflow": []
+    },
+    "approved": {
+      "h1": [
+        "FSSAI registration"
+      ],
+      "complete": 4,
+      "current": [],
+      "next": [
+        "Your approval is recorded."
+      ],
+      "text": "Applications\n\nAPPLICATION PROGRESS\n\nFSSAI registration\n\nReference\nRB-SAMPLE-002\n\nCompleted\n\nYOUR DOCUMENTS\n\nYour approval is recorded.\n\nA certificate record is linked to this application. Open your documents to review it.\n\nView documents\nYour application journey\n\nApproval recorded in your application.\n\n4 of 4\nDetails\nCompleted\n\nApplication record saved in your workspace.\n\nTeam review\nCompleted\n\nThe case has moved beyond initial review.\n\nProcessing\nCompleted\n\nApproval is recorded for this application.\n\nCertificate\nCompleted\n\nCertificate record linked to this application.\n\n✓\nAPPLICATION SAVED · NEXT STEP\nYour service payment is confirmed.\n\nSample Kitchen · FSSAI registration\nReference: RB-SAMPLE-002\n\nPayment verified · ₹1,999\n\nYour payment is linked to this application. Our team can continue with the agreed service.\n\nPayment covers RegisterBox’s agreed assistance. Government submission, approval, statutory dues and any additional fees remain separate.\n\nView application & documents ↗\nApplication record\nReference\nRB-SAMPLE-002\nCreated\n20 Oct 2026\nGovernment submission\nNo date recorded\nCertificate document\nRecord linked\n\nA saved case or status update does not establish a government-submission date.\n\nApplication documents\nReview files and the linked certificate\nA question about this case?\n\nYour RegisterBox team can help with updates or corrections.\n\nTalk to the team\n↗",
+      "overflow": []
+    },
+    "approved-unlinked": {
+      "h1": [
+        "FSSAI registration"
+      ],
+      "complete": 3,
+      "current": [
+        "4CertificateDocument not linkedApproval recorded; certificate document not linked yet."
+      ],
+      "next": [
+        "Approved. Your document record is next."
+      ],
+      "text": "Applications\n\nAPPLICATION PROGRESS\n\nFSSAI registration\n\nReference\nRB-SAMPLE-002\n\nCompleted\n\nYOUR DOCUMENTS\n\nApproved. Your document record is next.\n\nApproval is recorded, but no certificate document is linked to this case yet. Your team can confirm when it is available.\n\nContact your team\nYour application journey\n\nApproval recorded in your application.\n\n3 of 4 complete\nDetails\nCompleted\n\nApplication record saved in your workspace.\n\nTeam review\nCompleted\n\nThe case has moved beyond initial review.\n\nProcessing\nCompleted\n\nApproval is recorded for this application.\n\n4\nCertificate\nDocument not linked\n\nApproval recorded; certificate document not linked yet.\n\n✓\nAPPLICATION SAVED · NEXT STEP\nYour service payment is confirmed.\n\nSample Kitchen · FSSAI registration\nReference: RB-SAMPLE-002\n\nPayment verified · ₹1,999\n\nYour payment is linked to this application. Our team can continue with the agreed service.\n\nPayment covers RegisterBox’s agreed assistance. Government submission, approval, statutory dues and any additional fees remain separate.\n\nView application & documents ↗\nApplication record\nReference\nRB-SAMPLE-002\nCreated\n20 Oct 2026\nGovernment submission\nNo date recorded\nCertificate document\nNot linked yet\n\nA saved case or status update does not establish a government-submission date.\n\nApplication documents\nUpload or review supporting files\nA question about this case?\n\nYour RegisterBox team can help with updates or corrections.\n\nTalk to the team\n↗",
+      "overflow": []
+    },
+    "action": {
+      "h1": [
+        "FSSAI registration"
+      ],
+      "complete": 1,
+      "current": [
+        "2Team reviewAction neededReview the request and add the requested documents."
+      ],
+      "next": [
+        "A little more information is needed."
+      ],
+      "text": "Applications\n\nAPPLICATION PROGRESS\n\nFSSAI registration\n\nReference\nRB-SAMPLE-002\n\nAction needed\n\nWHAT HAPPENS NEXT\n\nA little more information is needed.\n\nReview the request and add the requested documents.\n\nReview documents\n\nAny required OTP, signature, payment or final filing approval stays with you.\n\nYour application journey\n\nA clear view of the stage recorded for your case.\n\nStep 2 of 4\nDetails\nCompleted\n\nApplication record saved in your workspace.\n\n2\nTeam review\nAction needed\n\nReview the request and add the requested documents.\n\n3\nProcessing\n\nFiling and processing follow the required review.\n\n4\nCertificate\n\nAny issued certificate will be linked when available.\n\n✓\nAPPLICATION SAVED · NEXT STEP\nYour service payment is confirmed.\n\nSample Kitchen · FSSAI registration\nReference: RB-SAMPLE-002\n\nPayment verified · ₹1,999\n\nYour payment is linked to this application. Our team can continue with the agreed service.\n\nPayment covers RegisterBox’s agreed assistance. Government submission, approval, statutory dues and any additional fees remain separate.\n\nView application & documents ↗\nApplication record\nReference\nRB-SAMPLE-002\nCreated\n20 Oct 2026\nGovernment submission\nNo date recorded\nCertificate document\nNot linked yet\n\nA saved case or status update does not establish a government-submission date.\n\nApplication documents\nUpload or review supporting files\nA question about this case?\n\nYour RegisterBox team can help with updates or corrections.\n\nTalk to the team\n↗",
+      "overflow": []
+    },
+    "unknown": {
+      "h1": [
+        "FSSAI registration"
+      ],
+      "complete": 1,
+      "current": [],
+      "next": [
+        "Confirm your next step with the team."
+      ],
+      "text": "Applications\n\nAPPLICATION PROGRESS\n\nFSSAI registration\n\nReference\nRB-SAMPLE-002\n\nStatus unavailable\n\nWHAT HAPPENS NEXT\n\nConfirm your next step with the team.\n\nThe record does not identify a recognised stage yet. Ask your RegisterBox team to confirm its status before taking another filing step.\n\nContact your team\nYour application journey\n\nA clear view of the stage recorded for your case.\n\n4 stages\nDetails\nCompleted\n\nApplication record saved in your workspace.\n\n2\nTeam review\n\nOur team checks the information for your service.\n\n3\nProcessing\n\nFiling and processing follow the required review.\n\n4\nCertificate\n\nAny issued certificate will be linked when available.\n\nFurther progress is not confirmed by the current status.\n\n✓\nAPPLICATION SAVED · NEXT STEP\nYour service payment is confirmed.\n\nSample Kitchen · FSSAI registration\nReference: RB-SAMPLE-002\n\nPayment verified · ₹1,999\n\nYour payment is linked to this application. Our team can continue with the agreed service.\n\nPayment covers RegisterBox’s agreed assistance. Government submission, approval, statutory dues and any additional fees remain separate.\n\nView application & documents ↗\nApplication record\nReference\nRB-SAMPLE-002\nCreated\n20 Oct 2026\nGovernment submission\nNo date recorded\nCertificate document\nNot linked yet\n\nA saved case or status update does not establish a government-submission date.\n\nApplication documents\nUpload or review supporting files\nA question about this case?\n\nYour RegisterBox team can help with updates or corrections.\n\nTalk to the team\n↗",
+      "overflow": []
+    },
+    "notfound": {
+      "h1": [
+        "Application not found."
+      ],
+      "complete": 0,
+      "current": [],
+      "next": [],
+      "text": "Applications\nApplication not found.\n\nThis case is not available under the selected business. Switch to the right business or choose an application from your list.\n\nView applications",
+      "overflow": []
+    },
+    "error": {
+      "h1": [
+        "We couldn’t load this application."
+      ],
+      "complete": 0,
+      "current": [],
+      "next": [],
+      "text": "Applications\nWe couldn’t load this application.\n\nSynthetic offline state: your business records could not load.\n\nTry again",
+      "overflow": []
+    },
+    "loading": {
+      "h1": [],
+      "complete": 0,
+      "current": [],
+      "next": [],
+      "text": "Applications\nLoading application progress…",
+      "overflow": []
+    },
+    "documentScopedRoute": "http://127.0.0.1:4178/documents?application=sample-active"
+  },
+  "account": {
+    "long": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\n1 saved profile\n\nSample Kitchen and Artisan Catering Services Bengaluru Private Limited\n\nActive business profile\n\nLegal name\nSample Kitchen and Artisan Catering Services Bengaluru Private Limited\nTrade name\nSample Kitchen and Artisan Catering Services Bengaluru Private Limited\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen and Artisan Catering Services Bengaluru Private Limited\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nYour company and connector\n\nNot connected\n\nPair the computer running TallyPrime to work with your books here.\n\nConnect Tally\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "multiple": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\n2 saved profiles\n\nSample Kitchen\n\nActive business profile\n\nLegal name\nSample Kitchen\nTrade name\nSample Kitchen\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nYour company and connector\n\nNot connected\n\nPair the computer running TallyPrime to work with your books here.\n\nConnect Tally\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "no-business": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\nYour selected business\n\nKeep each business together.\n\nAdd your existing GST business, or start a new application.\n\n\nAlready registered? Add your GST business\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nYour company and connector\n\nNot connected\n\nPair the computer running TallyPrime to work with your books here.\n\nConnect Tally\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "connected": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\n1 saved profile\n\nSample Kitchen\n\nActive business profile\n\nLegal name\nSample Kitchen\nTrade name\nSample Kitchen\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen Tally Books\nTally · Connected\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nSample Kitchen Tally Books\n\nConnected\n24 Oct, 13:30\n\nReading is enabled. Manage posting permissions in the Tally workspace.\n\nOpen Tally workspace\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "attention": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\n1 saved profile\n\nSample Kitchen\n\nActive business profile\n\nLegal name\nSample Kitchen\nTrade name\nSample Kitchen\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen Tally Books\nTally · Needs attention\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nSample Kitchen Tally Books\n\nNeeds attention\n24 Oct, 13:30\n\nSynthetic connector is offline. Your company profile and drafts stay saved.\n\nOpen Tally workspace\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "connection-error": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\n1 saved profile\n\nSample Kitchen\n\nActive business profile\n\nLegal name\nSample Kitchen\nTrade name\nSample Kitchen\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nYour company and connector\n\nConnection unavailable\n\nSynthetic connection information unavailable.\n\nConnect Tally\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "connection-loading": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\n1 saved profile\n\nSample Kitchen\n\nActive business profile\n\nLegal name\nSample Kitchen\nTrade name\nSample Kitchen\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nYour company and connector\n\nChecking connection\n\nPair the computer running TallyPrime to work with your books here.\n\nConnect Tally\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "companies-no-active": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nSample Workspace Member\n\nowner@example.invalid\n\n\nSigned in\nBusiness profile\n1 saved profile\n\nSample Kitchen\n\nActive business profile\n\nLegal name\nSample Kitchen\nTrade name\nSample Kitchen\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nSession\nSign out of RegisterBox\n\nYou can sign in again to return to your workspace.\n\n\nSign out\nConnected tools\n\nTally accounting\n\nYour company and connector\n\nNot connected\n\nChoose a connected company or connect another.\n\nChoose a Tally company\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "demo": {
+      "text": "YOUR ACCOUNT\n\nAccount & settings.\nYour business details, connected tools and privacy.\nSW\nDemo account\n\nowner@example.invalid\n\n\nDemo account\nBusiness profile\n1 saved profile\n\nSample Kitchen\n\nActive business profile\n\nLegal name\nSample Kitchen\nTrade name\nSample Kitchen\nBusiness type\nSOLE PROPRIETOR\nGSTIN\nNot added\nBusiness address\nBengaluru, Karnataka, 560075\n\nACTIVE BUSINESS\nSample Kitchen\n\nPrivacy & your data\n\nPrivacy centre\nPermissions, consent and your data rights\n\n\nPrivacy & retention\nHow your information is used and kept\n\n\nAccount & data deletion\nReview how to request deletion\n\nConnected tools\n\nTally accounting\n\nYour company and connector\n\nNot connected\n\nPair the computer running TallyPrime to work with your books here.\n\nConnect Tally\n\nCompany & connector details\nProfile, connection and access settings\n+\nA person, when you need one\n\nTalk to the RegisterBox team.\n\nGet help with your account or the next step in your case.\n\nChat on WhatsApp\n\nregisterboxindia@gmail.com\n\n\nGovernment filing, payments and signatures always need your explicit approval.",
+      "overflow": []
+    },
+    "disclosure": {
+      "expanded": "true",
+      "actualProfile": true
+    },
+    "signoutFailure": {
+      "stillAccount": true,
+      "error": true,
+      "calls": [
+        {
+          "api": "signOut",
+          "args": []
+        }
+      ]
+    },
+    "signoutSuccess": {
+      "url": "http://127.0.0.1:4178/auth",
+      "calls": [
+        {
+          "api": "signOut",
+          "args": []
+        }
+      ]
+    },
+    "demoSignoutHidden": true
+  },
+  "ai": {
+    "consentGuard": {
+      "calls": [],
+      "question": "Do I need an FSSAI licence for a cloud kitchen?",
+      "focusCheckbox": true,
+      "error": true
+    },
+    "shiftEnter": {
+      "value": "Do I need an FSSAI licence for a cloud kitchen?\n",
+      "calls": []
+    },
+    "answer": {
+      "text": "\n\nRegisterBox AI\n\nSynthetic preview answer: review your documents and prepare your next business step.\n\nAI guidance · Knowledge synthetic-ui-qa",
+      "calls": [
+        {
+          "api": "askRegisterBoxAi",
+          "question": "Do I need an FSSAI licence for a cloud kitchen?",
+          "consent": true,
+          "businessId": "synthetic-business"
+        }
+      ]
+    },
+    "ai-error": {
+      "text": "\nRegisterBox AI\n\nSample Kitchen\n\nYour question:\nSynthetic fixture question\nSynthetic AI service is unavailable. Please try again.\n\nUpload a bill\nReview a draft first\nGST tools\n⌄\nYour question for RegisterBox AI\n\nYou stay in control of every action.\n\nAllow Groq to answer using my redacted question and limited GST workflow status.\n\nPAN, GSTIN, Aadhaar, email and phone are removed first. Privacy & permissions\n↗\n\nAI can make mistakes. Review important advice and extracted amounts. Nothing is filed automatically.",
+      "calls": [
+        {
+          "api": "askRegisterBoxAi",
+          "question": "Synthetic fixture question",
+          "consent": true,
+          "businessId": "synthetic-business"
+        }
+      ],
+      "sendDisabled": false
+    },
+    "ai-loading": {
+      "text": "\nRegisterBox AI\n\nSample Kitchen\n\nYour question:\nSynthetic fixture question\n\n\nRegisterBox AI\n\nChecking your saved profile and compliance guidance…\n\n\nUpload a bill\nReview a draft first\nGST tools\n⌄\nYour question for RegisterBox AI\n\nYou stay in control of every action.\nAllow Groq to answer using my redacted question and limited GST workflow status.\n\nPAN, GSTIN, Aadhaar, email and phone are removed first. Privacy & permissions\n↗\n\nAI can make mistakes. Review important advice and extracted amounts. Nothing is filed automatically.",
+      "calls": [
+        {
+          "api": "askRegisterBoxAi",
+          "question": "Synthetic fixture question",
+          "consent": true,
+          "businessId": "synthetic-business"
+        }
+      ],
+      "sendDisabled": true
+    },
+    "ai-actions": {
+      "text": "\nRegisterBox AI\n\nSample Kitchen\n\nYour question:\nSynthetic fixture question\n\n\nRegisterBox AI\n\nSynthetic preview answer: review your documents and prepare your next business step.\n\nAI guidance · Knowledge synthetic-ui-qa\n\nOpen GST account\n\nReview & file a return\n\nUpload a purchase bill\n\n\nUpload a bill\nReview a draft first\nGST tools\n⌄\nYour question for RegisterBox AI\n\nYou stay in control of every action.\n\nAllow Groq to answer using my redacted question and limited GST workflow status.\n\nPAN, GSTIN, Aadhaar, email and phone are removed first. Privacy & permissions\n↗\n\nAI can make mistakes. Review important advice and extracted amounts. Nothing is filed automatically.",
+      "calls": [
+        {
+          "api": "askRegisterBoxAi",
+          "question": "Synthetic fixture question",
+          "consent": true,
+          "businessId": "synthetic-business"
+        }
+      ],
+      "sendDisabled": true
+    },
+    "nativeNil": {
+      "guardVisible": true,
+      "calls": [],
+      "closeWorks": true
+    },
+    "noBusiness": {
+      "error": true,
+      "calls": []
+    },
+    "mobileGeometry": {
+      "compose": {
+        "y": 460.625,
+        "bottom": 778,
+        "height": 317.375,
+        "width": 390
+      },
+      "textarea": {
+        "y": 523.625,
+        "bottom": 578,
+        "height": 54.375,
+        "width": 330
+      },
+      "permission": {
+        "y": 639,
+        "bottom": 727,
+        "height": 88,
+        "width": 358
+      },
+      "disclaimer": {
+        "y": 734,
+        "bottom": 768,
+        "height": 34,
+        "width": 358
+      },
+      "tabs": {
+        "y": 778,
+        "bottom": 844,
+        "height": 66,
+        "width": 390
+      },
+      "main": {
+        "y": 64,
+        "bottom": 778,
+        "height": 714,
+        "width": 390
+      }
+    }
+  },
+  "denied": [],
+  "errors": [],
+  "reducedMotion": {
+    "preference": true,
+    "runningAnimations": 0,
+    "transitions": 0
+  }
+}
