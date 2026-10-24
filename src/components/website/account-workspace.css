@@ -1,0 +1,84 @@
+.rb-account-workspace{height:100%;min-height:0;overflow-y:auto;scrollbar-gutter:stable;background:#f5f5f7;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.rb-account-inner{display:flex;flex-direction:column;gap:24px;max-width:1200px;margin:0 auto;padding:36px 40px 28px}
+.rb-account-heading>p{margin:0 0 10px;color:#6e6e73;font-size:10px;font-weight:600;line-height:1.5;letter-spacing:1.2px}
+.rb-account-heading h1{margin:0 0 9px;font-size:32px;line-height:1.2;font-weight:600;letter-spacing:-1px}
+.rb-account-heading>span{color:#6e6e73;font-size:14px;line-height:1.6}
+.rb-account-identity{display:flex;align-items:center;gap:17px;padding:22px 24px;border:1px solid #e5e5e7;border-radius:17px;background:#fff}
+.rb-account-avatar{display:flex;align-items:center;justify-content:center;flex:none;width:54px;height:54px;border-radius:50%;background:#e9edf3;color:#5c6b82;border:1px solid #e0e5ed;font-size:20px;font-weight:500;letter-spacing:-.4px;user-select:none}
+.rb-account-identity-copy{flex:1;min-width:0}
+.rb-account-identity h2{margin:0 0 4px;font-size:18px;line-height:1.4;font-weight:600;letter-spacing:-.35px;overflow-wrap:anywhere}
+.rb-account-identity p{margin:0;color:#6e6e73;font-size:13px;line-height:1.5;overflow-wrap:anywhere;user-select:text}
+.rb-account-session-label{display:flex;align-items:center;gap:6px;color:#6e6e73;font-size:11px;line-height:1.5}
+.rb-account-columns{display:grid;grid-template-columns:minmax(0,1fr) 312px;gap:28px;align-items:start}
+.rb-account-settings,.rb-account-utilities{display:flex;flex-direction:column;gap:26px;min-width:0}
+.rb-account-section{min-width:0}
+.rb-account-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 11px}
+.rb-account-section-heading h2{margin:0;font-size:15px;font-weight:600;line-height:1.5;letter-spacing:-.15px}
+.rb-account-section-heading>span{color:#6e6e73;font-size:11px;line-height:1.5;text-align:right}
+.rb-account-group{min-width:0;border:1px solid #e5e5e7;border-radius:15px;background:#fff;overflow:hidden}
+.rb-account-business-title,.rb-account-no-business{display:flex;align-items:center;gap:13px;padding:20px 22px;border-bottom:1px solid #eeeef1}
+.rb-account-group-icon{display:flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;border:1px solid #e7ebf1;border-radius:11px;background:#f1f5fb;color:#5f7ba0}
+.rb-account-business-title>div,.rb-account-no-business>div{min-width:0}
+.rb-account-business-title h3,.rb-account-no-business h3{margin:0;font-size:15px;line-height:1.45;font-weight:600;letter-spacing:-.15px;overflow-wrap:anywhere}
+.rb-account-business-title p,.rb-account-no-business p{margin:4px 0 0;color:#6e6e73;font-size:11px;line-height:1.6}
+.rb-account-business-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;padding:0 22px;margin:0}
+.rb-account-business-details>div{min-width:0;padding:16px 0;border-bottom:1px solid #eeeef1}
+.rb-account-business-details dt{margin:0 0 6px;color:#6e6e73;font-size:11px;line-height:1.5}
+.rb-account-business-details dd{margin:0;color:#414145;font-size:13px;line-height:1.6;overflow-wrap:anywhere;user-select:text}
+.rb-account-business-details dd.is-unavailable{color:#6e6e73}
+.rb-account-business-details .rb-account-business-address{grid-column:1/-1;border-bottom:0;padding-bottom:18px}
+.rb-account-gstin{font-variant-numeric:tabular-nums;letter-spacing:.25px}
+.rb-account-business-management{padding:0 12px 12px}
+.rb-account-business-management>div{border:0!important;background:#f7f7f9!important;border-radius:10px!important;padding:14px!important}
+.rb-account-business-management>[role=button]{width:100%;min-height:64px;border:0!important;background:#f7f7f9!important;border-radius:10px!important;padding:14px!important;text-align:left}
+.rb-account-setting-list{display:flex;flex-direction:column}
+.rb-account-setting-row{display:flex;align-items:center;gap:12px;min-height:76px;padding:15px 20px;color:#1d1d1f!important;text-decoration:none;transition:background-color 200ms ease}
+.rb-account-setting-row+.rb-account-setting-row{border-top:1px solid #eeeef1}
+.rb-account-setting-row:hover{background:#fbfbfd}
+.rb-account-setting-icon{display:flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:8px;background:#f5f5f7;color:#777780}
+.rb-account-setting-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.rb-account-setting-copy strong{font-size:13px;font-weight:500;line-height:1.45}
+.rb-account-setting-copy>span{color:#6e6e73;font-size:11px;line-height:1.5}
+.rb-account-setting-row>[aria-hidden]:last-child{color:#a0a0a6}
+.rb-account-signout-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 20px}
+.rb-account-signout-row>div{min-width:0}
+.rb-account-signout-row h3{margin:0;font-size:13px;font-weight:500;line-height:1.5}
+.rb-account-signout-row p{margin:5px 0 0;color:#6e6e73;font-size:11px;line-height:1.6}
+.rb-account-signout.rb-account-signout{display:inline-flex;align-items:center;justify-content:center;flex:none;gap:7px;min-height:44px;min-width:102px;padding:10px 13px;border:1px solid #eddcdd;border-radius:9px;background:#fff;color:#b33b43;font-family:inherit;font-size:12px;font-weight:500;line-height:20px;cursor:pointer;transition:background-color 200ms ease,border-color 200ms ease}
+.rb-account-signout:hover:not(:disabled){background:#fff4f4;border-color:#d6b9bb}
+.rb-account-signout:disabled{opacity:.5;cursor:default}
+.rb-account-tool{padding:19px 20px 16px}
+.rb-account-tool-header{display:flex;align-items:center;gap:12px}
+.rb-account-tool-header>div{min-width:0}
+.rb-account-tool-header h3{margin:0;font-size:14px;font-weight:600;line-height:1.45;letter-spacing:-.15px}
+.rb-account-tool-header p{margin:4px 0 0;color:#6e6e73;font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.rb-account-connection-status{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:16px 0 12px}
+.rb-account-status{display:inline-flex;align-items:center;min-height:22px;padding:3px 7px;border-radius:6px;background:#f0f0f3;color:#6e6e73;font-size:10px;font-weight:500;line-height:1.5}
+.rb-account-status.is-connected{background:#edf6ef;color:#34734a}
+.rb-account-status.is-attention{background:#fff3dc;color:#895d18}
+.rb-account-sync{color:#6e6e73;font-size:10px;line-height:1.5}
+.rb-account-tool-description,.rb-account-tool-notice{margin:14px 0 8px;color:#6e6e73;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.rb-account-tool-notice{padding:10px 11px;border:1px solid #f0e1c2;border-radius:9px;background:#fffbf2;color:#8c671f}
+.rb-account-tool-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;color:#0068ce!important;font-size:12px;font-weight:500;text-decoration:none}
+.rb-account-tally-details{margin-top:6px}
+.rb-account-tally-details .rb-wp-disclosure__toggle{min-height:58px;padding:13px 0}
+.rb-account-tally-details .rb-wp-disclosure__title{font-size:12px;font-weight:500}
+.rb-account-tally-details .rb-wp-disclosure__detail{font-size:10px;line-height:1.5}
+.rb-account-tally-details .rb-wp-disclosure__content>[data-testid="rb-ui-card"]{padding:16px!important;border-radius:11px!important;gap:12px!important;background:#fafafc!important;border-color:#eeeef1!important}
+.rb-account-tally-details .rb-ui-button{font-size:12px}
+.rb-account-support{display:flex;flex-direction:column;align-items:flex-start;padding:20px}
+.rb-account-support-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin-bottom:14px;border-radius:11px;background:#f2f2f5;color:#73737d}
+.rb-account-support h3{margin:0 0 7px;font-size:14px;font-weight:600;line-height:1.5;letter-spacing:-.15px}
+.rb-account-support p{margin:0 0 14px;color:#6e6e73;font-size:12px;line-height:1.7}
+.rb-account-support-button.rb-account-support-button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:44px;padding:10px 12px;border:1px solid #e2e2e7;border-radius:9px;background:#fafafc;color:#0068ce;font-family:inherit;font-size:12px;font-weight:500;line-height:20px;cursor:pointer;transition:background-color 200ms ease}
+.rb-account-support-button:hover{background:#f0f5fb}
+.rb-account-support-email{display:flex;align-items:center;min-height:44px;max-width:100%;margin-top:4px;color:#6e6e73!important;font-size:10px;line-height:1.5;overflow-wrap:anywhere;text-decoration:none}
+.rb-account-footer{display:flex;align-items:flex-start;gap:8px;margin-top:0;padding-top:20px;border-top:1px solid #e2e2e7;color:#6e6e73}
+.rb-account-footer p{margin:0;font-size:11px;line-height:1.7}
+.rb-account-workspace :is(a,button):focus-visible{outline:2px solid #0071e3;outline-offset:3px}
+@media(max-width:1200px){.rb-account-inner{padding:30px 26px 26px}.rb-account-columns{grid-template-columns:minmax(0,1fr) 288px;gap:22px}.rb-account-business-details{grid-template-columns:minmax(0,1fr)}.rb-account-business-details .rb-account-business-address{grid-column:auto}.rb-account-section-heading>span{font-size:10px}}
+@media(max-width:1030px){.rb-account-columns{grid-template-columns:minmax(0,1fr)}.rb-account-utilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start}.rb-account-business-details{grid-template-columns:repeat(2,minmax(0,1fr))}.rb-account-business-details .rb-account-business-address{grid-column:1/-1}.rb-account-business-title,.rb-account-no-business{padding:20px 22px}}
+@media(max-width:650px){.rb-account-inner{padding:24px 20px;gap:22px}.rb-account-heading h1{font-size:28px;letter-spacing:-.8px}.rb-account-heading>span{font-size:13px}.rb-account-identity{padding:18px;gap:13px;flex-wrap:wrap}.rb-account-avatar{width:46px;height:46px;font-size:18px}.rb-account-identity h2{font-size:16px}.rb-account-identity p{font-size:12px}.rb-account-session-label{margin-left:59px;font-size:10px}.rb-account-columns{gap:24px}.rb-account-settings{gap:24px}.rb-account-utilities{grid-template-columns:minmax(0,1fr);gap:24px}.rb-account-business-details{grid-template-columns:minmax(0,1fr);padding:0 19px}.rb-account-business-details .rb-account-business-address{grid-column:auto}.rb-account-business-title,.rb-account-no-business{padding:19px}.rb-account-section-heading{gap:10px}.rb-account-section-heading h2{font-size:14px}.rb-account-section-heading>span{font-size:10px}.rb-account-setting-row{padding:15px 17px}.rb-account-signout-row{padding:17px;flex-wrap:wrap;gap:12px}.rb-account-signout-row>div{flex:1 1 180px}.rb-account-signout.rb-account-signout{margin-left:auto}.rb-account-support,.rb-account-tool{padding-inline:19px}}
+@media(max-width:650px){.rb-account-identity-copy{flex-basis:calc(100% - 59px)}.rb-account-session-label{flex-basis:calc(100% - 59px);margin-top:-4px}}
+@media(prefers-reduced-motion:reduce){.rb-account-workspace *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media(forced-colors:active){.rb-account-group,.rb-account-identity,.rb-account-status,.rb-account-signout,.rb-account-support-button{border:1px solid CanvasText}}

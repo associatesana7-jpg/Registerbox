@@ -93,15 +93,16 @@ export function createCheckoutHandler(action: 'create' | 'verify', dependencies:
           if (!application) throw new CheckoutError('Choose a submitted application belonging to your account.', 403);
           if (businessId && businessId !== application.business_id) throw new CheckoutError('The application does not belong to the selected business.', 403);
           businessId = application.business_id;
-          const businesses = await db(`business_profiles?id=eq.${businessId}&user_id=eq.${user.id}&deleted_at=is.null&select=id`) as unknown[];
+          const businesses = await db(`business_profiles?id=eq.${businessId}&user_id=eq.${user.id}&deleted_at=is.null&select=id,questionnaire`) as { id: string; questionnaire?: unknown }[];
           if (!businesses.length) throw new CheckoutError('Choose a submitted application belonging to your account.', 403);
           if (['APPROVED', 'REJECTED', 'CANCELLED'].includes(application.status.toUpperCase())) throw new CheckoutError('This application is closed and cannot accept another payment.', 409);
           if (application.status.toUpperCase() === 'DRAFT') throw new CheckoutError('Submit your registration details before paying for this application.', 409);
-          if (!applicationCheckoutPackageIds(applicationCategory(application)).includes(selected.id)) throw new CheckoutError('This package does not match the submitted registration. Choose the package shown for your application.', 400);
+          if (!applicationCheckoutPackageIds(applicationCategory(application), { ...application, questionnaire: businesses[0].questionnaire }).includes(selected.id)) throw new CheckoutError('This package does not match the submitted registration or needs a scope review. Return to your application payment step to request a quote.', 400);
         } else if (businessId) {
           const businesses = await db(`business_profiles?id=eq.${businessId}&user_id=eq.${user.id}&deleted_at=is.null&select=id`) as unknown[];
           if (!businesses.length) throw new CheckoutError('Choose a business profile belonging to your account.', 403);
         }
+        if (selected.serviceCategory === 'food' && !applicationId) throw new CheckoutError('Submit your food-business details for a Basic Registration scope check before paying. State and Central licences require a quote.', 400);
         let journeyId: string | null = null;
         if (typeof body.journey_id === 'string' && uuidPattern.test(body.journey_id)) {
           // Analytics can arrive after checkout. Missing/unavailable telemetry never blocks a payment.

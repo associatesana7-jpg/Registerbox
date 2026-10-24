@@ -9,8 +9,8 @@ const serviceSlugs = {
 };
 const feed = {
   name: 'RegisterBox public service packages', currency: 'INR', country: 'IN',
-  price_note: 'Final RegisterBox service fees. No GST is added. Government fees and statutory dues are separate where applicable.',
-  service_fee_updated: '2026-10-22',
+  price_note: 'Final RegisterBox prices. No GST is added. Government fees and statutory dues are separate where applicable, except that the eligible FSSAI Basic Registration package includes the first annual government registration fee of ₹100. State and Central licences require a separate quote.',
+  service_fee_updated: '2026-10-24',
   services: servicePackages.map(item => ({
     id: item.id, title: item.title, description: item.description, brand: 'RegisterBox',
     category: item.serviceCategory, price: item.amountPaise / 100, currency: item.currency,

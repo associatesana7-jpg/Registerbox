@@ -1,0 +1,213 @@
+{
+  "denied": [],
+  "errors": [],
+  "layouts": [
+    {
+      "name": "application-details-desktop",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1279,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "application-details-mobile",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 390,
+            "height": 714,
+            "bottom": 778,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 2001,
+            "clientHeight": 714
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "account-desktop",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1229,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "account-mobile",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 390,
+            "height": 714,
+            "bottom": 778,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 2040,
+            "clientHeight": 714
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    }
+  ],
+  "trigger": {
+    "tag": "BUTTON",
+    "width": 754,
+    "parent": 778
+  },
+  "tag": "11px",
+  "unlinked": {
+    "complete": 3,
+    "current": "4\nCertificate\nDocument not linked\n\nApproval recorded; certificate document not linked yet.",
+    "tag": "11px"
+  }
+}

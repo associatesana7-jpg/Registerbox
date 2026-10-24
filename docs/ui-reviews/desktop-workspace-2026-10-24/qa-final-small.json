@@ -1,0 +1,27 @@
+{
+  "denied": [],
+  "errors": [],
+  "homeError": {
+    "reloadVisible": true,
+    "inferredNextActions": 0,
+    "content": "\nWORKSPACE UNAVAILABLE\nLet’s reconnect your workspace.\n\nYour latest progress couldn’t load. Try again to see your applications and the right next step.\n\nReload workspace\n",
+    "overflow": {
+      "client": 1208,
+      "scroll": 1208
+    }
+  },
+  "applicationsDesktop": {
+    "text": "View progress→",
+    "whiteSpace": "nowrap",
+    "width": 144,
+    "height": 44,
+    "lineHeight": "20px",
+    "overflow": 0
+  },
+  "applicationsMobile": {
+    "client": 360,
+    "scroll": 360,
+    "rootClient": 360,
+    "rootScroll": 360
+  }
+}

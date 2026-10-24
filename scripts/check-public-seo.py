@@ -2,7 +2,7 @@
 import json, sys, xml.etree.ElementTree as ET
 from pathlib import Path
 from html.parser import HTMLParser
-from urllib.parse import urlparse, unquote
+from urllib.parse import urlparse, unquote, parse_qs
 root=Path(sys.argv[1] if len(sys.argv)>1 else 'dist')
 class Page(HTMLParser):
  def __init__(self):
@@ -56,12 +56,19 @@ for item in feed.get('services',[]):
  file=file_for(path)
  if not file.exists():errors.append(f'{path}: missing package landing page');continue
  page=Page();raw=file.read_text();page.feed(raw)
- offers=[offer for graph in page.schema for node in graph.get('@graph',[]) if node.get('@type')=='Service' for offer in node.get('offers',[])]
+ offers=[]
+ for graph in page.schema:
+  for node in graph.get('@graph',[]):
+   if node.get('@type')!='Service':continue
+   values=node.get('offers',[])
+   offers.extend(values if isinstance(values,list) else [values])
  offer=next((offer for offer in offers if offer.get('@id','').endswith('#package-'+item['id'])),None)
  if not offer:errors.append(f'{path}: missing Service/Offer for {item["id"]}')
  elif offer.get('price')!=item['price'] or offer.get('priceCurrency')!='INR':errors.append(f'{path}: offer price mismatch for {item["id"]}')
  if item['id'] not in page.ids and 'package-'+item['id'] not in page.ids:errors.append(f'{path}: package anchor missing for {item["id"]}')
- if '/checkout?package='+item['id'] not in page.links:errors.append(f'{path}: checkout link missing for {item["id"]}')
+ if item['category']=='food':
+  if not any(urlparse(href).path=='/onboarding/application' and parse_qs(urlparse(href).query).get('category')==['food'] for href in page.links):errors.append(f'{path}: food application entry missing')
+ elif '/checkout?package='+item['id'] not in page.links:errors.append(f'{path}: checkout link missing for {item["id"]}')
  if item['price']<1:errors.append(f'{path}: paid package below minimum amount')
  if 'No GST' not in raw:errors.append(f'{path}: service fee GST disclosure missing')
 if feed.get('free_service',{}).get('price')!=0:errors.append('service-feed: missing free nil GST offer')

@@ -2,8 +2,8 @@
   "name": "RegisterBox public service packages",
   "currency": "INR",
   "country": "IN",
-  "price_note": "Final RegisterBox service fees. No GST is added. Government fees and statutory dues are separate where applicable.",
-  "service_fee_updated": "2026-10-22",
+  "price_note": "Final RegisterBox prices. No GST is added. Government fees and statutory dues are separate where applicable, except that the eligible FSSAI Basic Registration package includes the first annual government registration fee of ₹100. State and Central licences require a separate quote.",
+  "service_fee_updated": "2026-10-24",
   "services": [
     {
       "id": "gst-registration",
@@ -29,20 +29,20 @@
     },
     {
       "id": "fssai-licence",
-      "title": "FSSAI Licence",
-      "description": "Food business registration or licence assistance matched to your activity.",
+      "title": "FSSAI Basic Registration",
+      "description": "Application assistance for one eligible premises, including the first annual government registration fee.",
       "brand": "RegisterBox",
       "category": "food",
-      "price": 2999,
+      "price": 1999,
       "currency": "INR",
-      "billing_period": "one-time",
+      "billing_period": "first-year package",
       "includes": [
-        "Registration or licence category review",
-        "Food business document checklist",
-        "Application preparation assistance",
-        "Submission and query coordination"
+        "Basic Registration eligibility review",
+        "Document checklist and application preparation",
+        "Submission and query coordination for one new registration",
+        "First annual government registration fee of ₹100"
       ],
-      "fee_note": "Final RegisterBox service fee. No GST is added. Government fees, if applicable, are separate and confirmed before filing.",
+      "fee_note": "Final package price. No GST is added. Covers one new Basic Registration at one eligible premises and the first annual government fee. State and Central licences require a separate quote. Future annual fees, additional premises, modifications, testing, audits and local permissions are excluded. Approval is subject to the competent authority.",
       "url": "https://www.registerbox.in/services/fssai-food-business#package-fssai-licence",
       "canonical_url": "https://www.registerbox.in/services/fssai-food-business",
       "checkout_url": "https://www.registerbox.in/checkout?package=fssai-licence",

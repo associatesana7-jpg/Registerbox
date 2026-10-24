@@ -1,0 +1,520 @@
+{
+  "denied": [],
+  "errors": [],
+  "layouts": [
+    {
+      "name": "application-details-desktop",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1279,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "application-details-mobile",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 390,
+            "height": 714,
+            "bottom": 778,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 2001,
+            "clientHeight": 714
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "application-details-360",
+      "h1": [
+        "FSSAI registration"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 360,
+        "height": 800,
+        "bottom": 800,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 800,
+        "clientHeight": 800
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 360,
+        "height": 670,
+        "bottom": 734,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 670,
+        "clientHeight": 670
+      },
+      "scrolls": [
+        {
+          "class": "rb-progress-page",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 360,
+            "height": 670,
+            "bottom": 734,
+            "scrollWidth": 360,
+            "clientWidth": 360,
+            "scrollHeight": 2071,
+            "clientHeight": 670
+          }
+        }
+      ],
+      "activeNav": [
+        "Applications"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": false
+    },
+    {
+      "name": "account-desktop",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 232,
+            "y": 64,
+            "width": 1208,
+            "height": 836,
+            "bottom": 900,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 1235,
+            "clientHeight": 836
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "account-mobile",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 390,
+            "height": 714,
+            "bottom": 778,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 2046,
+            "clientHeight": 714
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "account-360",
+      "h1": [
+        "Account & settings."
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 360,
+        "height": 800,
+        "bottom": 800,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 800,
+        "clientHeight": 800
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 360,
+        "height": 670,
+        "bottom": 734,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 670,
+        "clientHeight": 670
+      },
+      "scrolls": [
+        {
+          "class": "rb-account-workspace",
+          "box": {
+            "x": 0,
+            "y": 64,
+            "width": 360,
+            "height": 670,
+            "bottom": 734,
+            "scrollWidth": 360,
+            "clientWidth": 360,
+            "scrollHeight": 2094,
+            "clientHeight": 670
+          }
+        }
+      ],
+      "activeNav": [
+        "OMy accountowner@example.invalid"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-desktop",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "clientHeight": 900
+      },
+      "main": {
+        "x": 232,
+        "y": 64,
+        "width": 1208,
+        "height": 836,
+        "bottom": 900,
+        "scrollWidth": 1208,
+        "clientWidth": 1208,
+        "scrollHeight": 836,
+        "clientHeight": 836
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 232,
+            "y": 137,
+            "width": 1208,
+            "height": 455.3125,
+            "bottom": 592.3125,
+            "scrollWidth": 1208,
+            "clientWidth": 1208,
+            "scrollHeight": 488,
+            "clientHeight": 455
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 452,
+            "y": 664.3125,
+            "width": 768,
+            "height": 52,
+            "bottom": 716.3125,
+            "scrollWidth": 768,
+            "clientWidth": 768,
+            "scrollHeight": 52,
+            "clientHeight": 52
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-mobile",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "clientHeight": 844
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 390,
+        "height": 714,
+        "bottom": 778,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 714,
+        "clientHeight": 714
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 0,
+            "y": 121,
+            "width": 390,
+            "height": 339.625,
+            "bottom": 460.625,
+            "scrollWidth": 390,
+            "clientWidth": 390,
+            "scrollHeight": 425,
+            "clientHeight": 340
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 30,
+            "y": 523.625,
+            "width": 330,
+            "height": 54.375,
+            "bottom": 578,
+            "scrollWidth": 330,
+            "clientWidth": 330,
+            "scrollHeight": 54,
+            "clientHeight": 54
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    },
+    {
+      "name": "ai-360",
+      "h1": [
+        "RegisterBox AI"
+      ],
+      "root": {
+        "x": 0,
+        "y": 0,
+        "width": 360,
+        "height": 800,
+        "bottom": 800,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 800,
+        "clientHeight": 800
+      },
+      "main": {
+        "x": 0,
+        "y": 64,
+        "width": 360,
+        "height": 670,
+        "bottom": 734,
+        "scrollWidth": 360,
+        "clientWidth": 360,
+        "scrollHeight": 670,
+        "clientHeight": 670
+      },
+      "scrolls": [
+        {
+          "class": "rb-ai-scroll",
+          "box": {
+            "x": 0,
+            "y": 121,
+            "width": 360,
+            "height": 295.625,
+            "bottom": 416.625,
+            "scrollWidth": 360,
+            "clientWidth": 360,
+            "scrollHeight": 438,
+            "clientHeight": 296
+          }
+        },
+        {
+          "class": "",
+          "box": {
+            "x": 30,
+            "y": 479.625,
+            "width": 300,
+            "height": 54.375,
+            "bottom": 534,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 54,
+            "clientHeight": 54
+          }
+        }
+      ],
+      "activeNav": [
+        "RegisterBox AI"
+      ],
+      "horizontalOffenders": [],
+      "fontLoaded": true
+    }
+  ],
+  "progress": {
+    "x": 805.40625,
+    "y": 312.171875,
+    "bottom": 356.171875,
+    "width": 169.0625,
+    "height": 44
+  },
+  "account": {
+    "name": "Sample Workspace Member",
+    "triggerWidth": 224.546875
+  },
+  "aiReflow": {
+    "client": 320,
+    "scroll": 859,
+    "conversationHeight": 466.578125,
+    "disclaimer": {
+      "top": 350.265625,
+      "bottom": 367.265625
+    },
+    "main": {
+      "top": 64,
+      "bottom": 384
+    },
+    "horizontal": false,
+    "reachable": true
+  },
+  "emptyAnswer": {
+    "article": true,
+    "actions": 3,
+    "missing": true
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "denied": [],
+  "errors": [],
+  "businessPicker": {
+    "selectorCount": 1,
+    "done": true,
+    "options": [
+      "Sample Kitchen●",
+      "Sample Artisan Studio○"
+    ]
+  },
+  "/application-details?id=sample-active-keyboard": {
+    "skip": "Skip to workspace",
+    "mainFocus": true,
+    "glyphsInAX": false
+  },
+  "/account-keyboard": {
+    "skip": "Skip to workspace",
+    "mainFocus": true,
+    "glyphsInAX": false
+  },
+  "/ai-keyboard": {
+    "skip": "Skip to workspace",
+    "mainFocus": true,
+    "glyphsInAX": false
+  },
+  "imeGuard": true,
+  "platformGuard": true,
+  "tcsGuard": true,
+  "actionRoute": "http://127.0.0.1:4178/gst-returns",
+  "uploadGuard": true,
+  "mobileAllPromptsReachable": true
+}
