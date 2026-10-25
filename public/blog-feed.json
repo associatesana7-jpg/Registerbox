@@ -6,6 +6,25 @@
   "language": "en-IN",
   "items": [
     {
+      "id": "https://www.registerbox.in/blog/what-is-gst",
+      "url": "https://www.registerbox.in/blog/what-is-gst",
+      "title": "What is GST? A simple explanation with a Hindi video",
+      "summary": "Understand GST, GSTIN and input tax credit with Asha’s simple purchase-and-sale example. Watch the Hindi video, then find your GST registration next step.",
+      "content_text": "GST stands for Goods and Services Tax. It is an indirect tax on taxable supplies of goods and services. The Hindi video below explains the basic idea through Asha’s purchase and sale.\n\nTax collected from a customer is not extra business income to keep. Eligible input tax credit may reduce output tax, but only when the relevant conditions and utilisation rules are met.",
+      "language": "en-IN",
+      "image": "https://www.registerbox.in/images/blog/records-1200.webp",
+      "date_published": "2026-10-26T00:00:00+05:30",
+      "authors": [
+        {
+          "name": "RegisterBox",
+          "url": "https://www.registerbox.in/blog/editorial-policy"
+        }
+      ],
+      "tags": [
+        "GST & records"
+      ]
+    },
+    {
       "id": "https://www.registerbox.in/blog/gst-registration-small-ecommerce-sellers-november-2026",
       "url": "https://www.registerbox.in/blog/gst-registration-small-ecommerce-sellers-november-2026",
       "title": "GST registration for small e-commerce sellers: the 1 November 2026 update",

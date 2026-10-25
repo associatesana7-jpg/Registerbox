@@ -8,9 +8,28 @@ export type BlogVideo = {
   uploadDate: string;
   transcript: string;
   language: 'hi-IN' | 'en-IN';
+  width?: number;
+  height?: number;
+};
+
+const gstExplained: BlogVideo = {
+  title: 'GST क्या है और कैसे काम करता है?',
+  description: 'आशा के उदाहरण से GST, बिक्री पर टैक्स और पात्र इनपुट टैक्स क्रेडिट को आसान हिंदी में समझें। वीडियो में 18% दर सिर्फ गणना का उदाहरण है, हर कारोबार की दर नहीं।',
+  src: '/media/gst-explained-reel.mp4',
+  poster: '/media/gst-explained-poster.jpg',
+  captions: '/media/gst-explained-hi.vtt',
+  duration: 'PT1M28.333S',
+  uploadDate: '2026-10-26T00:40:47+05:30',
+  language: 'hi-IN',
+  width: 1080,
+  height: 1920,
+  transcript: 'GST यानी Goods and Services Tax, goods और services की taxable supply पर लगने वाला indirect tax है। Registered business ग्राहक के बिल में लागू GST लेता है; यह उसकी अतिरिक्त कमाई नहीं है। खरीद पर दिया पात्र GST, बिक्री के GST से नियमों के अनुसार समायोजित हो सकता है। उदाहरण में आशा regular GST में registered हैं और केवल गणना के लिए 18% दर ली गई है। ₹600 की खरीद पर ₹108 GST, कुल ₹708 हैं। ₹1,000 की बिक्री पर ₹180 GST, कुल ₹1,180 हैं। यदि ₹108 का पूरा input tax credit पात्र है और उसका उपयोग अनुमत है, तो ₹180 में से ₹108 घटाने पर ₹72 बचते हैं। वास्तविक टैक्स में दर, tax heads, credit की पात्रता और अन्य नियम जाँचना ज़रूरी है। सही बिल और रिकॉर्ड रखें। GST registration से GSTIN मिलता है। Registration और return की ज़रूरत कारोबार के तथ्यों पर निर्भर है। RegisterBox registration, documents, return preparation और filing में सहायता करता है। Call या WhatsApp करें: +91 81477 77843। registerbox.in।',
 };
 
 export const blogVideos: Record<string, BlogVideo> = {
+  'what-is-gst': gstExplained,
+  'gst-registration-documents-and-address-proof': gstExplained,
+  'fast-gst-registration-three-hours': gstExplained,
   "gst-registration-small-ecommerce-sellers-november-2026": {
     "title": "मीरा की कहानी: छोटे ऑनलाइन विक्रेता और GST",
     "description": "मीरा की कहानी से समझें: दूसरे राज्य का मार्केटप्लेस गोदाम, प्रस्तावित नियम 14B, ज़रूरी तैयारी और सुरक्षित भुगतान। स्थिति की समीक्षा: 23 अक्टूबर 2026।",

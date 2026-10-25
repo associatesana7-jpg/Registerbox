@@ -6,7 +6,7 @@ import { readBlogArticles, readLocalizedBlogCatalog } from './blog-catalog.mjs';
 const root = process.argv[2] || 'dist';
 const articles = readBlogArticles();
 const { availableBlogLocales, localizedArticle, blogPath, blogAlternates } = readLocalizedBlogCatalog();
-const englishOnlySlugs = new Set(['gst-registration-small-ecommerce-sellers-november-2026']);
+const englishOnlySlugs = new Set(['gst-registration-small-ecommerce-sellers-november-2026', 'what-is-gst']);
 const translatedBaseline = articles.filter(article => !englishOnlySlugs.has(article.slug));
 assert.ok(translatedBaseline.length >= 23, 'Preserve the existing 23 fully translated guides');
 const origin = 'https://www.registerbox.in';

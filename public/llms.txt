@@ -55,6 +55,7 @@ Company, LLP and other services without published fixed packages require an agre
 
 These public guides contain preparation checklists, practical explanations and linked official sources. Complete language versions have separate crawlable URLs. Language availability is generated from published translations.
 
+- [What is GST? A simple explanation with a Hindi video](https://www.registerbox.in/blog/what-is-gst): Understand GST, GSTIN and input tax credit with Asha’s simple purchase-and-sale example. Watch the Hindi video, then find your GST registration next step.
 - [GST registration for small e-commerce sellers: the 1 November 2026 update](https://www.registerbox.in/blog/gst-registration-small-ecommerce-sellers-november-2026): A reported 1 November start, the proposed Rule 14B warehouse route, and practical preparation for small goods sellers. Source status reviewed on 23 October 2026.
 - [Tatkal GST registration in 3 hours? RegisterBox’s fast service and the official rules](https://www.registerbox.in/blog/fast-gst-registration-three-hours): Need GST registration quickly? Learn what RegisterBox can prepare in 3–24 hours, who may qualify for the official three-working-day route, and when a GSTIN is actually issued.
   [हिन्दी](https://www.registerbox.in/hi/blog/fast-gst-registration-three-hours) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/fast-gst-registration-three-hours) · [தமிழ்](https://www.registerbox.in/ta/blog/fast-gst-registration-three-hours)
