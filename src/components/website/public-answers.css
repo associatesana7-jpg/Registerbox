@@ -1,0 +1,19 @@
+.rb-public-answers{display:grid;gap:0;min-width:0}
+.rb-public-answers article{padding:24px 0;border-top:1px solid #dce2eb;scroll-margin-top:32px;min-width:0}
+.rb-public-answers h3{font-size:18px;font-weight:650;line-height:1.4;letter-spacing:-.25px;margin:0 0 12px;color:#172b4d;overflow-wrap:anywhere}
+.rb-public-answers p{font-size:15px;line-height:1.8;color:#52647d;margin:0;max-width:74ch}
+.rb-nil-sources{border-top:1px solid #dce2eb;padding-block:24px;font-size:15px;line-height:1.8;color:#52647d}
+.rb-nil-sources h3{font-size:18px;color:#172b4d}
+.rb-answer-paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-block:28px}
+.rb-answer-paths a{padding:22px;border:1px solid #dce2eb;border-radius:12px;display:flex;flex-direction:column;gap:10px;background:#fff}
+.rb-answer-paths a:hover{border-color:#2462ed;background:#f5f8ff}
+.rb-answer-paths strong{font-size:17px;line-height:1.4}
+.rb-answer-paths span{font-size:14px;line-height:1.7;color:#52647d}
+.rb-answer-paths small{margin-top:auto;padding-top:6px;font-size:13px;font-weight:650;color:#2462ed}
+.rb-answer-recommendation{border-left:3px solid #2462ed;padding:4px 0 4px 20px;max-width:76ch;margin-block:24px}
+.rb-answer-recommendation h3{font-size:17px;line-height:1.5;margin:0 0 10px}
+.rb-answer-recommendation p{font-size:15px;line-height:1.8;color:#52647d;margin:0}
+.rb-food-page .rb-public-answers{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
+.rb-website .rb-hero-copy h1{font-size:clamp(40px,4.3vw,60px);line-height:1.08;letter-spacing:-2.1px;max-width:12.5ch}
+.rb-website .rb-hero-copy>p{font-size:16px;line-height:1.75}
+@media(max-width:700px){.rb-answer-paths{grid-template-columns:1fr;gap:12px}.rb-answer-paths a{padding:18px}.rb-food-page .rb-public-answers{grid-template-columns:1fr}.rb-public-answers article{padding-block:22px}.rb-public-answers h3{font-size:18px}.rb-public-answers p{font-size:15px}.rb-website .rb-hero-copy h1{font-size:clamp(34px,9.2vw,46px);letter-spacing:-1.3px;max-width:16ch}.rb-website .rb-hero-copy>p{font-size:15px}}

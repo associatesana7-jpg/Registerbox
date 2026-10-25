@@ -9,6 +9,7 @@ import { blogVideos } from '@/data/blog-video';
 import { BlogCard, BlogFooter, BlogHeader, blogCategoryLabel } from './blog-chrome.web';
 import { Seo, siteUrl } from './seo.web';
 import './blog.css';
+import './blog-answer-first.css';
 
 export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string; locale?: BlogLocale }) {
   const article = localizedArticle(slug, locale);
@@ -65,11 +66,11 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
         {article.availabilityNote && <p className="rbg-availability" role="note"><strong>{blogUi(locale, 'available')}</strong> {article.availabilityNote}</p>}
         <BlogActions article={article} compact locale={locale}/>
       </header>
+      <div className="rbg-answer rbg-article-summary">{article.intro.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div>
       <figure className="rbg-cover"><img src={blogImage(article)} srcSet={`${blogImage(article, true)} 640w, ${blogImage(article)} 1200w`} sizes="(max-width: 1000px) 100vw, 1100px" width="1200" height="800" fetchPriority="high" alt={article.imageAlt}/><figcaption>{blogUi(locale, 'illustration')}</figcaption></figure>
       <div className="rbg-reading-layout">
         <aside className="rbg-toc"><h2>{blogUi(locale, 'inGuide')}</h2><nav aria-label={blogUi(locale, 'onPage')}>{video && <a href="#video-explainer">हिंदी वीडियो</a>}{article.sections.map(section => <a key={section.id} href={`#${section.id}`}>{section.heading}</a>)}<a href="#common-questions">{blogUi(locale, 'commonQuestions')}</a><a href="#sources">{blogUi(locale, 'officialSources')}</a></nav></aside>
         <article className="rbg-prose">
-          <div className="rbg-answer">{article.intro.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div>
           {video && <BlogVideoPlayer video={video}/>}
           {article.sections.map(section => <section id={section.id} key={section.id}>
             <h2>{section.heading}</h2>{section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}

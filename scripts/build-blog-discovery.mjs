@@ -23,7 +23,13 @@ fs.writeFileSync('public/sitemap.xml', sitemap);
 
 const existing = fs.readFileSync('public/llms.txt', 'utf8').split('\n## Business questions and guides')[0].trimEnd();
 fs.writeFileSync('public/llms.txt', `${existing}\n\n## Business questions and guides\n\nThese public guides contain preparation checklists, practical explanations and linked official sources. Complete language versions have separate crawlable URLs. Language availability is generated from published translations.\n\n`
-  + articles.map(article => `- [${article.title}](${site}/blog/${article.slug}): ${article.description}\n  ${availableBlogLocales(article.slug).filter(locale => locale.code !== 'en').map(locale => `[${locale.nativeName}](${site}${blogPath(locale.code, article.slug)})`).join(' · ')}`).join('\n')
+  + articles.map(article => {
+    const translations = availableBlogLocales(article.slug)
+      .filter(locale => locale.code !== 'en')
+      .map(locale => `[${locale.nativeName}](${site}${blogPath(locale.code, article.slug)})`)
+      .join(' · ');
+    return `- [${article.title}](${site}/blog/${article.slug}): ${article.description}${translations ? `\n  ${translations}` : ''}`;
+  }).join('\n')
   + `\n\n- [Editorial approach](${site}/blog/editorial-policy)\n`
   + availableBlogLocales().map(locale => `- [${locale.nativeName} guides](${site}${blogPath(locale.code)})`).join('\n') + '\n');
 

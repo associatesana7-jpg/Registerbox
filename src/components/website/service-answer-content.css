@@ -1,0 +1,25 @@
+.rb-answer-page .rb-sx-intro h1{font-size:clamp(34px,3.5vw,49px);line-height:1.13;letter-spacing:-1.65px;max-width:720px;margin:17px 0 22px;text-wrap:balance;overflow-wrap:normal}
+.rb-answer-page .rb-answer-direct{font-size:17px;line-height:1.8;color:#43536b;max-width:63ch;margin:0 0 27px;text-wrap:pretty}
+.rb-answer-page .rb-answer-recommendation{display:grid;grid-template-columns:minmax(155px,.55fr) minmax(0,1.7fr);gap:28px;padding:28px 30px;margin:0 0 30px;border:1px solid #dce6ed;border-left:3px solid var(--sx-accent);border-radius:12px;background:#f7fafc;align-items:start}
+.rb-answer-page .rb-answer-recommendation h2{font-size:19px;line-height:1.45;letter-spacing:-.3px;margin:0;color:#243650}
+.rb-answer-page .rb-answer-recommendation p{font-size:15px;line-height:1.85;color:#43536b;margin:0;max-width:80ch}
+.rb-answer-page .rb-answer-detail{border-top:1px solid #e1e7ee;padding:30px 0;scroll-margin-top:24px}
+.rb-answer-page .rb-answer-detail>h3{font-size:21px;font-weight:600;line-height:1.4;letter-spacing:-.35px;color:#243650;margin:0 0 17px}
+.rb-answer-page .rb-answer-detail-body{max-width:880px;color:#43536b}
+.rb-answer-page .rb-answer-detail-body>p,.rb-answer-page .rb-answer-detail-body .rb-sx-detail-list{font-size:15px;line-height:1.85;margin:0 0 17px}
+.rb-answer-page .rb-answer-detail-body .rb-sx-detail-list{gap:12px;padding-left:22px}
+.rb-answer-page .rb-answer-detail-body>p:last-child,.rb-answer-page .rb-answer-detail-body .rb-sx-detail-list:last-child{margin-bottom:0}
+.rb-answer-page .rb-answer-detail-body h4{font-size:17px;line-height:1.5;letter-spacing:-.2px;margin:26px 0 13px;color:#243650;font-weight:600}
+.rb-answer-page .rb-answer-detail-body a{color:#205fb9;text-underline-offset:4px;text-decoration:underline}
+.rb-answer-page .rb-answer-detail-body .rb-source-list{padding:0;margin:0 0 24px;list-style:none;display:grid;gap:17px}
+.rb-answer-page .rb-answer-detail-body .rb-source-list li{display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.8}
+.rb-answer-page .rb-answer-detail-body .rb-source-list a{display:inline-flex;align-items:center;align-self:flex-start;min-height:44px;font-size:15px;line-height:1.6}
+.rb-answer-page .rb-answer-detail-body .rb-source-list span{font-size:14px;line-height:1.8;color:#52627a}
+.rb-answer-page .rb-sx-documents>.rb-answer-detail{border:0;background:#f7f9fb;padding:25px 28px;border-radius:12px;margin-top:24px}
+.rb-answer-page .rb-sx-finer-details>.rb-sx-section-heading{margin-bottom:28px}
+.rb-answer-page .rb-sx-finer-details>.rb-sx-section-heading>p{font-size:14px;line-height:1.8;max-width:330px}
+.rb-answer-page .rb-answer-branches{margin-top:38px}
+.rb-answer-page .rb-answer-branches .rb-local-panel{margin:0}
+@media(max-width:1000px){.rb-answer-page .rb-sx-intro h1{font-size:41px;letter-spacing:-1.3px}.rb-answer-page .rb-answer-direct{font-size:16px}.rb-answer-page .rb-answer-recommendation{grid-template-columns:minmax(140px,.7fr) minmax(0,2fr);gap:22px}}
+@media(max-width:700px){.rb-answer-page .rb-sx-intro h1{font-size:35px;line-height:1.16;letter-spacing:-1.15px;margin:15px 0 20px;text-wrap:pretty}.rb-answer-page .rb-answer-direct{font-size:15px;line-height:1.85;margin-bottom:24px}.rb-answer-page .rb-answer-recommendation{grid-template-columns:minmax(0,1fr);gap:12px;padding:23px 21px;margin-bottom:24px}.rb-answer-page .rb-answer-recommendation h2{font-size:19px}.rb-answer-page .rb-answer-recommendation p{font-size:14px;line-height:1.85}.rb-answer-page .rb-answer-detail{padding-block:25px}.rb-answer-page .rb-answer-detail>h3{font-size:19px;line-height:1.45;margin-bottom:15px}.rb-answer-page .rb-answer-detail-body>p,.rb-answer-page .rb-answer-detail-body .rb-sx-detail-list{font-size:14px;line-height:1.85}.rb-answer-page .rb-answer-detail-body h4{font-size:16px}.rb-answer-page .rb-answer-detail-body .rb-sx-detail-list{padding-left:20px;gap:12px}.rb-answer-page .rb-sx-documents>.rb-answer-detail{padding:23px 20px;margin-top:20px}.rb-answer-page .rb-answer-detail-body .rb-source-list a{font-size:14px;overflow-wrap:anywhere}.rb-answer-page .rb-answer-detail-body .rb-source-list span{font-size:13px}.rb-answer-page .rb-sx-finer-details>.rb-sx-section-heading>p{font-size:14px}.rb-answer-page .rb-answer-branches{margin-top:28px}}
+@media(max-width:370px){.rb-answer-page .rb-sx-intro h1{font-size:32px}}

@@ -1,10 +1,10 @@
 import { SiteFooter } from './footer.web';
 import { Link, type Href } from 'expo-router';
-import type { ReactNode } from 'react';
 import { useApp } from '@/hooks/use-app';
 import { WebBrand } from './brand.web';
 import { contact } from './content';
 import { Seo, siteUrl } from './seo.web';
+import { PublicAnswers } from './public-answers.web';
 import './service-experience.css';
 
 const path = '/services/free-nil-gst-filing';
@@ -34,10 +34,6 @@ function Icon({ name }: { name: 'check' | 'arrow' | 'file' }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]}/></svg>;
 }
 
-function Detail({ title, children }: { title: string; children: ReactNode }) {
-  return <details className="rb-sx-disclosure"><summary><span>{title}</span><span className="rb-sx-plus" aria-hidden="true">+</span></summary><div className="rb-sx-disclosure-body">{children}</div></details>;
-}
-
 export default function FreeNilGstFilingPage() {
   const { session, demoMode } = useApp();
   const startHref: Href = session && !demoMode ? '/gst' : { pathname: '/auth', params: { next: '/gst' } };
@@ -65,7 +61,7 @@ export default function FreeNilGstFilingPage() {
       <section className="rb-sx-hero" aria-labelledby="nil-title">
         <div className="rb-sx-intro">
           <div className="rb-sx-kicker"><span/> GSTR-1 · GSTR-3B · NIL RETURNS</div>
-          <h1 id="nil-title">Free nil GST filing<span className="rb-sx-title-dot">.</span></h1>
+          <h1 id="nil-title">Can I file a nil GST return for free?</h1>
           <p className="rb-sx-promise">Eligible nil returns. ₹0 RegisterBox service fee.</p>
           <p className="rb-sx-audience">Review your eligibility and file through your GST workspace. Government dues, if any, are separate.</p>
           <div className="rb-service-actions"><Link className="rb-button" href={startHref}>Start free nil filing <Icon name="arrow"/></Link><a className="rb-secondary-button" href="#nil-eligibility">Check eligibility</a></div>
@@ -99,11 +95,11 @@ export default function FreeNilGstFilingPage() {
 
       <section className="rb-sx-finer-details" aria-labelledby="nil-questions-title">
         <div className="rb-sx-section-heading"><div><div className="rb-sx-kicker">BEFORE YOU START</div><h2 id="nil-questions-title">Your nil filing questions.</h2></div></div>
-        {faqs.map(([question, answer]) => <Detail key={question} title={question}><p>{answer}</p></Detail>)}
-        <Detail title="Official guidance & service information"><ul className="rb-source-list">
+        <PublicAnswers answers={faqs.map(([question, answer]) => ({ question, answer }))} idPrefix="nil-answer"/>
+        <section className="rb-nil-sources"><h3>Official guidance & service information</h3><ul className="rb-source-list">
           <li><a href="https://tutorial.gst.gov.in/userguide/returns/GSTR3B.htm" target="_blank" rel="noopener noreferrer">GST Portal — GSTR-3B guidance ↗</a><span>Check the official return instructions and nil-return conditions.</span></li>
           <li><a href="https://tutorial.gst.gov.in/userguide/returns/GSTR_1.htm" target="_blank" rel="noopener noreferrer">GST Portal — GSTR-1 guidance ↗</a><span>Check applicability, return contents and filing requirements.</span></li>
-        </ul><p>Updated 21 October 2026 by RegisterBox. This page explains the service offer and general preparation checks. Confirm current requirements and the facts for your GSTIN and period before filing. RegisterBox is an independent service provider.</p><Link href="/policies">Read our privacy and service information ↗</Link></Detail>
+        </ul><p>Service guidance updated 21 October 2026 by RegisterBox. This page explains the service offer and general preparation checks. Confirm current requirements and the facts for your GSTIN and period before filing. RegisterBox is an independent service provider.</p><Link href="/policies">Read our privacy and service information ↗</Link></section>
       </section>
 
       <section className="rb-sx-bottom" aria-labelledby="nil-next-title"><div><div className="rb-sx-kicker">START WITH YOUR BUSINESS</div><h2 id="nil-next-title">Ready to check your nil return?</h2><p>Open the workspace, choose your period and review before filing.</p></div><div><Link className="rb-button" href={startHref}>Start free nil filing <Icon name="arrow"/></Link><Link href="/services/gst-returns">Need regular GST return support? ↗</Link></div></section>

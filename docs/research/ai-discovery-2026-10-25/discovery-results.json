@@ -1,0 +1,44 @@
+[
+  {
+    "url": "https://www.registerbox.in/sitemap.xml",
+    "status": 200,
+    "fetched_utc": "2026-10-25T10:11:27.165319+00:00",
+    "headers": {
+      "content-type": "application/xml",
+      "x-vercel-id": "bom1::q6lhb-1792923086835-497e476723bf"
+    },
+    "bytes": 70329,
+    "sha256": "c53613f59acd46162ce97e00680435700c3b33dc67a081432ecc6b88bd8d5b0b",
+    "url_count": 120,
+    "has_fssai": true,
+    "all_www": true
+  },
+  {
+    "url": "https://www.registerbox.in/llms.txt",
+    "status": 200,
+    "fetched_utc": "2026-10-25T10:11:27.796419+00:00",
+    "headers": {
+      "content-type": "text/plain; charset=utf-8",
+      "x-vercel-id": "bom1::9rpbn-1792923087534-c021f28a12f9"
+    },
+    "bytes": 18247,
+    "sha256": "8051d4ee565bbe8ada04b61d2835683907383032908f2c3560a800db0bb1533f"
+  },
+  {
+    "url": "https://www.registerbox.in/service-feed.json",
+    "status": 200,
+    "fetched_utc": "2026-10-25T10:11:28.624956+00:00",
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-vercel-id": "bom1::gp7bq-1792923088062-5f8e57ecc40e"
+    },
+    "bytes": 16131,
+    "sha256": "a0519bd3395db75b6c5edfa9b201924a21cef23a5ed6534267b07da468e1991d",
+    "fssai": [
+      {
+        "id": "fssai-licence",
+        "price": 1999
+      }
+    ]
+  }
+]
