@@ -19,6 +19,21 @@ Disallow: /tally
 # Search discovery is separate from training crawler policy.
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /account
+Disallow: /ai
+Disallow: /application-details
+Disallow: /auth
+Disallow: /compliance
+Disallow: /control-center
+Disallow: /dashboard
+Disallow: /document-locker
+Disallow: /documents
+Disallow: /gst
+Disallow: /gst-purchases
+Disallow: /gst-returns
+Disallow: /onboarding
+Disallow: /privacy-operations
+Disallow: /tally
 
 # Public service prices and inclusions: https://www.registerbox.in/service-feed.json
 Sitemap: https://www.registerbox.in/sitemap.xml
