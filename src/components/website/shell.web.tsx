@@ -119,8 +119,8 @@ function WorkspaceChrome({ children, pathname, email }: PropsWithChildren<{ path
     </div>
   </>;
 
-  return <div className="rb-shell">
-    <Head><meta name="robots" content="noindex,nofollow"/></Head>
+  return <div className="rb-shell" data-clarity-mask="true">
+    <Head><title>{pageTitle} | RegisterBox</title><meta name="description" content={`${pageTitle} in your private RegisterBox business workspace.`}/><meta name="robots" content="noindex,nofollow"/></Head>
     <a href="#workspace-main" className="rb-workspace-skip">Skip to workspace</a>
     <header className="rb-work-header">
       <div className="rb-work-brand"><WebBrand/></div>
@@ -171,5 +171,5 @@ export function WebShell({ children }: PropsWithChildren) {
   const publicPage = landing || regionalBlog || pathname === '/checkout' || pathname === '/blog' || pathname.startsWith('/blog/') || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/privacy' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
   if (publicPage) return <>{pathname.startsWith('/auth') && <Head><meta name="robots" content="noindex,nofollow"/></Head>}{children}</>;
   const next = safeNext(typeof window !== 'undefined' ? window.location.pathname + window.location.search : pathname);
-  return <WorkspaceChrome pathname={pathname} email={session?.user.email}>{loadingSession ? <div className="rb-loading" role="status">Loading your workspace…</div> : !session ? <><Redirect href={{ pathname: '/auth', params: { next } }}/><div className="rb-loading">Opening secure sign-in…</div></> : children}</WorkspaceChrome>;
+  return <WorkspaceChrome pathname={pathname} email={session?.user.email}>{loadingSession ? <div className="rb-loading" role="status"><h1 className="rb-visually-hidden">Your private RegisterBox workspace</h1>Loading your workspace…</div> : !session ? <><Redirect href={{ pathname: '/auth', params: { next } }}/><div className="rb-loading"><h1 className="rb-visually-hidden">Your private RegisterBox workspace</h1>Opening secure sign-in…</div></> : children}</WorkspaceChrome>;
 }

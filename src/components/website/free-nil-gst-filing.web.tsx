@@ -69,7 +69,7 @@ export default function FreeNilGstFilingPage() {
           <ul className="rb-sx-benefits">{['Eligible nil GSTR-1 & GSTR-3B', 'Review before authorization', 'GST acknowledgement tracking'].map(item => <li key={item}><span><Icon name="check"/></span>{item}</li>)}</ul>
         </div>
         <aside className="rb-sx-start-card" aria-label="Free nil filing offer">
-          <div className="rb-sx-card-visual"><div className="rb-sx-visual-ring"/><img src="/images/gst-return-v1-136.webp" width="112" height="112" alt="" fetchPriority="high"/><span className="rb-sx-visual-label">YOUR NIL RETURN WORKSPACE</span></div>
+          <div className="rb-sx-card-visual"><div className="rb-sx-visual-ring"/><img src="/images/gst-return-v1-136.webp" width="112" height="112" alt="Nil GST return filing workspace illustration" fetchPriority="high"/><span className="rb-sx-visual-label">YOUR NIL RETURN WORKSPACE</span></div>
           <div className="rb-sx-card-body">
             <div className="rb-sx-price-label">REGISTERBOX NIL FILING SERVICE FEE</div><div className="rb-sx-price">₹0 · Free</div>
             <p>For eligible nil GSTR-1 and GSTR-3B. Tax, interest, statutory late fee and other government dues are not waived. Other services are quoted separately.</p>
