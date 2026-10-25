@@ -1,0 +1,100 @@
+# RegisterBox
+
+Business registration preparation and compliance workspaces in India. Based in Bengaluru.
+
+- [Services](https://www.registerbox.in/services)
+- [Contact](https://www.registerbox.in/contact)
+- [Privacy and service information](https://www.registerbox.in/policies)
+
+Application drafts are not government submissions. Confirm scope and fees with the team.
+
+## Bengaluru branches and contact
+
+- Phone: +91 81477 77843. Email: registerboxindia@gmail.com.
+- Marathahalli: 149, RegisterBox, 1st Cross, Trinity School Rd, Marathahalli, Bengaluru, Karnataka 560037.
+- New Thippasandra: 3rd Floor, Site No. 71, 5th Cross Road, above Kookie Kids, New Thippasandra Main Road, HAL Aerospace Division, Bengaluru, Karnataka 560075.
+- [RegisterBox on Google Maps](https://www.google.com/maps?cid=13439752852292529636)
+- [Customer reviews and client businesses](https://www.registerbox.in/#customer-feedback): selected customer quotes appear as readable homepage text, with attribution and links to Google.
+
+## Service support
+
+- GST registration assistance: prepare business information and documents with RegisterBox. Confirm the service scope with the team before proceeding.
+- [GST registration support](https://www.registerbox.in/services/gst-registration)
+
+
+## Published service prices and secure payment
+
+RegisterBox service fees are final: no GST is added. Government fees, tax dues and statutory charges are separate unless a package explicitly includes them. Registration details are submitted to RegisterBox first; the package review and Razorpay payment step follow. A payment receipt does not prove government submission, approval or filing.
+
+- [GST registration — ₹1,999](https://www.registerbox.in/services/gst-registration)
+- [FSSAI Basic Registration — ₹1,999](https://www.registerbox.in/services/fssai-food-business): application assistance for one new registration at one eligible premises, including the first annual ₹100 government registration fee. No GST is added. State/Central licences are quoted separately. New certificates issued from 1 April 2026 have perpetual validity; annual fees and applicable compliance continue. Future annual fees, extra premises, modifications, testing, audits and local permissions are outside this package.
+- [Udyam optional assistance — ₹499](https://www.registerbox.in/services/udyam-registration): official Udyam registration is free. The applicant completes official identity verification; never share OTPs.
+- [Shop & Establishment assistance — ₹4,499](https://www.registerbox.in/services/shop-establishment-registration)
+- [Income tax filing — ₹1,999 per agreed return](https://www.registerbox.in/services/income-tax-filing)
+- [MCA compliance — ₹9,999 for one agreed year](https://www.registerbox.in/services/mca-compliance)
+- [Trademark filing packages — from ₹1,899](https://www.registerbox.in/services/trademark-registration): government fees separate; single mark/class as described.
+- [Digital signature packages — ₹2,100](https://www.registerbox.in/services/digital-signature): individual or organisation signing, two-year certificate and USB token subject to issuing-authority verification.
+- [GST and proprietorship packages](https://www.registerbox.in/services/proprietorship): ₹1,499 registration and one agreed filing month; ₹7,899 proprietorship/GST for one agreed year; ₹19,899 one-year GST filing and ITR. No automatic renewal.
+- [Eligible nil GST filing — ₹0 RegisterBox service fee](https://www.registerbox.in/services/free-nil-gst-filing): complete books, period eligibility, filing authorisation and actual acknowledgement remain necessary.
+- [Machine-readable service catalogue](https://www.registerbox.in/service-feed.json): package amounts, inclusions and billing periods.
+
+Company, LLP and other services without published fixed packages require an agreed quote. Checkout and customer workspaces are private flows; public service and guide pages contain crawlable prices and scope.
+
+## Business questions and guides
+
+These public guides contain preparation checklists, practical explanations and linked official sources. Complete language versions have separate crawlable URLs. Language availability is generated from published translations.
+
+- [GST registration for small e-commerce sellers: the 1 November 2026 update](https://www.registerbox.in/blog/gst-registration-small-ecommerce-sellers-november-2026): A reported 1 November start, the proposed Rule 14B warehouse route, and practical preparation for small goods sellers. Source status reviewed on 23 October 2026.
+
+- [Tatkal GST registration in 3 hours? RegisterBox’s fast service and the official rules](https://www.registerbox.in/blog/fast-gst-registration-three-hours): Need GST registration quickly? Learn what RegisterBox can prepare in 3–24 hours, who may qualify for the official three-working-day route, and when a GSTIN is actually issued.
+  [हिन्दी](https://www.registerbox.in/hi/blog/fast-gst-registration-three-hours) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/fast-gst-registration-three-hours) · [தமிழ்](https://www.registerbox.in/ta/blog/fast-gst-registration-three-hours)
+- [GSTR-3B filing online: a practical RegisterBox guide for regular and nil returns](https://www.registerbox.in/blog/gstr-3b-filing-process-online): Follow the GSTR-3B preparation process in RegisterBox, check nil-return eligibility, understand OTP authorisation and know what proves a return is filed.
+  [हिन्दी](https://www.registerbox.in/hi/blog/gstr-3b-filing-process-online) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/gstr-3b-filing-process-online) · [தமிழ்](https://www.registerbox.in/ta/blog/gstr-3b-filing-process-online)
+- [DIR-3 KYC filing online: what changed in 2026 and how to prepare](https://www.registerbox.in/blog/dir-3-kyc-filing-online-process): Understand the revised director KYC cycle, checking your DIN record, preparing a change filing and keeping proof, with official MCA sources and a clear help route.
+  [हिन्दी](https://www.registerbox.in/hi/blog/dir-3-kyc-filing-online-process) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/dir-3-kyc-filing-online-process) · [தமிழ்](https://www.registerbox.in/ta/blog/dir-3-kyc-filing-online-process)
+- [ESIC registration online for employers: a practical preparation guide](https://www.registerbox.in/blog/esic-registration-online-for-employers): Prepare employer and employee records for ESIC registration, understand the current coverage review and official portal routes, and plan the payroll work that follows.
+  [हिन्दी](https://www.registerbox.in/hi/blog/esic-registration-online-for-employers) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/esic-registration-online-for-employers) · [தமிழ்](https://www.registerbox.in/ta/blog/esic-registration-online-for-employers)
+- [Karnataka shop and establishment registration: the online process, step by step](https://www.registerbox.in/blog/shop-and-establishment-registration-process): A practical e-Karmika application guide for Bengaluru and Karnataka: choose the right route, prepare Form A details, check uploads, pay and track the result.
+  [हिन्दी](https://www.registerbox.in/hi/blog/shop-and-establishment-registration-process) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/shop-and-establishment-registration-process) · [தமிழ்](https://www.registerbox.in/ta/blog/shop-and-establishment-registration-process)
+- [Udyam registration online: process, requirements and application support](https://www.registerbox.in/blog/udyam-registration-process-online): Find the official Udyam registration link, current MSME limits, Aadhaar and PAN requirements, GST applicability and a practical checklist before you apply.
+  [हिन्दी](https://www.registerbox.in/hi/blog/udyam-registration-process-online) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/udyam-registration-process-online) · [தமிழ்](https://www.registerbox.in/ta/blog/udyam-registration-process-online)
+- [LLP or private limited company: which fits your startup?](https://www.registerbox.in/blog/llp-vs-private-limited-company-startup): Compare an LLP with a private limited company using ownership, investor plans, decision-making and recurring work, with a practical founder checklist.
+  [हिन्दी](https://www.registerbox.in/hi/blog/llp-vs-private-limited-company-startup) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/llp-vs-private-limited-company-startup) · [தமிழ்](https://www.registerbox.in/ta/blog/llp-vs-private-limited-company-startup)
+- [Professional tax registration for employers in Karnataka: where to start](https://www.registerbox.in/blog/professional-tax-registration-for-employers-karnataka): Understand Karnataka employer professional tax registration, business enrolment, payroll checks and the records to prepare before paying or filing.
+  [हिन्दी](https://www.registerbox.in/hi/blog/professional-tax-registration-for-employers-karnataka) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/professional-tax-registration-for-employers-karnataka) · [தமிழ்](https://www.registerbox.in/ta/blog/professional-tax-registration-for-employers-karnataka)
+- [ESI and EPF registration for a startup: a practical employer checklist](https://www.registerbox.in/blog/esi-epf-registration-for-startups): Check startup ESI and EPF coverage, current labour-code changes, existing registrations, employee records and the next steps after employer registration.
+  [हिन्दी](https://www.registerbox.in/hi/blog/esi-epf-registration-for-startups) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/esi-epf-registration-for-startups) · [தமிழ்](https://www.registerbox.in/ta/blog/esi-epf-registration-for-startups)
+- [FSSAI licence cost in 2026: government fees and what changes the bill](https://www.registerbox.in/blog/fssai-licence-cost-government-fees): Understand current FSSAI government fee examples, the April 2026 turnover changes, perpetual validity and how to compare a food-registration service quote.
+  [हिन्दी](https://www.registerbox.in/hi/blog/fssai-licence-cost-government-fees) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/fssai-licence-cost-government-fees) · [தமிழ்](https://www.registerbox.in/ta/blog/fssai-licence-cost-government-fees)
+- [GST registration documents: getting your address proof right](https://www.registerbox.in/blog/gst-registration-documents-and-address-proof): A practical GST registration checklist for owned, rented and family premises, with ways to resolve name and address mismatches before you apply.
+  [हिन्दी](https://www.registerbox.in/hi/blog/gst-registration-documents-and-address-proof) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/gst-registration-documents-and-address-proof) · [தமிழ்](https://www.registerbox.in/ta/blog/gst-registration-documents-and-address-proof)
+- [GSTR-1 vs GSTR-3B: what each return does and what to check](https://www.registerbox.in/blog/gstr-1-vs-gstr-3b): Understand the difference between GSTR-1 and GSTR-3B, how to compare records and input credit, and what proves that filing is complete.
+  [हिन्दी](https://www.registerbox.in/hi/blog/gstr-1-vs-gstr-3b) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/gstr-1-vs-gstr-3b) · [தமிழ்](https://www.registerbox.in/ta/blog/gstr-1-vs-gstr-3b)
+- [No sales this month: can I file a nil GSTR-3B?](https://www.registerbox.in/blog/no-sales-nil-gstr-3b): No sales does not automatically mean a nil GST return. Check purchases, input credit, reverse charge, adjustments and outstanding charges first.
+  [हिन्दी](https://www.registerbox.in/hi/blog/no-sales-nil-gstr-3b) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/no-sales-nil-gstr-3b) · [தமிழ்](https://www.registerbox.in/ta/blog/no-sales-nil-gstr-3b)
+- [FSSAI for a home kitchen or cloud kitchen: where to start in 2026](https://www.registerbox.in/blog/fssai-home-kitchen-cloud-kitchen): Check the current FSSAI route for a home food business or cloud kitchen, including the April 2026 thresholds, activity classification and documents.
+  [हिन्दी](https://www.registerbox.in/hi/blog/fssai-home-kitchen-cloud-kitchen) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/fssai-home-kitchen-cloud-kitchen) · [தமிழ்](https://www.registerbox.in/ta/blog/fssai-home-kitchen-cloud-kitchen)
+- [Private limited company registration: what founders should decide before filing](https://www.registerbox.in/blog/private-limited-company-registration-documents): A practical company registration guide covering ownership, director and office documents, SPICe+, costs and the work that follows incorporation.
+  [हिन्दी](https://www.registerbox.in/hi/blog/private-limited-company-registration-documents) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/private-limited-company-registration-documents) · [தமிழ்](https://www.registerbox.in/ta/blog/private-limited-company-registration-documents)
+- [LLP registration: the partner decisions that matter before the forms](https://www.registerbox.in/blog/llp-registration-partner-agreement): Understand LLP registration, partner contributions, profit sharing, the LLP agreement, FiLLiP and the records needed to start with a clear arrangement.
+  [हिन्दी](https://www.registerbox.in/hi/blog/llp-registration-partner-agreement) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/llp-registration-partner-agreement) · [தமிழ்](https://www.registerbox.in/ta/blog/llp-registration-partner-agreement)
+- [How to start a small business: a practical proprietorship checklist](https://www.registerbox.in/blog/start-business-sole-proprietorship-checklist): Decide your business structure, map registrations, prepare an address record and set up everyday bookkeeping before your first sale.
+  [हिन्दी](https://www.registerbox.in/hi/blog/start-business-sole-proprietorship-checklist) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/start-business-sole-proprietorship-checklist) · [தமிழ்](https://www.registerbox.in/ta/blog/start-business-sole-proprietorship-checklist)
+- [Shop and establishment registration in Karnataka: prepare the right details](https://www.registerbox.in/blog/shop-establishment-registration-karnataka): Understand what to check for a Karnataka shop or office, how to organise establishment records and why GST and other permissions are separate.
+  [हिन्दी](https://www.registerbox.in/hi/blog/shop-establishment-registration-karnataka) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/shop-establishment-registration-karnataka) · [தமிழ்](https://www.registerbox.in/ta/blog/shop-establishment-registration-karnataka)
+- [Starting an online business in India: the questions to settle before selling](https://www.registerbox.in/blog/start-online-ecommerce-business-india): Plan products, marketplace roles, warehouses, customer policies and registration checks before your online business takes its first order.
+  [हिन्दी](https://www.registerbox.in/hi/blog/start-online-ecommerce-business-india) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/start-online-ecommerce-business-india) · [தமிழ்](https://www.registerbox.in/ta/blog/start-online-ecommerce-business-india)
+- [Manufacturing business approvals: what to check before taking a premises](https://www.registerbox.in/blog/manufacturing-business-approvals-checklist): A clear manufacturing setup checklist covering process details, site suitability, approval stages, technical documents and changes in capacity.
+  [हिन्दी](https://www.registerbox.in/hi/blog/manufacturing-business-approvals-checklist) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/manufacturing-business-approvals-checklist) · [தமிழ்](https://www.registerbox.in/ta/blog/manufacturing-business-approvals-checklist)
+- [Opening a new business branch: address, GST and local registration checks](https://www.registerbox.in/blog/open-new-business-branch-gst): Plan a new shop, office or warehouse with clear location evidence, a GST review, local approval checks and a branch record that matches the business.
+  [हिन्दी](https://www.registerbox.in/hi/blog/open-new-business-branch-gst) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/open-new-business-branch-gst) · [தமிழ்](https://www.registerbox.in/ta/blog/open-new-business-branch-gst)
+- [How to check your business compliance without getting lost in certificates](https://www.registerbox.in/blog/business-compliance-check-checklist): Review registrations, filings, locations and notices using real evidence, then turn gaps into a practical list of actions and responsible owners.
+  [हिन्दी](https://www.registerbox.in/hi/blog/business-compliance-check-checklist) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/business-compliance-check-checklist) · [தமிழ்](https://www.registerbox.in/ta/blog/business-compliance-check-checklist)
+- [Trademark registration: check your name, logo and business category first](https://www.registerbox.in/blog/trademark-registration-name-logo-search): Learn how a trademark search, applicant choice, goods and services description and application status fit together before you spend on your brand.
+  [हिन्दी](https://www.registerbox.in/hi/blog/trademark-registration-name-logo-search) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/trademark-registration-name-logo-search) · [தமிழ்](https://www.registerbox.in/ta/blog/trademark-registration-name-logo-search)
+
+- [Editorial approach](https://www.registerbox.in/blog/editorial-policy)
+- [English guides](https://www.registerbox.in/blog)
+- [हिन्दी guides](https://www.registerbox.in/hi/blog)
+- [ಕನ್ನಡ guides](https://www.registerbox.in/kn/blog)
+- [தமிழ் guides](https://www.registerbox.in/ta/blog)

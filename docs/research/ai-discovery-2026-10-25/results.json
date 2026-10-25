@@ -1,0 +1,641 @@
+[
+  {
+    "url": "https://registerbox.in/",
+    "agent_label": "browser",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "started_utc": "2026-10-25T10:09:53.579018+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/",
+    "headers": {
+      "age": "10760",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::7swgs-1792922995585-59eb11e5e577"
+    },
+    "bytes": 99552,
+    "sha256": "bb2c8656a2100bd26e2b8d4280bb094b2aa7baca35dc1a5bf246cb459450c20b",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/",
+        "to": "https://www.registerbox.in/",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::prkd5-1792922994290-db86c56ab901"
+        }
+      }
+    ],
+    "title": "Business Registration in Bengaluru | GST, FSSAI & Trademark | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/\"/>"
+    ],
+    "elapsed_s": 2.231,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-home-browser.body",
+    "baseline_body_file": "homepage.html"
+  },
+  {
+    "url": "https://registerbox.in/",
+    "agent_label": "oai-searchbot",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+    "started_utc": "2026-10-25T10:09:53.579300+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/",
+    "headers": {
+      "age": "10760",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::7dml2-1792922995562-e969108937a3"
+    },
+    "bytes": 99552,
+    "sha256": "bb2c8656a2100bd26e2b8d4280bb094b2aa7baca35dc1a5bf246cb459450c20b",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/",
+        "to": "https://www.registerbox.in/",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::8xvlq-1792922994354-151d621e40cc"
+        }
+      }
+    ],
+    "title": "Business Registration in Bengaluru | GST, FSSAI & Trademark | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/\"/>"
+    ],
+    "elapsed_s": 2.237,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-home-oai-searchbot.body",
+    "baseline_body_file": "homepage.html"
+  },
+  {
+    "url": "https://registerbox.in/",
+    "agent_label": "chatgpt-user",
+    "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+    "started_utc": "2026-10-25T10:09:53.579377+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/",
+    "headers": {
+      "age": "10760",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::xmh64-1792922995586-9ddd4a2c3dd3"
+    },
+    "bytes": 99552,
+    "sha256": "bb2c8656a2100bd26e2b8d4280bb094b2aa7baca35dc1a5bf246cb459450c20b",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/",
+        "to": "https://www.registerbox.in/",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::xj9tl-1792922994338-97fddaa47367"
+        }
+      }
+    ],
+    "title": "Business Registration in Bengaluru | GST, FSSAI & Trademark | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/\"/>"
+    ],
+    "elapsed_s": 2.289,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-home-chatgpt-user.body",
+    "baseline_body_file": "homepage.html"
+  },
+  {
+    "url": "https://registerbox.in/services/fssai-food-business",
+    "agent_label": "browser",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "started_utc": "2026-10-25T10:09:55.810658+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/services/fssai-food-business",
+    "headers": {
+      "age": "0",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "MISS",
+      "x-vercel-id": "bom1::d2hbg-1792922996079-7711aef9849d"
+    },
+    "bytes": 86470,
+    "sha256": "2501547fc868fcd64ee29a98fc72717e80b0b50ae850e23724c528f7b4d095ed",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/services/fssai-food-business",
+        "to": "https://www.registerbox.in/services/fssai-food-business",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/services/fssai-food-business",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::qw7lk-1792922995964-3d75b4bdf16f"
+        }
+      }
+    ],
+    "title": "FSSAI Registration Bengaluru | ₹1,999 incl. Govt Fee | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/services/fssai-food-business\"/>"
+    ],
+    "elapsed_s": 0.567,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-fssai-browser.body",
+    "baseline_body_file": "fssai.html"
+  },
+  {
+    "url": "https://registerbox.in/services/fssai-food-business",
+    "agent_label": "oai-searchbot",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+    "started_utc": "2026-10-25T10:09:55.816735+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/services/fssai-food-business",
+    "headers": {
+      "age": "0",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::7dml2-1792922996417-1ef362a6038e"
+    },
+    "bytes": 86470,
+    "sha256": "2501547fc868fcd64ee29a98fc72717e80b0b50ae850e23724c528f7b4d095ed",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/services/fssai-food-business",
+        "to": "https://www.registerbox.in/services/fssai-food-business",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/services/fssai-food-business",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::v7wf9-1792922995970-8f4122d6cc98"
+        }
+      }
+    ],
+    "title": "FSSAI Registration Bengaluru | ₹1,999 incl. Govt Fee | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/services/fssai-food-business\"/>"
+    ],
+    "elapsed_s": 0.645,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-fssai-oai-searchbot.body",
+    "baseline_body_file": "fssai.html"
+  },
+  {
+    "url": "https://registerbox.in/services/fssai-food-business",
+    "agent_label": "chatgpt-user",
+    "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+    "started_utc": "2026-10-25T10:09:55.868276+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/services/fssai-food-business",
+    "headers": {
+      "age": "0",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::q6lhb-1792922996409-013ce6461609"
+    },
+    "bytes": 86470,
+    "sha256": "2501547fc868fcd64ee29a98fc72717e80b0b50ae850e23724c528f7b4d095ed",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/services/fssai-food-business",
+        "to": "https://www.registerbox.in/services/fssai-food-business",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/services/fssai-food-business",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::v7wf9-1792922996025-e3f4a5e8da88"
+        }
+      }
+    ],
+    "title": "FSSAI Registration Bengaluru | ₹1,999 incl. Govt Fee | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/services/fssai-food-business\"/>"
+    ],
+    "elapsed_s": 0.595,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-fssai-chatgpt-user.body",
+    "baseline_body_file": "fssai.html"
+  },
+  {
+    "url": "https://registerbox.in/robots.txt",
+    "agent_label": "browser",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "started_utc": "2026-10-25T10:09:56.377953+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/robots.txt",
+    "headers": {
+      "age": "7339",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/plain; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::ch5d6-1792922996660-0ffd426f6b9d"
+    },
+    "bytes": 254,
+    "sha256": "829f9a7d5d336c0fb570221fda1b2a468b60114ca1e94da1d1556ee5c8af5964",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/robots.txt",
+        "to": "https://www.registerbox.in/robots.txt",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/robots.txt",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::xjbbl-1792922996556-6b0569980035"
+        }
+      }
+    ],
+    "title": null,
+    "challenge_markers": [],
+    "robots_meta": [],
+    "canonicals": [],
+    "robots_text": "User-agent: *\nAllow: /\n\n# Search discovery is separate from training crawler policy.\nUser-agent: OAI-SearchBot\nAllow: /\n\n# Public service prices and inclusions: https://www.registerbox.in/service-feed.json\nSitemap: https://www.registerbox.in/sitemap.xml\n",
+    "elapsed_s": 0.422,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-robots-browser.body",
+    "baseline_body_file": "robots.txt"
+  },
+  {
+    "url": "https://registerbox.in/robots.txt",
+    "agent_label": "oai-searchbot",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+    "started_utc": "2026-10-25T10:09:56.462036+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/robots.txt",
+    "headers": {
+      "age": "7339",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/plain; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::dppc5-1792922996840-7bf5d435a827"
+    },
+    "bytes": 254,
+    "sha256": "829f9a7d5d336c0fb570221fda1b2a468b60114ca1e94da1d1556ee5c8af5964",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/robots.txt",
+        "to": "https://www.registerbox.in/robots.txt",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/robots.txt",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::vqzl4-1792922996612-6075edeb02fc"
+        }
+      }
+    ],
+    "title": null,
+    "challenge_markers": [],
+    "robots_meta": [],
+    "canonicals": [],
+    "robots_text": "User-agent: *\nAllow: /\n\n# Search discovery is separate from training crawler policy.\nUser-agent: OAI-SearchBot\nAllow: /\n\n# Public service prices and inclusions: https://www.registerbox.in/service-feed.json\nSitemap: https://www.registerbox.in/sitemap.xml\n",
+    "elapsed_s": 0.383,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-robots-oai-searchbot.body",
+    "baseline_body_file": "robots.txt"
+  },
+  {
+    "url": "https://registerbox.in/robots.txt",
+    "agent_label": "chatgpt-user",
+    "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+    "started_utc": "2026-10-25T10:09:56.463730+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/robots.txt",
+    "headers": {
+      "age": "7339",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/plain; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::ch5d6-1792922996839-0f9be634aa00"
+    },
+    "bytes": 254,
+    "sha256": "829f9a7d5d336c0fb570221fda1b2a468b60114ca1e94da1d1556ee5c8af5964",
+    "redirects": [
+      {
+        "status": 308,
+        "from": "https://registerbox.in/robots.txt",
+        "to": "https://www.registerbox.in/robots.txt",
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/html",
+          "location": "https://www.registerbox.in/robots.txt",
+          "server": "Vercel",
+          "x-vercel-id": "bom1::gp7bq-1792922996581-68d0591299a9"
+        }
+      }
+    ],
+    "title": null,
+    "challenge_markers": [],
+    "robots_meta": [],
+    "canonicals": [],
+    "robots_text": "User-agent: *\nAllow: /\n\n# Search discovery is separate from training crawler policy.\nUser-agent: OAI-SearchBot\nAllow: /\n\n# Public service prices and inclusions: https://www.registerbox.in/service-feed.json\nSitemap: https://www.registerbox.in/sitemap.xml\n",
+    "elapsed_s": 0.373,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/registerbox.in-robots-chatgpt-user.body",
+    "baseline_body_file": "robots.txt"
+  },
+  {
+    "url": "https://www.registerbox.in/",
+    "agent_label": "browser",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "started_utc": "2026-10-25T10:09:56.799665+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/",
+    "headers": {
+      "age": "10762",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::7dml2-1792922996921-0df4ace2c3c0"
+    },
+    "bytes": 99552,
+    "sha256": "bb2c8656a2100bd26e2b8d4280bb094b2aa7baca35dc1a5bf246cb459450c20b",
+    "redirects": [],
+    "title": "Business Registration in Bengaluru | GST, FSSAI & Trademark | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/\"/>"
+    ],
+    "elapsed_s": 0.155,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-home-browser.body",
+    "baseline_body_file": "homepage.html"
+  },
+  {
+    "url": "https://www.registerbox.in/",
+    "agent_label": "oai-searchbot",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+    "started_utc": "2026-10-25T10:09:56.836292+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/",
+    "headers": {
+      "age": "10762",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::9rpbn-1792922996971-90bdc74ac652"
+    },
+    "bytes": 99552,
+    "sha256": "bb2c8656a2100bd26e2b8d4280bb094b2aa7baca35dc1a5bf246cb459450c20b",
+    "redirects": [],
+    "title": "Business Registration in Bengaluru | GST, FSSAI & Trademark | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/\"/>"
+    ],
+    "elapsed_s": 0.165,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-home-oai-searchbot.body",
+    "baseline_body_file": "homepage.html"
+  },
+  {
+    "url": "https://www.registerbox.in/",
+    "agent_label": "chatgpt-user",
+    "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+    "started_utc": "2026-10-25T10:09:56.844749+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/",
+    "headers": {
+      "age": "10762",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::cj5x8-1792922997041-5abfc7e19d9f"
+    },
+    "bytes": 99552,
+    "sha256": "bb2c8656a2100bd26e2b8d4280bb094b2aa7baca35dc1a5bf246cb459450c20b",
+    "redirects": [],
+    "title": "Business Registration in Bengaluru | GST, FSSAI & Trademark | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/\"/>"
+    ],
+    "elapsed_s": 0.24,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-home-chatgpt-user.body",
+    "baseline_body_file": "homepage.html"
+  },
+  {
+    "url": "https://www.registerbox.in/services/fssai-food-business",
+    "agent_label": "browser",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "started_utc": "2026-10-25T10:09:56.954760+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/services/fssai-food-business",
+    "headers": {
+      "age": "0",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::qq26m-1792922997084-94ae9a3e1453"
+    },
+    "bytes": 86470,
+    "sha256": "2501547fc868fcd64ee29a98fc72717e80b0b50ae850e23724c528f7b4d095ed",
+    "redirects": [],
+    "title": "FSSAI Registration Bengaluru | ₹1,999 incl. Govt Fee | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/services/fssai-food-business\"/>"
+    ],
+    "elapsed_s": 0.38,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-fssai-browser.body",
+    "baseline_body_file": "fssai.html"
+  },
+  {
+    "url": "https://www.registerbox.in/services/fssai-food-business",
+    "agent_label": "oai-searchbot",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+    "started_utc": "2026-10-25T10:09:57.001716+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/services/fssai-food-business",
+    "headers": {
+      "age": "1",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::xj9tl-1792922997463-fa9e129d5ef4"
+    },
+    "bytes": 86470,
+    "sha256": "2501547fc868fcd64ee29a98fc72717e80b0b50ae850e23724c528f7b4d095ed",
+    "redirects": [],
+    "title": "FSSAI Registration Bengaluru | ₹1,999 incl. Govt Fee | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/services/fssai-food-business\"/>"
+    ],
+    "elapsed_s": 0.502,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-fssai-oai-searchbot.body",
+    "baseline_body_file": "fssai.html"
+  },
+  {
+    "url": "https://www.registerbox.in/services/fssai-food-business",
+    "agent_label": "chatgpt-user",
+    "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+    "started_utc": "2026-10-25T10:09:57.085183+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/services/fssai-food-business",
+    "headers": {
+      "age": "1",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/html; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::zpjrs-1792922997417-d9f43ae66efd"
+    },
+    "bytes": 86470,
+    "sha256": "2501547fc868fcd64ee29a98fc72717e80b0b50ae850e23724c528f7b4d095ed",
+    "redirects": [],
+    "title": "FSSAI Registration Bengaluru | ₹1,999 incl. Govt Fee | RegisterBox",
+    "challenge_markers": [],
+    "robots_meta": [
+      "<meta data-rh=\"true\" name=\"robots\" content=\"index,follow,max-image-preview:large\"/>"
+    ],
+    "canonicals": [
+      "<link data-rh=\"true\" rel=\"canonical\" href=\"https://www.registerbox.in/services/fssai-food-business\"/>"
+    ],
+    "elapsed_s": 0.357,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-fssai-chatgpt-user.body",
+    "baseline_body_file": "fssai.html"
+  },
+  {
+    "url": "https://www.registerbox.in/robots.txt",
+    "agent_label": "browser",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "started_utc": "2026-10-25T10:09:57.335059+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/robots.txt",
+    "headers": {
+      "age": "7340",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/plain; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::zm8tg-1792922997471-4696467cec95"
+    },
+    "bytes": 254,
+    "sha256": "829f9a7d5d336c0fb570221fda1b2a468b60114ca1e94da1d1556ee5c8af5964",
+    "redirects": [],
+    "title": null,
+    "challenge_markers": [],
+    "robots_meta": [],
+    "canonicals": [],
+    "robots_text": "User-agent: *\nAllow: /\n\n# Search discovery is separate from training crawler policy.\nUser-agent: OAI-SearchBot\nAllow: /\n\n# Public service prices and inclusions: https://www.registerbox.in/service-feed.json\nSitemap: https://www.registerbox.in/sitemap.xml\n",
+    "elapsed_s": 0.311,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-robots-browser.body",
+    "baseline_body_file": "robots.txt"
+  },
+  {
+    "url": "https://www.registerbox.in/robots.txt",
+    "agent_label": "oai-searchbot",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36; compatible; OAI-SearchBot/1.4; +https://openai.com/searchbot",
+    "started_utc": "2026-10-25T10:09:57.441991+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/robots.txt",
+    "headers": {
+      "age": "7340",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/plain; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::pw26w-1792922997576-712c75a3a473"
+    },
+    "bytes": 254,
+    "sha256": "829f9a7d5d336c0fb570221fda1b2a468b60114ca1e94da1d1556ee5c8af5964",
+    "redirects": [],
+    "title": null,
+    "challenge_markers": [],
+    "robots_meta": [],
+    "canonicals": [],
+    "robots_text": "User-agent: *\nAllow: /\n\n# Search discovery is separate from training crawler policy.\nUser-agent: OAI-SearchBot\nAllow: /\n\n# Public service prices and inclusions: https://www.registerbox.in/service-feed.json\nSitemap: https://www.registerbox.in/sitemap.xml\n",
+    "elapsed_s": 0.131,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-robots-oai-searchbot.body",
+    "baseline_body_file": "robots.txt"
+  },
+  {
+    "url": "https://www.registerbox.in/robots.txt",
+    "agent_label": "chatgpt-user",
+    "user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+    "started_utc": "2026-10-25T10:09:57.503487+00:00",
+    "status": 200,
+    "final_url": "https://www.registerbox.in/robots.txt",
+    "headers": {
+      "age": "7340",
+      "cache-control": "public, max-age=0, must-revalidate",
+      "content-type": "text/plain; charset=utf-8",
+      "server": "Vercel",
+      "x-vercel-cache": "HIT",
+      "x-vercel-id": "bom1::87fhg-1792922997635-3ecc007df097"
+    },
+    "bytes": 254,
+    "sha256": "829f9a7d5d336c0fb570221fda1b2a468b60114ca1e94da1d1556ee5c8af5964",
+    "redirects": [],
+    "title": null,
+    "challenge_markers": [],
+    "robots_meta": [],
+    "canonicals": [],
+    "robots_text": "User-agent: *\nAllow: /\n\n# Search discovery is separate from training crawler policy.\nUser-agent: OAI-SearchBot\nAllow: /\n\n# Public service prices and inclusions: https://www.registerbox.in/service-feed.json\nSitemap: https://www.registerbox.in/sitemap.xml\n",
+    "elapsed_s": 0.143,
+    "original_body_file": "/private/tmp/registerbox-crawl-audit-20261025/www.registerbox.in-robots-chatgpt-user.body",
+    "baseline_body_file": "robots.txt"
+  }
+]

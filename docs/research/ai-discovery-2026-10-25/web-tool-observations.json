@@ -1,0 +1,46 @@
+{
+  "tested_on": "2026-10-25",
+  "method": "web.run open; not an authenticated Vercel log or verified OpenAI-origin request",
+  "results": [
+    {
+      "url": "https://www.registerbox.in/",
+      "outcome": "Retrieved readable homepage; source marked crawled today."
+    },
+    {
+      "url": "https://registerbox.in/",
+      "outcome": "Tool reports failed fetch after redirect to www (500 tool error); direct HTTP independently succeeded308→200."
+    },
+    {
+      "url": "https://www.registerbox.in/services/fssai-food-business",
+      "outcome": "Retrieved4-day-old cached excerpt with obsolete₹3,999price. Direct currentHTTP title/SSR/feed show₹1,999."
+    },
+    {
+      "url": "https://registerbox.in/services/fssai-food-business",
+      "outcome": "Tool reports notaccessible; no originHTTPstatus established by that message."
+    },
+    {
+      "url": "https://www.registerbox.in/robots.txt",
+      "outcome": "Tool reports notaccessible; directHTTP independently200text/plain."
+    },
+    {
+      "url": "https://registerbox.in/robots.txt",
+      "outcome": "Tool reports notaccessible; directHTTP independently308→200text/plain."
+    },
+    {
+      "url": "https://www.registerbox.in/llms.txt",
+      "outcome": "Tool reports notaccessible; directHTTP independently200."
+    },
+    {
+      "url": "https://www.registerbox.in/sitemap.xml",
+      "outcome": "Tool reports notaccessible; directHTTP independently200application/xml,120wwwURLs."
+    },
+    {
+      "url": "https://www.registerbox.in/services/fssai-food-business?crawl_audit=20261025",
+      "outcome": "Tool reports notaccessible; no originHTTPstatus established."
+    },
+    {
+      "url": "https://www.registerbox.in/robots.txt?crawl_audit=20261025",
+      "outcome": "Tool reports notaccessible; no originHTTPstatus established."
+    }
+  ]
+}

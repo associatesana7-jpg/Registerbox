@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Search discovery is separate from training crawler policy.
+User-agent: OAI-SearchBot
+Allow: /
+
+# Public service prices and inclusions: https://www.registerbox.in/service-feed.json
+Sitemap: https://www.registerbox.in/sitemap.xml

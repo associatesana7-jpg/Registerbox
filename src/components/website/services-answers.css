@@ -1,0 +1,23 @@
+.rb-sx-catalog .rb-sa-intro h1{max-width:940px;font-size:clamp(34px,4.4vw,56px);line-height:1.12;letter-spacing:-1.8px;text-wrap:balance}
+.rb-sx-catalog .rb-sa-intro>p{max-width:760px;font-size:16px;line-height:1.75;color:#44556c}
+.rb-sx-catalog .rb-sa-intro .rb-sa-intro-next{font-size:14px;color:#596a80;margin-top:12px;margin-bottom:22px}
+.rb-sx-catalog .rb-sx-catalog-card-fee{flex-wrap:wrap}
+.rb-sx-catalog .rb-sx-catalog-card-fee>small:last-child{flex-basis:100%;line-height:1.65}
+.rb-sa-answers{padding:54px 0 6px;margin-top:30px;border-top:1px solid #e3e8ef}
+.rb-sa-answers>header{max-width:760px;margin-bottom:30px}
+.rb-sa-answers>header h2{font-size:clamp(27px,3vw,36px);line-height:1.22;letter-spacing:-.9px;margin:12px 0}
+.rb-sa-answers>header>p:last-child{font-size:15px;line-height:1.75;color:#52637a;margin:0}
+.rb-sa-answer-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 40px}
+.rb-sa-answer-grid>article{min-width:0;padding:26px 0;border-top:1px solid #e3e8ef}
+.rb-sa-answer-grid h3,.rb-sa-recommendation h3{font-size:20px;line-height:1.35;letter-spacing:-.4px;margin:0 0 12px;color:#182b47}
+.rb-sa-answer-grid p,.rb-sa-recommendation>p:last-child{font-size:14px;line-height:1.8;color:#495c73;margin:0 0 10px}
+.rb-sa-answer-grid a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:7px 0;color:#1757c2;font-size:13px;font-weight:650;text-decoration:underline;text-underline-offset:4px;transition:color 200ms ease}
+.rb-sa-answer-grid a:hover{color:#0e3e91}
+.rb-sa-answer-grid a:focus-visible{outline:2px solid #0071e3;outline-offset:4px;border-radius:3px}
+.rb-sa-official-links{display:flex;flex-wrap:wrap;gap:0 20px}
+.rb-sa-recommendation{margin-top:14px;padding:26px 28px;border-left:3px solid #0071e3;background:#f5f8fc;border-radius:0 12px 12px 0;max-width:860px}
+.rb-sa-recommendation .rb-sx-kicker{margin:0 0 12px}
+.rb-sa-recommendation>p:last-child{margin-bottom:0}
+@media(min-width:760px){.rb-sa-answer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.rb-sx-catalog .rb-sa-intro h1{font-size:clamp(32px,8.6vw,42px);letter-spacing:-1.2px}.rb-sx-catalog .rb-sa-intro>p{font-size:15px;max-width:none}.rb-sa-answers{padding-top:35px;margin-top:25px}.rb-sa-answers>header{margin-bottom:22px}.rb-sa-answer-grid>article{padding:22px 0}.rb-sa-answer-grid h3,.rb-sa-recommendation h3{font-size:20px}.rb-sa-recommendation{padding:22px 20px}.rb-sx-catalog-filters button{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.rb-sa-answer-grid a{transition:none}}

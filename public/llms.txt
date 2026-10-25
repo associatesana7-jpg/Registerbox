@@ -8,6 +8,17 @@ Business registration preparation and compliance workspaces in India. Based in B
 
 Application drafts are not government submissions. Confirm scope and fees with the team.
 
+## Questions answered on public pages
+
+Read these pages without an account. Their question headings, checklists and FAQ answers are included in the initial HTML and visible without expanding an accordion. RegisterBox recommendations are distinguished from official requirements.
+
+- [How do I register my business in Bengaluru?](https://www.registerbox.in/): choose a starting point by activity, ownership and location; compare doing it yourself with optional assistance.
+- [Which registration does my business need?](https://www.registerbox.in/services): compare services, package scope and government-fee inclusions.
+- [How do I get FSSAI registration in Bengaluru?](https://www.registerbox.in/services/fssai-food-business): Basic versus licence routes, ₹1,999 eligible Basic package, documents and official sources.
+- [Why does assistance cost more than the government fee?](https://www.registerbox.in/services/fssai-food-business#packages): distinguish the authority fee, optional assistance and separately quoted work.
+- [FSSAI cost, validity and existing-certificate questions](https://www.registerbox.in/services/fssai-food-business#fssai-faq): visible answers and limitations.
+- [Business guides](https://www.registerbox.in/blog): full public articles with direct introductions, visible FAQs and linked official sources.
+
 ## Bengaluru branches and contact
 
 - Phone: +91 81477 77843. Email: registerboxindia@gmail.com.
@@ -45,7 +56,6 @@ Company, LLP and other services without published fixed packages require an agre
 These public guides contain preparation checklists, practical explanations and linked official sources. Complete language versions have separate crawlable URLs. Language availability is generated from published translations.
 
 - [GST registration for small e-commerce sellers: the 1 November 2026 update](https://www.registerbox.in/blog/gst-registration-small-ecommerce-sellers-november-2026): A reported 1 November start, the proposed Rule 14B warehouse route, and practical preparation for small goods sellers. Source status reviewed on 23 October 2026.
-
 - [Tatkal GST registration in 3 hours? RegisterBox’s fast service and the official rules](https://www.registerbox.in/blog/fast-gst-registration-three-hours): Need GST registration quickly? Learn what RegisterBox can prepare in 3–24 hours, who may qualify for the official three-working-day route, and when a GSTIN is actually issued.
   [हिन्दी](https://www.registerbox.in/hi/blog/fast-gst-registration-three-hours) · [ಕನ್ನಡ](https://www.registerbox.in/kn/blog/fast-gst-registration-three-hours) · [தமிழ்](https://www.registerbox.in/ta/blog/fast-gst-registration-three-hours)
 - [GSTR-3B filing online: a practical RegisterBox guide for regular and nil returns](https://www.registerbox.in/blog/gstr-3b-filing-process-online): Follow the GSTR-3B preparation process in RegisterBox, check nil-return eligibility, understand OTP authorisation and know what proves a return is filed.
