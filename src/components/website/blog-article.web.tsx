@@ -55,7 +55,7 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
   });
 
   return <div className="rbg-page" lang={language.code} dir={language.direction}>
-    <Seo title={`${article.title} | RegisterBox`} description={article.description} path={path} alternates={blogAlternates(slug)} language={language.hreflang} schema={schema} image={blogImage(article)} imageAlt={article.imageAlt} type="article" publishedTime={publishedAt}/>
+    <Seo title={article.slug === 'gst-registration-small-ecommerce-sellers-november-2026' && locale === 'en' ? 'GST for Small E-commerce Sellers: November 2026 | RegisterBox' : `${article.title} | RegisterBox`} description={article.description} path={path} alternates={blogAlternates(slug)} language={language.hreflang} schema={schema} image={blogImage(article)} imageAlt={article.imageAlt} type="article" publishedTime={publishedAt}/>
     <BlogHeader locale={locale} slug={slug}/>
     <main id="blog-main" className="rbg-main">
       <nav aria-label={blogUi(locale, 'guidesNavigation')} className="rbg-breadcrumb"><Link href="/">{blogUi(locale, 'home')}</Link><span>/</span><Link href={blogPath(locale) as Href}>{blogUi(locale, 'guides')}</Link><span>/</span><span>{blogCategoryLabel(article.category, locale)}</span></nav>

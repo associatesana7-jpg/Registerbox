@@ -88,7 +88,7 @@ export default function ServicePage({ slug }: { slug: string }) {
           <a className="rb-sx-doc-link" href="#documents">See what to prepare <span aria-hidden="true">↓</span></a>
         </div>
         <aside className="rb-sx-start-card" aria-label="Your next step">
-          <div className="rb-sx-card-visual"><div className="rb-sx-visual-ring"/><img src={`/images/${ui.icon}-v1-136.webp`} width="112" height="112" alt="" fetchPriority="high"/><span className="rb-sx-visual-label"><ServiceIcon name="spark"/> YOUR NEXT CHAPTER</span></div>
+          <div className="rb-sx-card-visual"><div className="rb-sx-visual-ring"/><img src={`/images/${ui.icon}-v1-136.webp`} width="112" height="112" alt={`${ui.title} service illustration`} fetchPriority="high"/><span className="rb-sx-visual-label"><ServiceIcon name="spark"/> YOUR NEXT CHAPTER</span></div>
           <div className="rb-sx-card-body">
             <div className="rb-sx-price-label">{isQuoted ? 'LET’S UNDERSTAND YOUR REQUIREMENT' : 'REGISTERBOX ASSISTANCE FEE'}</div>
             <div className="rb-sx-price">{isQuoted ? 'A quote for your business.' : price}</div>

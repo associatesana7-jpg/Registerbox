@@ -18,7 +18,7 @@ export function BlogFooter({ locale = 'en' }: { locale?: BlogLocale }) {
 export function BlogCard({ article, featured = false, locale = 'en' }: { article: BlogArticle; featured?: boolean; locale?: BlogLocale }) {
   const path = blogPath(locale, article.slug) as Href;
   return <article className={`rbg-card${featured ? ' rbg-card-featured' : ''}`}>
-    <Link href={path} asChild><a className="rbg-image-link" aria-label={`${blogUi(locale, 'readGuide')}: ${article.title}`}><img src={blogImage(article)} srcSet={`${blogImage(article, true)} 640w, ${blogImage(article)} 1200w`} sizes={featured ? '(max-width: 700px) 100vw, 55vw' : '(max-width: 700px) 100vw, 33vw'} width="1200" height="800" alt="" loading={featured ? 'eager' : 'lazy'} decoding="async"/></a></Link>
+    <Link href={path} asChild><a className="rbg-image-link" aria-label={`${blogUi(locale, 'readGuide')}: ${article.title}`}><img src={blogImage(article)} srcSet={`${blogImage(article, true)} 640w, ${blogImage(article)} 1200w`} sizes={featured ? '(max-width: 700px) 100vw, 55vw' : '(max-width: 700px) 100vw, 33vw'} width="1200" height="800" alt={article.imageAlt} loading={featured ? 'eager' : 'lazy'} decoding="async"/></a></Link>
     <div className="rbg-card-copy">
       <span className="rbg-label">{blogCategoryLabel(article.category, locale)} <span>· {blogReadMinutes(article)} {blogUi(locale, 'readMinutes')}</span></span>
       <h2 className="rbg-card-title"><Link href={path} asChild><a>{article.title}</a></Link></h2>
