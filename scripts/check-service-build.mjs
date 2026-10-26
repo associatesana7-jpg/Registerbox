@@ -37,8 +37,8 @@ for (const [slug, category] of services) {
     assert.equal(href, '/gst', slug + ': GST workspace remains available before any package purchase');
   } else if (['gst_registration', 'food', 'retail', 'udyam'].includes(category)) {
     const target = new URL(href, 'https://www.registerbox.in');
-    assert.equal(target.pathname, '/onboarding/application', slug + ': registration before payment');
-    assert.equal(target.searchParams.get('category'), category, slug + ': preserve registration type');
+    assert.equal(target.pathname, '/auth', slug + ': explicit guest sign-in preserves query');
+    assert.equal(target.searchParams.get('next'), '/onboarding/application?category=' + category, slug + ': preserve registration type before payment');
   } else {
     const target = new URL(href, 'https://www.registerbox.in');
     assert.equal(target.pathname, '/auth', slug + ': public sign-in entry');

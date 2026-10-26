@@ -1,0 +1,22 @@
+.rb-home-prices{padding-block:0 54px}
+.rb-home-prices-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px}
+.rb-home-prices-kicker{font-size:10px;letter-spacing:1.5px;font-weight:700;color:var(--rb-blue)}
+.rb-website .rb-home-prices-heading h2{font-size:32px;line-height:1.15;letter-spacing:-1px;margin:10px 0 0}
+.rb-website .rb-home-prices-call{display:inline-flex;align-items:center;gap:16px;min-height:44px;color:var(--rb-blue);font-size:13px;font-weight:600}
+.rb-home-prices-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.rb-home-price-card{min-width:0;padding:24px;border:1px solid #e0e7f1;border-radius:20px;background:linear-gradient(160deg,#fff 30%,#f6f8fc 100%);box-shadow:0 4px 16px #13254804}
+.rb-home-price-top{min-height:58px}
+.rb-website .rb-home-price-top h3{font-size:18px;line-height:1.35;letter-spacing:-.3px;margin:0 0 5px;font-weight:650}
+.rb-home-price-top>span{font-size:11px;line-height:1.6;color:var(--rb-muted)}
+.rb-home-price-value{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:16px 0 20px}
+.rb-home-price-value strong{font-size:38px;line-height:1.1;letter-spacing:-1.6px;font-weight:700;font-variant-numeric:tabular-nums}
+.rb-home-price-value>span{font-size:11px;color:var(--rb-muted)}
+.rb-website .rb-home-price-action{display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:12px 16px;border-radius:11px;background:var(--rb-blue);color:white;font-size:13px;font-weight:650;line-height:1.5;transition:background-color 220ms,transform 220ms,box-shadow 220ms}
+.rb-website .rb-home-price-action:hover{background:#174fda;transform:translateY(-1px);box-shadow:0 6px 16px #2462ed20}
+.rb-home-price-details{margin-top:14px}
+.rb-website .rb-home-price-details>a{display:flex;align-items:center;gap:9px;font:inherit;font-size:11px;font-weight:600;min-height:32px;color:#365278}
+.rb-home-price-details small{display:block;font-size:10px;line-height:1.7;color:var(--rb-muted);margin-top:5px;max-width:32ch}
+.rb-home-prices-note{font-size:11px;line-height:1.7;color:var(--rb-muted);margin:16px 0 0;max-width:880px}
+@media(max-width:900px){.rb-home-price-card{padding:20px}.rb-home-price-top{min-height:76px}.rb-home-price-value strong{font-size:34px}.rb-website .rb-home-price-action{font-size:12px}}
+@media(max-width:650px){.rb-home-prices{padding-block:0 30px}.rb-home-prices-heading{align-items:start;flex-direction:column;gap:8px;margin-bottom:14px}.rb-home-prices-kicker{font-size:8px;letter-spacing:1.3px}.rb-website .rb-home-prices-heading h2{font-size:28px;margin-top:8px}.rb-website .rb-home-prices-call{min-height:38px;font-size:12px}.rb-home-prices-grid{grid-template-columns:1fr;gap:12px}.rb-home-price-card{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:16px;row-gap:10px;padding:20px;border-radius:16px}.rb-home-price-top{min-height:0}.rb-website .rb-home-price-top h3{font-size:17px}.rb-home-price-top>span{font-size:10px}.rb-home-price-value{align-items:flex-end;flex-direction:column;gap:4px;margin:0;text-align:right}.rb-home-price-value strong{font-size:30px;letter-spacing:-1px}.rb-home-price-value>span{font-size:9px}.rb-home-price-action,.rb-home-price-details{grid-column:1/-1}.rb-home-price-details{margin-top:0}.rb-website .rb-home-price-action{min-height:46px;font-size:13px}.rb-home-price-details small{max-width:none;font-size:10px;margin-top:0}.rb-website .rb-home-price-details>a{font-size:11px;min-height:30px}.rb-home-prices-note{font-size:10px;margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.rb-website .rb-home-price-action{transition:none}.rb-website .rb-home-price-action:hover{transform:none}}

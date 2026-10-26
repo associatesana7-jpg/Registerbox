@@ -45,3 +45,61 @@
   .rb-auth-actions{flex-wrap:wrap;gap:8px 20px}.rb-auth-actions :is(a,button){display:inline-flex;align-items:center;min-height:44px}
   .rb-auth-card .rb-otp{font-size:26px;letter-spacing:8px;max-width:100%}
 }
+
+/* Pricing is a decision, not a footer. Keep amount and next action together. */
+.rb-sx-quick-price{display:none}
+.rb-sx-priced .rb-sx-hero{align-items:start;gap:52px;padding-bottom:24px}
+.rb-sx-priced .rb-sx-start-card{align-self:start;border-color:#cbd9ec;border-radius:24px;box-shadow:0 16px 48px #1843740a}
+.rb-sx-priced .rb-sx-card-visual{min-height:100px}
+.rb-sx-priced .rb-sx-card-visual img{height:82px;width:82px;transform:none}
+.rb-sx-priced .rb-sx-card-body{padding:27px}
+.rb-sx-priced .rb-sx-price-label{font-size:10px;letter-spacing:1.1px}
+.rb-sx-priced .rb-sx-price{font-size:45px;font-weight:650;line-height:1.1;letter-spacing:-1.7px;margin:13px 0 17px;font-variant-numeric:tabular-nums}
+.rb-sx-card-billing{font-size:12px;line-height:1.5;color:#526983;margin:-7px 0 20px}
+.rb-sx-message{display:flex;align-items:center;justify-content:center;min-height:44px;font-size:11px;color:#4e6680;text-decoration:none}
+.rb-sx-priced .rb-sx-card-body>p{font-size:12px;line-height:1.75;margin-bottom:22px}
+.rb-sx-priced .rb-sx-card-body>small{font-size:11px;line-height:1.6}
+.rb-sx-priced .rb-sx-call{font-size:12px;min-height:46px}
+.rb-sx-mobile-call{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:46px;border:1px solid #dbe4ef;border-radius:12px;color:#355674;background:#f6f9fd;text-decoration:none}
+@media(max-width:700px){
+  .rb-sx-priced .rb-sx-hero{gap:22px;padding-bottom:0}
+  .rb-sx-priced .rb-sx-start-card{display:none}
+  .rb-sx-priced .rb-sx-intro>.rb-service-actions{display:none}
+  .rb-sx-quick-price{display:block;padding:20px 18px 10px;border:1px solid #cbd9ec;border-radius:18px;background:linear-gradient(140deg,#f2f7ff,#fff 80%);box-shadow:0 10px 30px #164b8306;margin:0 0 24px}
+  .rb-sx-quick-price-line{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .rb-sx-quick-price-line>span{display:grid;gap:8px;min-width:0}
+  .rb-sx-quick-price small{font-size:9px;font-weight:600;letter-spacing:.7px;color:#526983;line-height:1.4}
+  .rb-sx-quick-price .rb-sx-quick-billing{font-size:11px;font-weight:400;letter-spacing:0}
+  .rb-sx-quick-price strong{font-size:36px;font-weight:650;letter-spacing:-1.4px;line-height:1.05;font-variant-numeric:tabular-nums;color:#152b45}
+  .rb-sx-page .rb-sx-quick-price .rb-button{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:13px 14px;border-radius:11px;font:inherit;font-size:12px;font-weight:600;line-height:1.4;text-decoration:none;background:#1262df;color:#fff;max-width:52%;box-sizing:border-box}
+  .rb-sx-quick-price .rb-button svg{width:17px;flex:none}
+  .rb-sx-quick-price>p{font-size:11px;line-height:1.65;margin:13px 0 0;color:#526983}
+  .rb-sx-quick-price>a{display:flex;align-items:center;justify-content:center;gap:12px;min-height:44px;font-size:12px;color:#355674;text-decoration:none;margin-top:3px}
+  .rb-sx-page>.rb-site-footer{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
+  .rb-sx-mobile-action{gap:9px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0;box-shadow:0 -5px 28px #1425440a}
+  .rb-sx-mobile-action small{font-size:10px;max-width:135px;line-height:1.4}
+  .rb-sx-mobile-action b{font-size:22px;font-weight:650;line-height:1.1;letter-spacing:-.6px}
+  .rb-sx-page .rb-sx-mobile-action .rb-button{min-height:46px;max-width:43%;border-radius:12px;font-size:12px;line-height:1.4;padding:12px 14px}
+}
+@media(max-width:370px){.rb-sx-quick-price{padding-inline:14px}.rb-sx-quick-price strong{font-size:32px}.rb-sx-quick-price-line{gap:9px}.rb-sx-mobile-action b{font-size:19px}.rb-sx-mobile-action small{max-width:113px}.rb-sx-page .rb-sx-mobile-action .rb-button{font-size:11px;padding-inline:12px}.rb-sx-mobile-call{width:40px}}
+
+.rb-sx-catalog-intro-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px 25px;margin:0 0 19px}
+.rb-sx-catalog-intro-actions .rb-button{min-height:46px;gap:18px;border-radius:12px;font-size:13px}
+.rb-sx-catalog-intro-actions>a:not(.rb-button){display:inline-flex;align-items:center;min-height:44px;font-size:13px;color:#355674;text-decoration:none}
+.rb-sx-catalog .rb-sx-catalog-card{border-radius:22px;background:#fff;box-shadow:0 7px 24px #17395204}
+.rb-sx-catalog .rb-sx-catalog-art{min-height:95px;padding:16px 24px;background:linear-gradient(140deg,var(--sx-soft),var(--sx-faint))}
+.rb-sx-catalog .rb-sx-catalog-art img{width:64px;height:64px;transform:none}
+.rb-sx-catalog .rb-sx-catalog-card-body{padding:24px}
+.rb-sx-catalog .rb-sx-catalog-card h2{font-size:22px;font-weight:600;line-height:1.25;letter-spacing:-.5px;margin:0 0 19px;min-height:0}
+.rb-sx-catalog .rb-sx-catalog-card h2 a{font:inherit;line-height:inherit;letter-spacing:inherit;text-decoration:none;color:inherit}
+.rb-sx-catalog .rb-sx-catalog-card-fee{display:grid;gap:7px;margin:0 0 18px;min-height:106px}
+.rb-sx-catalog .rb-sx-catalog-card-fee small{font-size:11px;line-height:1.65;color:#526983}
+.rb-sx-catalog .rb-sx-catalog-card-fee b{font-size:32px;line-height:1.1;letter-spacing:-1.2px;font-weight:650;font-variant-numeric:tabular-nums}
+.rb-sx-catalog .rb-sx-catalog-card-fee b.rb-sx-catalog-quote{font-size:23px;letter-spacing:-.6px}
+.rb-sx-catalog .rb-entry-actions{display:block;border:0;padding:0;margin:0 0 18px}
+.rb-sx-catalog .rb-entry-start{font:inherit;display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;box-sizing:border-box;min-height:48px;border-radius:12px;padding:13px 16px;font-size:13px;font-weight:600;line-height:1.4;text-decoration:none;background:#1262df}
+.rb-sx-catalog .rb-entry-start:hover{background:#0b50c2}
+.rb-sx-catalog .rb-sx-catalog-card-body>p{font-size:13px;line-height:1.7;min-height:0;margin:0 0 17px}
+.rb-sx-catalog-card-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px 15px;border-top:1px solid #e5ebf3;margin-top:auto}
+.rb-sx-catalog-card-foot>a{font-size:12px;line-height:1.5;color:#355674;min-height:44px;display:inline-flex;align-items:center;text-decoration:none}
+@media(max-width:700px){.rb-sx-catalog .rb-sx-catalog-card-body{padding:19px}.rb-sx-catalog .rb-sx-catalog-card h2{font-size:20px;margin-bottom:17px}.rb-sx-catalog .rb-sx-catalog-card-fee b{font-size:30px}.rb-sx-catalog .rb-sx-catalog-card-fee{min-height:0}.rb-sx-catalog .rb-sx-catalog-grid{grid-template-columns:minmax(0,1fr)}.rb-sx-catalog .rb-sx-catalog-card{display:grid;grid-template-columns:72px minmax(0,1fr)}.rb-sx-catalog .rb-sx-catalog-art{padding:18px 8px;min-height:0;align-items:flex-start}.rb-sx-catalog .rb-sx-catalog-art img{width:55px;height:55px}.rb-sx-catalog .rb-sx-catalog-art>span{display:none}.rb-sx-catalog-intro-actions{gap:4px 18px}.rb-sx-catalog-intro-actions .rb-button{font-size:12px}.rb-sx-catalog-card-foot{gap:0 12px}.rb-sx-catalog-card-foot>a{font-size:11px}}

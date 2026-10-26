@@ -50,7 +50,7 @@ for(const article of articles){
     coveredPackages.add(item.id);
     assert.ok(panel.includes(item.title.replace(/&/g,'&amp;')),`${article.slug}: package ${item.id}`);
     assert.ok(panel.includes(blogPackagePrice(item.amountPaise)),`${article.slug}: catalogue price ${item.id}`);
-    if(item.serviceCategory === 'food') assert.ok(panel.includes('href="/onboarding/application?category=food"'),`${article.slug}: food category review before payment`);
+    if(item.serviceCategory === 'food') assert.ok(panel.includes('href="/auth?next=%2Fonboarding%2Fapplication%3Fcategory%3Dfood"'),`${article.slug}: food category retained through sign-in before payment`);
     else assert.ok(panel.includes(`href="/checkout?package=${item.id}"`),`${article.slug}: secure checkout ${item.id}`);
     assert.ok(panel.includes('No GST is added'),`${article.slug}: no extra GST`);
   }

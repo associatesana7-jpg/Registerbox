@@ -10,6 +10,7 @@ export type BlogVideo = {
   language: 'hi-IN' | 'en-IN';
   width?: number;
   height?: number;
+  watchPath?: string;
 };
 
 const gstExplained: BlogVideo = {
@@ -23,6 +24,7 @@ const gstExplained: BlogVideo = {
   language: 'hi-IN',
   width: 1080,
   height: 1920,
+  watchPath: '/blog/what-is-gst',
   transcript: 'GST यानी Goods and Services Tax, goods और services की taxable supply पर लगने वाला indirect tax है। Registered business ग्राहक के बिल में लागू GST लेता है; यह उसकी अतिरिक्त कमाई नहीं है। खरीद पर दिया पात्र GST, बिक्री के GST से नियमों के अनुसार समायोजित हो सकता है। उदाहरण में आशा regular GST में registered हैं और केवल गणना के लिए 18% दर ली गई है। ₹600 की खरीद पर ₹108 GST, कुल ₹708 हैं। ₹1,000 की बिक्री पर ₹180 GST, कुल ₹1,180 हैं। यदि ₹108 का पूरा input tax credit पात्र है और उसका उपयोग अनुमत है, तो ₹180 में से ₹108 घटाने पर ₹72 बचते हैं। वास्तविक टैक्स में दर, tax heads, credit की पात्रता और अन्य नियम जाँचना ज़रूरी है। सही बिल और रिकॉर्ड रखें। GST registration से GSTIN मिलता है। Registration और return की ज़रूरत कारोबार के तथ्यों पर निर्भर है। RegisterBox registration, documents, return preparation और filing में सहायता करता है। Call या WhatsApp करें: +91 81477 77843। registerbox.in।',
 };
 

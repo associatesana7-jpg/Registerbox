@@ -34,7 +34,8 @@ const serviceRoutes = [...sitemap.matchAll(/<loc>https:\/\/www\.registerbox\.in(
 for (const route of serviceRoutes) {
   const page = html(route);
   assert.match(text(page.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] || ''), /\?$/, route + ': specific question heading');
-  assert.doesNotMatch(page, /<details\b/, route + ': no collapsed checklists or FAQ answers');
+  const guidance = page.replace(/<details class="rb-package-details">[\s\S]*?<\/details>/g, '');
+  assert.doesNotMatch(guidance, /<details\b/, route + ': guidance and FAQ answers remain visible; only detailed package inclusions may expand');
   if (!route.endsWith('fssai-food-business') && !route.endsWith('free-nil-gst-filing')) {
     assert((page.match(/class="rb-answer-detail"/g) || []).length >= 8, route + ': full guidance and sources before JavaScript');
     assert(page.includes('Our recommendation'), route + ': labelled editorial judgment');
@@ -49,7 +50,7 @@ let blogCount = 0;
 for (const article of readBlogArticles()) for (const locale of availableBlogLocales(article.slug)) {
   const translated = localizedArticle(article.slug, locale.code);
   const page = html(blogPath(locale.code, article.slug));
-  assert(page.indexOf('rbg-article-summary') < page.indexOf('class="rbg-cover"'), 'Direct introduction precedes decorative cover');
+  if (page.includes('class="rbg-cover"')) assert(page.indexOf('rbg-article-summary') < page.indexOf('class="rbg-cover"'), 'Direct introduction precedes decorative cover');
   const faqSection = page.match(/<section id="common-questions">([\s\S]*?)<\/section>/)?.[1];
   assert(faqSection && !faqSection.includes('<details'), 'Blog FAQs fully visible');
   assert.equal((faqSection.match(/class="rbg-faq"/g) || []).length, translated.faqs.length);

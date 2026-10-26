@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { readBlogArticles, readLocalizedBlogCatalog } from './blog-catalog.mjs';
+import { readBlogArticles, readLocalizedBlogCatalog, readBlogModule } from './blog-catalog.mjs';
 
 const articles = readBlogArticles();
 const { availableBlogLocales, localizedArticle, blogPath, blogAlternates } = readLocalizedBlogCatalog();
@@ -20,6 +20,16 @@ const sitemap = original
   // Omit unknown lastmod dates rather than refreshing them on every build.
   .replace('</urlset>', entries.map(entry => `  <url><loc>${xml(site + entry.path)}</loc>${entry.alternates.map(alternate => `<xhtml:link rel="alternate" hreflang="${alternate.language}" href="${xml(site + alternate.path)}"/>`).join('')}</url>`).join('\n') + '\n</urlset>');
 fs.writeFileSync('public/sitemap.xml', sitemap);
+
+// Only pages designed primarily for watching belong in the video sitemap.
+const { blogVideos } = readBlogModule('src/data/blog-video.ts');
+const watchVideos = articles.flatMap(article => {
+  const video = blogVideos[article.slug];
+  return video?.watchPath === `/blog/${article.slug}` ? [{ article, video }] : [];
+});
+fs.writeFileSync('public/video-sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">\n'
+  + watchVideos.map(({ video }) => `  <url><loc>${xml(site + video.watchPath)}</loc><video:video><video:thumbnail_loc>${xml(site + video.poster)}</video:thumbnail_loc><video:title>${xml(video.title)}</video:title><video:description>${xml(video.description)}</video:description><video:content_loc>${xml(site + video.src)}</video:content_loc><video:publication_date>${xml(video.uploadDate)}</video:publication_date><video:family_friendly>yes</video:family_friendly><video:requires_subscription>no</video:requires_subscription><video:live>no</video:live></video:video></url>`).join('\n')
+  + '\n</urlset>\n');
 
 const existing = fs.readFileSync('public/llms.txt', 'utf8').split('\n## Business questions and guides')[0].trimEnd();
 fs.writeFileSync('public/llms.txt', `${existing}\n\n## Business questions and guides\n\nThese public guides contain preparation checklists, practical explanations and linked official sources. Complete language versions have separate crawlable URLs. Language availability is generated from published translations.\n\n`

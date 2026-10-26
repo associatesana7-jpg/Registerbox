@@ -45,8 +45,10 @@ export default function ServicePage({ slug }: { slug: string }) {
   const review = service.category === 'trademark' ? { ...contentReview, date: '16 October 2026', isoDate: '2026-10-16' } : contentReview;
   const path = `/services/${service.slug}`;
   const packages = servicePackagesForCategory(service.category);
+  const startingPackage = packages.reduce<(typeof packages)[number] | undefined>((lowest, item) => !lowest || item.amountPaise < lowest.amountPaise ? item : lowest, undefined);
   const destination = publicServiceStartPath(service.category);
-  const startHref: Href = packages.length || session ? destination as Href : { pathname: '/auth', params: { next: destination } };
+  const startHref: Href = !session && destination.startsWith('/onboarding/') ? { pathname: '/auth', params: { next: destination } } : packages.length || session ? destination as Href : { pathname: '/auth', params: { next: destination } };
+  const priceActionHref: Href = packages.length > 1 ? `${path}#packages` as Href : startHref;
   const registration = ['gst_registration', 'food', 'retail', 'udyam'].includes(service.category);
   const actionLabel = registration || service.category === 'gst' ? serviceActionLabels[service.category] : packages.length > 1 ? 'Choose a package' : packages.length ? 'Continue to checkout' : serviceActionLabels[service.category];
   const price = packages.length ? `${packages.length > 1 ? 'From ' : ''}${packagePrice(Math.min(...packages.map(item => item.amountPaise)))}` : ['company', 'llp'].includes(service.category) ? details.pricing?.value || 'Ask for a quote' : 'Ask for a quote';
@@ -70,7 +72,7 @@ export default function ServicePage({ slug }: { slug: string }) {
     { '@type': 'ListItem', position: 3, name: service.title, item: `${siteUrl}${path}` },
   ] };
   if (service.category === 'food') return <FssaiServicePage/>;
-  return <div className={`rb-public-page rb-sx-page rb-answer-page rb-sx-${ui.tone}`}>
+  return <div className={`rb-public-page rb-sx-page rb-answer-page rb-sx-${ui.tone}${packages.length ? ' rb-sx-priced' : ''}`}>
     <Seo title={`${ui.title} in Bengaluru | RegisterBox`} description={`${ui.title} support in Bengaluru.${packages.length ? ` Packages ${price.toLowerCase()}. No GST added to the RegisterBox service fee.` : ' See what to prepare and how RegisterBox helps.'} New Thippasandra and Marathahalli.`} path={path} schema={[serviceSchema, breadcrumbs]}/>
     <header className="rb-public-header rb-container"><WebBrand/><Link href="/services">All services <span aria-hidden="true">↗</span></Link></header>
     <main className="rb-container rb-sx-main">
@@ -79,6 +81,7 @@ export default function ServicePage({ slug }: { slug: string }) {
         <div className="rb-sx-intro">
           <div className="rb-sx-kicker"><span/> BENGALURU · {service.group.toUpperCase()}</div>
           <h1 id="service-title">{answer.question}</h1>
+          {startingPackage && <div className="rb-sx-quick-price" aria-label="Service price and next step"><div className="rb-sx-quick-price-line"><span><small>{packages.length > 1 ? 'PACKAGES FROM' : 'REGISTERBOX SERVICE FEE'}</small><strong>{price.replace(/^From /, '')}</strong><small className="rb-sx-quick-billing">{startingPackage.billingLabel}</small></span><Link href={priceActionHref} asChild><a className="rb-button">{packages.length > 1 ? 'See packages' : registration ? 'Start application' : 'Choose package'} <ServiceIcon name="arrow"/></a></Link></div><p>{startingPackage.feeNote}</p><a href={contact.telephoneHref}>Questions? Call our team <span aria-hidden="true">↗</span></a></div>}
           <p className="rb-answer-direct">{answer.answer}</p>
           <div className="rb-service-actions"><Link className="rb-button" href={startHref}>{actionLabel} <ServiceIcon name="arrow"/></Link><a className="rb-secondary-button" href={`tel:${contact.phone.replace(/[^+0-9]/g, '')}`}>Talk to our team</a></div>
           <p className="rb-sx-audience">{registration ? 'Complete your registration details and send them to RegisterBox. Your package and secure payment step follow submission.' : packages.length ? 'Choose your package, review your details and pay securely with Razorpay.' : session ? 'Continue directly to your selected service.' : 'One email sign-in, then straight to this service. Save and continue later.'}</p>
@@ -92,17 +95,19 @@ export default function ServicePage({ slug }: { slug: string }) {
           <div className="rb-sx-card-body">
             <div className="rb-sx-price-label">{isQuoted ? 'LET’S UNDERSTAND YOUR REQUIREMENT' : 'REGISTERBOX ASSISTANCE FEE'}</div>
             <div className="rb-sx-price">{isQuoted ? 'A quote for your business.' : price}</div>
-            <p>{isQuoted ? 'Start your details online. Scope and fees are confirmed before paid work begins.' : packages.length ? packages[0].feeNote : 'Government charges, where applicable, are separate. Confirm scope before proceeding.'}</p>
+            {startingPackage && <div className="rb-sx-card-billing">{startingPackage.billingLabel}</div>}
             <Link className="rb-button rb-sx-primary" href={startHref}>{actionLabel} <ServiceIcon name="arrow"/></Link>
             <small>{packages.length ? 'Secure Razorpay checkout · Clear service scope' : 'Secure workspace · Save and continue later'}</small>
-            <a className="rb-sx-call" href={whatsapp} target="_blank" rel="noopener noreferrer"><ServiceIcon name="phone"/> Need help first? Chat with us ↗</a>
+            <p>{isQuoted ? 'Start your details online. Scope and fees are confirmed before paid work begins.' : startingPackage ? startingPackage.feeNote : 'Government charges, where applicable, are separate. Confirm scope before proceeding.'}</p>
+            <a className="rb-sx-call" href={contact.telephoneHref}><ServiceIcon name="phone"/> Questions? Call our team ↗</a>
+            <a className="rb-sx-message" href={whatsapp} target="_blank" rel="noopener noreferrer">Or chat on WhatsApp ↗</a>
           </div>
         </aside>
       </section>
 
-      <section className="rb-answer-recommendation" id="our-recommendation" aria-labelledby="recommendation-title"><h2 id="recommendation-title">Our recommendation</h2><p>{answer.recommendation}</p></section>
-
       <ServicePackages category={service.category}/>
+
+      <section className="rb-answer-recommendation" id="our-recommendation" aria-labelledby="recommendation-title"><h2 id="recommendation-title">Our recommendation</h2><p>{answer.recommendation}</p></section>
 
       <div className="rb-sx-confidence"><span><ServiceIcon name="check"/> Bengaluru team</span><span><ServiceIcon name="check"/> Clear scope before work</span><span><ServiceIcon name="check"/> No guaranteed approvals</span></div>
 
@@ -157,6 +162,6 @@ export default function ServicePage({ slug }: { slug: string }) {
       <section className="rb-sx-related"><h2>Looking for something else?</h2><div>{publicServices.filter(item => item.category !== service.category && item.group === service.group).slice(0, 4).map(item => <Link key={item.slug} href={`/services/${item.slug}` as Href}>{servicePresentation[item.category].title}<ServiceIcon name="arrow"/></Link>)}</div></section>
     </main>
     <SiteFooter/>
-    <div className="rb-sx-mobile-action"><span><small>{ui.title}</small><b>{isQuoted ? 'Scope & quote first' : price}</b></span><Link className="rb-button" href={startHref}>{actionLabel} ↗</Link></div>
+    <div className="rb-sx-mobile-action"><span><small>{ui.title}</small><b>{isQuoted ? 'Scope & quote first' : price}</b></span><a className="rb-sx-mobile-call" href={contact.telephoneHref} aria-label="Call RegisterBox"><ServiceIcon name="phone"/></a><Link className="rb-button" href={priceActionHref}>{packages.length > 1 ? 'See packages' : registration ? 'Apply now' : packages.length ? 'Get started' : actionLabel} ↗</Link></div>
   </div>;
 }

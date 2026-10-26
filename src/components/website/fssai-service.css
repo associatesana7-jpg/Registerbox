@@ -9,3 +9,47 @@
 @media(max-width:700px){.rb-food-actions .rb-button,.rb-food-actions .rb-secondary-button{flex:1 1 100%;width:100%;padding-inline:20px;gap:15px}.rb-food-table tbody th{width:32%;min-width:106px;overflow-wrap:normal;word-break:normal}.rb-food-table th,.rb-food-table td{padding-inline:10px}.rb-food-mobile small{font-size:10px}}
 
 .rb-food-page{overscroll-behavior-y:contain}
+
+/* Give the amount and next action the same visual priority as the headline. */
+.rb-food-quick-offer{display:none}
+.rb-food-hero{gap:52px;margin-bottom:30px}
+.rb-food-offer{border-color:#d6e0eb;background:#fff;box-shadow:0 16px 48px #1843740a;border-radius:24px}
+.rb-food-offer-top{background:#f4f7fc;border-color:#e1e7ef;padding:14px 25px}
+.rb-food-offer-top img{width:60px;height:60px}
+.rb-food-offer-top span{color:#66778d;font-size:9px}
+.rb-food-offer-body{padding:27px}
+.rb-food-offer .rb-food-price{font-size:49px!important;font-variant-numeric:tabular-nums;letter-spacing:-2px}
+.rb-food-offer .rb-food-inclusive{font-size:12px;line-height:1.6;margin:12px 0 19px}
+.rb-food-offer-call{display:flex;align-items:center;justify-content:center;gap:14px;min-height:44px;font-size:12px;color:#355674;text-decoration:none}
+.rb-food-offer small{font-size:12px;text-align:left;margin-top:12px;line-height:1.75}
+.rb-food-offer ul{border-top:1px solid #e3e8ee;padding-top:17px;margin:19px 0 0}
+.rb-food-pricing-first{padding-top:22px;padding-bottom:40px}
+.rb-food-package{border-color:#cfdbeb;background:linear-gradient(135deg,#f4f8ff,#fff 65%);border-radius:24px}
+.rb-food-package-actions{display:grid;gap:3px;margin-top:18px}
+.rb-food-package-actions .rb-button{margin-top:0;justify-content:space-between}
+.rb-food-package-actions>a:not(.rb-button){display:flex;align-items:center;justify-content:center;gap:14px;min-height:44px;color:#355674;font-size:12px;text-decoration:none}
+.rb-food-page .rb-food-mobile b{font-size:22px;font-weight:650;letter-spacing:-.6px;line-height:1.1}
+.rb-food-mobile .rb-sx-mobile-call{width:44px;min-height:46px;border:1px solid #dbe4ef;border-radius:12px;flex:none;font-size:11px;color:#355674;text-decoration:none}
+@media(max-width:700px){
+  .rb-food-breadcrumb{margin:20px 0 27px}
+  .rb-food-hero{gap:20px;margin-bottom:23px}
+  .rb-food-hero h1{font-size:39px;letter-spacing:-1.5px;line-height:1.12;margin-bottom:20px}
+  .rb-food-offer{display:none}
+  .rb-food-hero .rb-food-actions>.rb-button{display:none}
+  .rb-food-quick-offer{display:block;padding:20px 18px 10px;margin:0 0 24px;border:1px solid #cbd9ec;border-radius:18px;background:linear-gradient(140deg,#f2f7ff,#fff 80%);box-shadow:0 10px 30px #164b8306}
+  .rb-food-quick-offer>div{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .rb-food-quick-offer>div>span{display:grid;gap:8px;min-width:0}
+  .rb-food-quick-offer small{font-size:9px;line-height:1.4;color:#526983;letter-spacing:.6px;font-weight:600}
+  .rb-food-quick-offer small:last-child{font-size:11px;font-weight:400;letter-spacing:0}
+  .rb-food-quick-offer strong{font-size:36px;font-weight:650;letter-spacing:-1.4px;line-height:1.05;font-variant-numeric:tabular-nums}
+  .rb-food-quick-offer .rb-button{font:inherit;font-size:12px;font-weight:600;line-height:1.4;gap:12px;padding:13px 14px;min-height:48px;max-width:52%;text-decoration:none}
+  .rb-food-quick-offer>p{font-size:11px;line-height:1.7;margin:13px 0 0;color:#526983}
+  .rb-food-quick-offer>a{display:flex;align-items:center;justify-content:center;gap:12px;min-height:44px;font-size:12px;color:#355674;text-decoration:none;margin-top:3px}
+  .rb-food-pricing-first{padding-top:13px;padding-bottom:32px}
+  .rb-food-package{border-radius:20px}
+  .rb-food-page .rb-site-footer{padding-bottom:calc(116px + env(safe-area-inset-bottom))}
+  .rb-food-mobile.rb-sx-mobile-action{gap:9px;padding-inline:16px;border-radius:18px 18px 0 0}
+  .rb-food-mobile small{font-size:9px;line-height:1.5;max-width:148px}
+  .rb-food-mobile .rb-button{border-radius:12px;min-height:46px;max-width:43%;font-size:12px}
+}
+@media(max-width:370px){.rb-food-hero h1{font-size:35px}.rb-food-quick-offer{padding-inline:14px}.rb-food-quick-offer strong{font-size:32px}.rb-food-quick-offer>div{gap:9px}.rb-food-mobile small{max-width:112px}}

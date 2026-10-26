@@ -4,12 +4,14 @@ import { blogArticleDate, blogImage, blogReadMinutes, type BlogArticle } from '@
 import { blogAlternates, blogLocale, blogPath, blogUi, localizedArticle, type BlogLocale } from '@/data/blog/localized';
 import { BlogActions } from './blog-actions.web';
 import { BlogOffers } from './blog-offers.web';
+import { BlogPricingLead, BlogPricingDock } from './blog-pricing-lead.web';
 import { BlogVideoPlayer } from './blog-video.web';
 import { blogVideos } from '@/data/blog-video';
 import { BlogCard, BlogFooter, BlogHeader, blogCategoryLabel } from './blog-chrome.web';
 import { Seo, siteUrl } from './seo.web';
 import './blog.css';
 import './blog-answer-first.css';
+import './blog-watch.css';
 
 export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string; locale?: BlogLocale }) {
   const article = localizedArticle(slug, locale);
@@ -26,6 +28,7 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
   const dateLabel = new Intl.DateTimeFormat(language.hreflang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${publishedAt}T00:00:00Z`));
   const related = article.relatedSlugs.map(slug => localizedArticle(slug, locale)).filter((item): item is BlogArticle => Boolean(item)).slice(0, 3);
   const video = blogVideos[article.slug];
+  const watchPage = Boolean(video && video.watchPath === path);
   const schema: Record<string, unknown>[] = [
     {
       '@type': 'BlogPosting', '@id': `${siteUrl}${path}#article`, headline: article.title,
@@ -51,27 +54,31 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
     contentUrl: `${siteUrl}${video.src}`, uploadDate: video.uploadDate,
     duration: video.duration, inLanguage: video.language, transcript: video.transcript,
     publisher: { '@id': `${siteUrl}/#organization` },
-    isPartOf: { '@id': `${siteUrl}${path}#article` },
+    isPartOf: { '@id': `${siteUrl}${path}${watchPage ? '' : '#article'}` },
+    ...(watchPage ? { mainEntityOfPage: { '@id': `${siteUrl}${path}` } } : {}),
   });
+  if (watchPage) schema.push({ '@type': 'WebPage', '@id': `${siteUrl}${path}`, name: article.title, url: `${siteUrl}${path}`, mainEntity: { '@id': `${siteUrl}${path}#video` } });
 
   return <div className="rbg-page" lang={language.code} dir={language.direction}>
     <Seo title={article.slug === 'gst-registration-small-ecommerce-sellers-november-2026' && locale === 'en' ? 'GST for Small E-commerce Sellers: November 2026 | RegisterBox' : `${article.title} | RegisterBox`} description={article.description} path={path} alternates={blogAlternates(slug)} language={language.hreflang} schema={schema} image={blogImage(article)} imageAlt={article.imageAlt} type="article" publishedTime={publishedAt}/>
     <BlogHeader locale={locale} slug={slug}/>
     <main id="blog-main" className="rbg-main">
       <nav aria-label={blogUi(locale, 'guidesNavigation')} className="rbg-breadcrumb"><Link href="/">{blogUi(locale, 'home')}</Link><span>/</span><Link href={blogPath(locale) as Href}>{blogUi(locale, 'guides')}</Link><span>/</span><span>{blogCategoryLabel(article.category, locale)}</span></nav>
+      <div className={`rbg-article-opening${watchPage ? ' rbg-watch-opening' : ''}`}>
+      {watchPage && video && <div className="rbg-watch-video"><BlogVideoPlayer video={video} prominent/></div>}
       <header className="rbg-article-heading">
         <div className="rbg-kicker">{blogCategoryLabel(article.category, locale)}</div>
         <h1>{article.title}</h1><p className="rbg-deck">{article.description}</p>
         <p className="rbg-byline">{blogUi(locale, 'by')} <Link href={'/blog/editorial-policy' as Href}>RegisterBox</Link> <span>·</span> <time dateTime={publishedAt}>{dateLabel}</time> <span>·</span> {blogReadMinutes(article)} {blogUi(locale, 'readMinutes')}</p>
         {article.availabilityNote && <p className="rbg-availability" role="note"><strong>{blogUi(locale, 'available')}</strong> {article.availabilityNote}</p>}
-        <BlogActions article={article} compact locale={locale}/>
-      </header>
+        {!watchPage && <BlogActions article={article} compact locale={locale}/>}
+      </header><BlogPricingLead article={article}/></div>
       <div className="rbg-answer rbg-article-summary">{article.intro.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div>
-      <figure className="rbg-cover"><img src={blogImage(article)} srcSet={`${blogImage(article, true)} 640w, ${blogImage(article)} 1200w`} sizes="(max-width: 1000px) 100vw, 1100px" width="1200" height="800" fetchPriority="high" alt={article.imageAlt}/><figcaption>{blogUi(locale, 'illustration')}</figcaption></figure>
+      {!watchPage && <figure className="rbg-cover"><img src={blogImage(article)} srcSet={`${blogImage(article, true)} 640w, ${blogImage(article)} 1200w`} sizes="(max-width: 1000px) 100vw, 1100px" width="1200" height="800" fetchPriority="high" alt={article.imageAlt}/><figcaption>{blogUi(locale, 'illustration')}</figcaption></figure>}
       <div className="rbg-reading-layout">
         <aside className="rbg-toc"><h2>{blogUi(locale, 'inGuide')}</h2><nav aria-label={blogUi(locale, 'onPage')}>{video && <a href="#video-explainer">हिंदी वीडियो</a>}{article.sections.map(section => <a key={section.id} href={`#${section.id}`}>{section.heading}</a>)}<a href="#common-questions">{blogUi(locale, 'commonQuestions')}</a><a href="#sources">{blogUi(locale, 'officialSources')}</a></nav></aside>
         <article className="rbg-prose">
-          {video && <BlogVideoPlayer video={video}/>}
+          {video && !watchPage && <BlogVideoPlayer video={video}/>}
           {article.sections.map(section => <section id={section.id} key={section.id}>
             <h2>{section.heading}</h2>{section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
             {section.bullets && <ul>{section.bullets.map(item => <li key={item}>{item}</li>)}</ul>}
@@ -92,5 +99,6 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
       {related.length > 0 && <section className="rbg-related"><h2>{blogUi(locale, 'keepReading')}</h2><div className="rbg-grid">{related.map(item => <BlogCard key={item.slug} article={item} locale={locale}/>)}</div></section>}
     </main>
     <BlogFooter locale={locale}/>
+    <BlogPricingDock article={article}/>
   </div>;
 }
