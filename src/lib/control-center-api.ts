@@ -65,6 +65,24 @@ export type ControlCenterDirectory = {
   generatedAt: string;
 };
 
+export type WebsiteLeadStatus = 'new' | 'contacted' | 'closed';
+
+export type WebsiteLead = {
+  id: string;
+  fullName: string;
+  phone: string;
+  serviceKey: string;
+  serviceLabel: string;
+  sourcePath: string;
+  locale: string;
+  status: WebsiteLeadStatus;
+  createdAt: string;
+  updatedAt: string;
+  lastContactedAt: string | null;
+};
+
+export type WebsiteLeadList = { leads: WebsiteLead[]; generatedAt: string };
+
 export async function sendControlCenterOtp(email: string, verifyCaptcha?: AuthCaptchaVerifier) {
   const normalized = normalizeEmail(email);
   if (await adaptiveAuthRequest('admin_email', normalized, verifyCaptcha)) return;
@@ -89,7 +107,7 @@ export async function verifyControlCenterOtp(email: string, token: string) {
 }
 
 export async function controlCenterRequest<T>(
-  action: 'me' | 'dashboard' | 'directory' | 'document_link' | 'filing_workspace' | `crm_${string}` | `payment_${string}`,
+  action: 'me' | 'dashboard' | 'directory' | 'document_link' | 'filing_workspace' | `crm_${string}` | `payment_${string}` | `lead_${string}`,
   payload: Record<string, unknown> = {},
 ): Promise<T> {
   const { data, error } = await supabase.functions.invoke<T>('control-center', { body: { action, ...payload } });
@@ -132,6 +150,14 @@ export function updatePaymentOperationCase(id: string, status: PaymentFollowUpSt
 
 export function exportPaymentOperations(filters: PaymentOperationsFilters, reason: string) {
   return controlCenterRequest<{ rows: PaymentOperationsRow[]; hasMore: boolean; limit?: number; total?: number }>('payment_export', { ...filters, reason });
+}
+
+export function loadWebsiteLeads(status: WebsiteLeadStatus | 'all' = 'all') {
+  return controlCenterRequest<WebsiteLeadList>('lead_list', { status });
+}
+
+export function updateWebsiteLead(id: string, status: WebsiteLeadStatus) {
+  return controlCenterRequest<{ lead: WebsiteLead }>('lead_update', { id, status });
 }
 
 export async function signOutControlCenter() {

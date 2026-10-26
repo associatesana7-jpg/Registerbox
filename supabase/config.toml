@@ -446,3 +446,6 @@ verify_jwt = true
 [functions.razorpay-webhook]
 # Authenticated by raw-body Razorpay HMAC, not a Supabase customer JWT.
 verify_jwt = false
+
+[functions.public-lead-intake]
+verify_jwt = false

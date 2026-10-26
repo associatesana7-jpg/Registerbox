@@ -1,0 +1,86 @@
+.rb-lead-dialog {
+  width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 24px;
+  border: 0; background: transparent; color: #10244a;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  opacity: 0; transition: opacity 220ms ease;
+}
+.rb-lead-dialog[open] { display: flex; align-items: center; justify-content: center; }
+.rb-lead-dialog::backdrop { background: rgba(7,18,42,.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.rb-lead-dialog[data-visible=true] { opacity: 1; }
+.rb-lead-surface {
+  position: relative; width: min(850px, calc(100vw - 48px)); max-height: calc(100dvh - 48px); overflow: auto; margin: auto;
+  background: linear-gradient(180deg,#fff 0%,#fbfcff 100%); border: 1px solid rgba(255,255,255,.84); border-radius: 26px;
+  box-shadow: 0 34px 100px rgba(5,21,55,.3); transform: translateY(18px) scale(.985); opacity: 0;
+  transition: transform 440ms cubic-bezier(.22,1,.36,1), opacity 360ms ease;
+}
+.rb-lead-dialog[data-visible=true] .rb-lead-surface { transform: translateY(0) scale(1); opacity: 1; }
+.rb-lead-surface form { padding: 34px 38px 27px; }
+.rb-lead-close {
+  position: absolute; z-index: 2; top: 17px; right: 17px; width: 38px; height: 38px; border: 1px solid #e3e9f3;
+  border-radius: 50%; background: #fff; color: #4f5f79; font: 400 25px/1 Inter,sans-serif; display: grid; place-items: center;
+  transition: transform 220ms, background-color 220ms;
+}
+.rb-lead-close:hover { background: #f3f6fb; transform: rotate(5deg); }
+.rb-lead-heading { display: grid; grid-template-columns: 50px 1fr; gap: 15px; padding-right: 36px; }
+.rb-lead-spark { width: 50px; height: 50px; border-radius: 16px; background: linear-gradient(145deg,#eaf1ff,#f4f7ff); border: 1px solid #dce7fb; color: #2462ed; display: grid; place-items: center; font-size: 23px; }
+.rb-lead-heading p,.rb-lead-success>p:first-of-type { margin: 0 0 6px; color: #2462ed; font-size: 9px; line-height: 1.3; font-weight: 850; letter-spacing: 1.7px; }
+.rb-lead-heading h2,.rb-lead-success h2 { margin: 0; color: #10244a; font: 850 28px/1.14 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing: -1.1px; }
+.rb-lead-heading>div>span { display: block; margin-top: 7px; color: #6d7b92; font-size: 12px; }
+.rb-lead-services { border: 0; padding: 0; margin: 23px 0 20px; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 9px; }
+.rb-lead-services legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.rb-lead-services label {
+  position: relative; display: grid; grid-template-columns: 38px minmax(0,1fr) 16px; align-items: center; gap: 8px; min-height: 59px;
+  padding: 8px 9px; border: 1px solid #e2e8f2; border-radius: 13px; background: #fff; color: #2c3d5b;
+  font-size: 10px; line-height: 1.25; font-weight: 750; cursor: pointer;
+  transition: border-color 220ms,background-color 220ms,box-shadow 220ms,transform 220ms;
+}
+.rb-lead-services label:hover { border-color: #b9cdf8; transform: translateY(-1px); }
+.rb-lead-services label.is-selected { border-color: #2462ed; background: #f2f6ff; box-shadow: 0 0 0 3px rgba(36,98,237,.08); }
+.rb-lead-services input { position: absolute; opacity: 0; pointer-events: none; }
+.rb-lead-mark { height: 38px; border-radius: 10px; background: #eef3fb; color: #536682; display: grid; place-items: center; font-size: 7px; font-weight: 850; letter-spacing: .25px; }
+.rb-lead-services .is-selected .rb-lead-mark { background: #2462ed; color: #fff; }
+.rb-lead-services i { width: 16px; height: 16px; border: 1px solid #d9e1ee; border-radius: 50%; color: transparent; display: grid; place-items: center; font: 700 9px/1 Inter,sans-serif; }
+.rb-lead-services .is-selected i { background: #2462ed; border-color: #2462ed; color: #fff; }
+.rb-lead-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rb-lead-fields label { display: grid; gap: 7px; color: #384965; font-size: 10px; font-weight: 750; letter-spacing: .2px; }
+.rb-lead-fields input { width: 100%; height: 49px; min-width: 0; padding: 0 14px; border: 1px solid #dfe6f0; border-radius: 11px; background: #fff; color: #10244a; font: 500 13px Inter,ui-sans-serif,system-ui,sans-serif; outline: none; transition: border-color 220ms,box-shadow 220ms; }
+.rb-lead-fields input:focus { border-color: #2462ed; box-shadow: 0 0 0 3px rgba(36,98,237,.1); }
+.rb-lead-phone { display: grid; grid-template-columns: 62px minmax(0,1fr); height: 49px; border: 1px solid #dfe6f0; border-radius: 11px; background: #fff; overflow: hidden; transition: border-color 220ms,box-shadow 220ms; }
+.rb-lead-phone:focus-within { border-color: #2462ed; box-shadow: 0 0 0 3px rgba(36,98,237,.1); }
+.rb-lead-phone b { display: grid; place-items: center; border-right: 1px solid #e6ebf3; color: #53647e; font-size: 12px; white-space: nowrap; }
+.rb-lead-phone input { height: 47px; border: 0; border-radius: 0; box-shadow: none!important; }
+.rb-lead-consent { display: flex; align-items: flex-start; gap: 9px; margin: 15px 0 0; color: #6a7890; font-size: 10px; line-height: 1.55; cursor: pointer; }
+.rb-lead-consent input { accent-color: #2462ed; margin-top: 2px; }
+.rb-lead-consent a { color: #2462ed; text-decoration: underline; }
+.rb-lead-trap { position: absolute!important; left: -10000px!important; width: 1px!important; height: 1px!important; overflow: hidden!important; }
+.rb-lead-error { margin: 11px 0 0; padding: 9px 12px; border-radius: 9px; background: #fff1f1; color: #a23535; font-size: 10px; }
+.rb-lead-actions { display: flex; align-items: center; gap: 16px; margin-top: 17px; }
+.rb-lead-actions button:first-child,.rb-lead-success button { height: 49px; padding: 0 22px; border: 0; border-radius: 11px; background: #2462ed; color: #fff; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 34px; box-shadow: 0 9px 24px rgba(36,98,237,.2); transition: transform 220ms,background-color 220ms,box-shadow 220ms; }
+.rb-lead-actions button:first-child:hover,.rb-lead-success button:hover { background: #184ed0; transform: translateY(-2px); box-shadow: 0 13px 30px rgba(36,98,237,.27); }
+.rb-lead-actions button:first-child:disabled { opacity: .65; transform: none; }
+.rb-lead-actions button:last-child { border: 0; background: transparent; color: #6a7890; font-size: 11px; }
+.rb-lead-footnote { margin: 13px 0 0; color: #8995a8; font-size: 9px; }
+.rb-lead-success { padding: 60px 52px; text-align: center; }
+.rb-lead-success>span { width: 64px; height: 64px; margin: 0 auto 20px; border-radius: 21px; background: #e9f8f1; color: #168060; font-size: 27px; display: grid; place-items: center; }
+.rb-lead-success>p:not(:first-of-type) { max-width: 450px; margin: 14px auto 24px; color: #687790; font-size: 13px; line-height: 1.75; }
+.rb-lead-success button { margin: auto; border: 0; }
+@media(max-width:620px) {
+  .rb-lead-dialog { padding: 0; }
+  .rb-lead-dialog[open] { align-items: flex-end; }
+  .rb-lead-surface { width: 100%; max-height: min(90dvh,760px); margin: auto 0 0; border-radius: 24px 24px 0 0; transform: translateY(30px); }
+  .rb-lead-surface form { padding: 28px 20px 22px; }
+  .rb-lead-close { top: 13px; right: 13px; }
+  .rb-lead-heading { grid-template-columns: 42px 1fr; gap: 11px; padding-right: 28px; }
+  .rb-lead-spark { width: 42px; height: 42px; border-radius: 13px; }
+  .rb-lead-heading h2,.rb-lead-success h2 { font-size: 23px; }
+  .rb-lead-services { grid-template-columns: repeat(2,minmax(0,1fr)); margin: 19px 0 17px; gap: 7px; }
+  .rb-lead-services label { grid-template-columns: 31px minmax(0,1fr) 14px; gap: 6px; min-height: 50px; padding: 6px 7px; font-size: 9px; }
+  .rb-lead-mark { height: 31px; border-radius: 8px; font-size: 6px; }
+  .rb-lead-fields { grid-template-columns: 1fr; }
+  .rb-lead-actions { display: grid; grid-template-columns: 1fr auto; }
+  .rb-lead-actions button:first-child { width: 100%; }
+  .rb-lead-footnote { text-align: center; }
+  .rb-lead-success { padding: 55px 24px 36px; }
+}
+@media(max-width:390px) { .rb-lead-surface { max-height: 92dvh; } .rb-lead-heading>div>span { font-size: 11px; } }
+@media(prefers-reduced-motion:reduce) { .rb-lead-dialog,.rb-lead-surface,.rb-lead-dialog * { scroll-behavior: auto!important; transition-duration: .01ms!important; animation-duration: .01ms!important; } }

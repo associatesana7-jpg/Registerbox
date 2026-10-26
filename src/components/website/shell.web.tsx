@@ -5,6 +5,7 @@ import { useApp } from '@/hooks/use-app';
 import { WebBrand } from './brand.web';
 import { contact, safeNext } from './content';
 import blogLocales from '@/data/blog/locales.json';
+import { PublicLeadPrompt } from './public-lead-prompt.web';
 import './workspace-shell.css';
 
 type ShellIconName = 'home' | 'applications' | 'folder' | 'receipt' | 'document' | 'business' | 'spark' | 'person' | 'search' | 'menu' | 'close' | 'help' | 'arrow' | 'chevron';
@@ -169,7 +170,8 @@ export function WebShell({ children }: PropsWithChildren) {
   const landing = pathname === '/' && !segments.includes('(tabs)' as never);
   const regionalBlog = blogLocales.some(locale => pathname === `/${locale.code}/blog` || pathname.startsWith(`/${locale.code}/blog/`));
   const publicPage = landing || regionalBlog || pathname === '/checkout' || pathname === '/blog' || pathname.startsWith('/blog/') || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/privacy' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
-  if (publicPage) return <>{pathname.startsWith('/auth') && <Head><meta name="robots" content="noindex,nofollow"/></Head>}{children}</>;
+  const leadPromptPage = landing || regionalBlog || pathname === '/blog' || pathname.startsWith('/blog/') || pathname === '/services' || pathname.startsWith('/services/');
+  if (publicPage) return <>{pathname.startsWith('/auth') && <Head><meta name="robots" content="noindex,nofollow"/></Head>}{leadPromptPage && <PublicLeadPrompt/>}{children}</>;
   const next = safeNext(typeof window !== 'undefined' ? window.location.pathname + window.location.search : pathname);
   return <WorkspaceChrome pathname={pathname} email={session?.user.email}>{loadingSession ? <div className="rb-loading" role="status"><h1 className="rb-visually-hidden">Your private RegisterBox workspace</h1>Loading your workspace…</div> : !session ? <><Redirect href={{ pathname: '/auth', params: { next } }}/><div className="rb-loading"><h1 className="rb-visually-hidden">Your private RegisterBox workspace</h1>Opening secure sign-in…</div></> : children}</WorkspaceChrome>;
 }

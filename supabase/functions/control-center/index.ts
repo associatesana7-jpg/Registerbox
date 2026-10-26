@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.117.1';
 import { clientRegister, uploadClientDocument } from './client-register.ts';
 import { paymentOperations } from './payments.ts';
+import { websiteLeads } from './website-leads.ts';
 
 const allowedOrigins = new Set([
   'https://admin.registerbox.in',
@@ -578,6 +579,7 @@ Deno.serve(async (request) => {
       return await deliverCertificate(request,admin,access);
     }
     const body = await request.json().catch(() => ({})) as { action?: string; section?: string; page?: number; documentId?: string; businessId?: string; reason?: string };
+    if(body.action?.startsWith('lead_'))return await websiteLeads(admin,access,body,(result,status)=>json(request,result,status));
     if(body.action?.startsWith('payment_'))return await paymentOperations(admin,access,body,(result,status)=>json(request,result,status),env);
     if(body.action?.startsWith('crm_'))return await clientRegister(admin,access,body,(result,status)=>json(request,result,status));
     if (body.action === 'me') {
