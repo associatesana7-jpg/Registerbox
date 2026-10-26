@@ -3,38 +3,48 @@ import type { BlogArticle } from './types';
 export const gstFoodGuides: BlogArticle[] = [
   {
     slug: 'gst-registration-documents-and-address-proof',
-    title: 'GST registration documents: getting your address proof right',
-    description: 'A practical GST registration checklist for owned, rented and family premises, with ways to resolve name and address mismatches before you apply.',
+    title: 'GST legal ownership document & address proof explained',
+    description: 'What does legal ownership document mean in GST registration? Check the address proof for owned, rented and consent premises, with official CBIC guidance.',
+    modifiedAt: '2026-10-26',
+    reviewedAt: '2026-10-26',
     category: 'Registrations',
     serviceCategory: 'gst_registration',
     image: 'formation',
     imageAlt: 'Illustration of two founders planning at a desk with a storefront model and Bengaluru skyline',
     intro: [
-      'For an ordinary GST registration, prepare the applicant’s PAN and business details, the relevant identity and constitution documents, signatory authority, and evidence for the actual business premises. The right address documents depend on whether you own, rent or use the property with permission. Start with that question before collecting a folder of unrelated proofs.',
-      'A useful application tells one consistent story: who is applying, what the business does, where it operates and who can act for it. This guide explains how to organise that story and spot problems while there is still time to fix them.',
+      'A legal ownership document in GST registration is evidence of who owns the business premises. It supports the address declared in the application. If you rent or use someone else’s property, you also need the evidence for that arrangement; ownership proof and permission to occupy are not the same thing.',
+      'Start by deciding whether the premises are owned, rented or used with the owner’s consent. Then prepare the applicant’s PAN-linked identity, business details and signatory authority. This checklist separates those documents so you can spot missing evidence before applying.',
     ],
     sections: [
       {
         id: 'identify-the-applicant',
-        heading: 'Check whose name belongs in the application',
+        heading: 'Is premises ownership proof the same as business identity?',
         paragraphs: [
           'The GST portal distinguishes the legal name linked to PAN from the trade name customers see. A proprietor may trade under a shop name while applying using the proprietor’s PAN. A company or LLP has its own identity. Check the constitution, legal name and PAN together, then identify the person authorised to submit and receive communications.',
           'Before scanning documents, make a short reference sheet with the correct legal name, trade name, contact details, full premises address and business activity. Ask everyone helping with the application to use this version. It prevents a small spelling change from spreading through several forms.',
+          'A PAN or partnership deed identifies the applicant or its business structure. Premises evidence answers a different question: who owns the place where the business operates, and on what basis does the applicant use it? Keep these checks separate rather than substituting one document for the other.',
         ],
         sourceIds: ['gst-application'],
       },
       {
         id: 'owned-rented-consent',
-        heading: 'Match the proof to how you use the premises',
+        heading: 'Which address proof works for owned, rented or consent premises?',
         paragraphs: [
-          'CBIC’s registration instruction dated 17 April 2025 explains the premises evidence. For owned property, one suitable ownership document can suffice. For rented premises, use the valid agreement with an accepted ownership document. The instruction generally asks for the lessor’s identity proof with an unregistered agreement, but it also gives a useful exception: a water or electricity connection in the applicant tenant’s name, together with the rent agreement, should be accepted without additional lessor documents. For family-owned premises used with consent, it describes a plain-paper owner consent letter, the consenter’s identity proof and ownership evidence.',
-          'A rent agreement and an electricity bill perform different jobs. One explains permission to occupy; the other can support the link to the property. Check that they describe the same premises rather than assuming that any utility bill will solve every address question.',
+          'CBIC Instruction 03/2025-GST, dated 17 April 2025, sets out these common arrangements. Read the applicable case, not a combined list for every property:',
+          'Match the name and premises across the papers. A document belonging to a different property does not explain the address in your application.',
+        ],
+        bullets: [
+          'Owned: one accepted ownership document, such as the latest property-tax receipt, municipal khata or owner’s electricity bill. Comparable local-law evidence can also qualify.',
+          'Rented: a valid rent or lease agreement and one accepted ownership document. An unregistered agreement also needs the lessor’s identity proof; a registered agreement does not.',
+          'Tenant utility connection: the instruction accepts the rent agreement with an electricity or water connection document in the applicant tenant’s name without additional lessor documents.',
+          'Consent or family premises: a plain-paper owner consent letter, the consenter’s identity proof and one accepted document establishing the consenter’s ownership.',
         ],
         sourceIds: ['cbic-registration'],
+        relatedSlugs: ['fast-gst-registration-three-hours'],
       },
       {
         id: 'address-mismatch',
-        heading: 'Resolve differences instead of hiding them',
+        heading: 'What if the name or address does not match?',
         paragraphs: [
           'Compare the door or flat number, floor, building, street, locality and PIN code across the application and supporting papers. Mark each difference. A shorter street spelling may be explainable; a different unit or property owner needs closer attention. Identify whether the underlying document needs correction or whether separate evidence can explain the connection.',
           'For example, suppose a lease says “Unit 4, second floor” while the electricity bill covers the whole building. Keep a clear note of how the unit relates to that building and check whether the evidence actually supports the declared space. This is a preparation example, not an assurance that a particular combination will be accepted.',
@@ -42,7 +52,7 @@ export const gstFoodGuides: BlogArticle[] = [
       },
       {
         id: 'build-the-document-pack',
-        heading: 'Build a small, readable document pack',
+        heading: 'What other GST registration documents should you prepare?',
         paragraphs: [
           'Use descriptive filenames and retain the original scans. Open every upload on a phone as well as a computer: can you read the names, address, dates and signatures without guessing? Include the relevant pages of an agreement together and check the portal’s current file requirements before uploading.',
           'Keep a simple document register showing what each file proves and who can replace it if a clarification arrives. Do not alter a document to make facts match. If a tenancy or ownership record is wrong, resolve it with the person responsible for that record.',
@@ -73,39 +83,48 @@ export const gstFoodGuides: BlogArticle[] = [
       { id: 'gst-application', title: 'GST portal: application for registration', url: 'https://tutorial.gst.gov.in/userguide/registration/Apply_for_Registration_Normal_Taxpayer.htm' },
       { id: 'cbic-registration', title: 'CBIC Instruction 03/2025-GST: registration application documents', url: 'https://cbic-gst.gov.in/pdf/ins-gst-no-03-2025.pdf' },
     ],
-    searchQuestions: ['What documents are required for GST registration?', 'Can I use a rented house for GST registration?', 'What if my GST registration address proof does not match?', 'Is an owner consent letter accepted for GST registration?'],
+    searchQuestions: ['What does legal ownership document in GST mean?', 'What documents are required for GST registration?', 'Which address proof is required for GST registration?', 'Can I use a rented house for GST registration?', 'What if my GST registration address proof does not match?', 'Is an owner consent letter accepted for GST registration?'],
     relatedSlugs: ['fast-gst-registration-three-hours', 'gstr-1-vs-gstr-3b', 'no-sales-nil-gstr-3b'],
   },
   {
     slug: 'gstr-1-vs-gstr-3b',
-    title: 'GSTR-1 vs GSTR-3B: what each return does and what to check',
-    description: 'Understand the difference between GSTR-1 and GSTR-3B, how to compare records and input credit, and what proves that filing is complete.',
+    title: 'What is GSTR-3B? Meaning and difference from GSTR-1',
+    description: 'GSTR-3B explained in plain English: summary GST liability, purchase credit, reverse charge, the difference from GSTR-1 and how to check filing status.',
+    modifiedAt: '2026-10-26',
+    reviewedAt: '2026-10-26',
     category: 'GST & records',
     serviceCategory: 'gst',
     image: 'records',
     imageAlt: 'Illustration of a business owner reviewing invoices with a calculator and laptop',
     intro: [
-      'GSTR-1 reports outward supplies, including the relevant sales and invoice details. GSTR-3B brings together summary liabilities, input tax credit and tax payment for the period. Filing one does not complete the other. Start by checking which forms and filing frequency apply to your GSTIN.',
-      'The practical question is whether your invoices, books, portal statements and payment records tell the same story. A total that looks reasonable can still contain the wrong customer GSTIN, a missing credit note or an unsupported input-credit claim.',
+      'GSTR-3B is a summary GST return for a tax period. It reports tax liabilities, eligible input tax credit and how the liability is paid. It is not a list of every sales or purchase invoice. GSTR-1 is the separate statement of outward supplies, with the applicable invoice details and summaries.',
+      'Is GSTR-3B for sales or purchases? Both can affect it. Sales can create outward-tax liability. Purchases can affect eligible input tax credit, reversals or reverse-charge liability. Filing GSTR-1 does not file GSTR-3B; check which forms apply to your GSTIN and period.',
     ],
     sections: [
       {
         id: 'gstr-1-role',
-        heading: 'GSTR-1 starts with the outward-supply records',
+        heading: 'What is the difference between GSTR-1 and GSTR-3B?',
         paragraphs: [
           'GSTR-1 contains the applicable outward-supply details, rather than only one sales total. Depending on the business, that can include customer invoices, consumer sales, exports, notes, advances, exempt supplies and required summaries. The GST portal provides a final summary for review before the statement is filed.',
           'Group the records by their actual treatment. A sale to a registered business, a customer refund and an export should not disappear into a single spreadsheet line just because they belong to the same month. Keep a path back from every summary to the source documents.',
+        ],
+        bullets: [
+          'GSTR-1: the outward-supply statement. It reports the required sales details and summaries, including invoice-level reporting where applicable.',
+          'GSTR-3B: the summary return. It brings together liability, eligible credit and payment rather than repeating each invoice.',
+          'GSTR-2B: an input-credit statement to reconcile with purchases. It is not a return you file.',
         ],
         sourceIds: ['gstr1-manual'],
       },
       {
         id: 'gstr-3b-role',
-        heading: 'GSTR-3B needs a liability and credit review',
+        heading: 'Is GSTR-3B for sales or purchases?',
         paragraphs: [
+          'It is not a choice between the two. Review sales for outward liability, purchases for eligible input tax credit and required reversals, and applicable inward supplies for reverse charge. Do not put a purchase total into the sales field or assume all purchase GST is claimable.',
           'Review outward liability, reverse-charge transactions, credit claims and reversals, other required disclosures, and any interest or late fee. Then review how the liability will be discharged. GSTN’s comparison reports help compare GSTR-3B with GSTR-1/IFF/GSTR-1A and input-credit statements; a difference is a reason to investigate the records.',
           'Do not resolve a mismatch by changing a number simply to make two screens agree. Write down the cause: perhaps an invoice was missed, a note belongs to another reporting period or the tax treatment needs review. Correct the relevant record through the applicable route and retain the explanation.',
         ],
-        sourceIds: ['comparison'],
+        sourceIds: ['gstr3b-faq', 'comparison'],
+        relatedSlugs: ['gstr-3b-filing-process-online', 'no-sales-nil-gstr-3b'],
       },
       {
         id: 'gstr-2b-input-credit',
@@ -113,6 +132,7 @@ export const gstFoodGuides: BlogArticle[] = [
         paragraphs: [
           'GSTR-2B is an input-tax-credit statement, not another return you file. Compare it with purchase records and supporting documents. GSTN specifically asks taxpayers to avoid claiming the same document twice, make required reversals and pay applicable reverse-charge tax. Credit showing in the statement still needs the legal eligibility checks relevant to the purchase.',
           'Imagine a purchase invoice appears twice in an imported sheet, while a supplier’s credit note is missing. Copying the sheet total would carry both errors forward. Match document numbers, supplier identity, values and notes first, then record what remains unresolved and who will follow it up.',
+          'Illustrative record check: a shop has ten customer invoices, five supplier bills and one supplier credit note. GSTR-1 uses the applicable outward-supply details. GSTR-3B uses reviewed liability and credit summaries, not sixteen invoice rows. The supplier bills and credit note still need reconciliation before any credit claim. This example explains the workflow; it does not determine the shop’s tax or credit entitlement.',
         ],
         sourceIds: ['gstr2b'],
       },
@@ -140,12 +160,13 @@ export const gstFoodGuides: BlogArticle[] = [
       { question: 'Does paying a GST challan mean my return is filed?', answer: 'A payment record alone does not prove completed filing. Check the return status and keep the filed return and acknowledgement for that period.' },
     ],
     sources: [
-      { id: 'gstr1-manual', title: 'GSTN: creation and filing of GSTR-1', url: 'https://tutorial.gst.gov.in/userguide/returns/Creation_of_Outward_Supplies_Return_in_GSTR-1.htm' },
+      { id: 'gstr1-manual', title: 'GSTN: GSTR-1 purpose and outward-supply details', url: 'https://tutorial.gst.gov.in/userguide/returns/GSTR_1.htm' },
+      { id: 'gstr3b-faq', title: 'GSTN: what GSTR-3B reports and how it uses GSTR-1 and GSTR-2B', url: 'https://tutorial.gst.gov.in/userguide/returns/GSTR3B.htm' },
       { id: 'comparison', title: 'GSTN: comparison of liabilities and input tax credit', url: 'https://tutorial.gst.gov.in/userguide/inputtaxcredit/Manual_comparison_of_liability_declared_and_ITC_claimed.htm' },
       { id: 'gstr2b', title: 'GSTN: GSTR-2B questions and reconciliation guidance', url: 'https://tutorial.gst.gov.in/userguide/returns/FAQ_gstr2b.htm' },
       { id: 'nil-manual', title: 'GSTN: draft, authorisation and filed-status steps for nil GSTR-3B', url: 'https://tutorial.gst.gov.in/userguide/returns/GSTR3B_-_File_Nil_Return.htm' },
     ],
-    searchQuestions: ['What is the difference between GSTR-1 and GSTR-3B?', 'Why are my GSTR-1 and GSTR-3B figures different?', 'Is GSTR-2B a return?', 'How do I know my GST return is filed?'],
+    searchQuestions: ['What is GSTR-3B?', 'Is GSTR-3B for sales or purchases?', 'What is the difference between GSTR-1 and GSTR-3B?', 'Why are my GSTR-1 and GSTR-3B figures different?', 'Is GSTR-2B a return?', 'How do I know my GST return is filed?'],
     relatedSlugs: ['gstr-3b-filing-process-online', 'no-sales-nil-gstr-3b', 'gst-registration-documents-and-address-proof'],
   },
   {

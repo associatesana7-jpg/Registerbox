@@ -35,6 +35,17 @@ const readiness = [
   { label: 'Not sure yet', description: 'You don’t need to know every requirement. Tell us your goal and ask the team about your options.' },
 ];
 
+const localSearchContent: Record<string, { title: string; description: string }> = {
+  llp: {
+    title: 'LLP Registration in Bangalore | Documents & Process | RegisterBox',
+    description: 'LLP registration help in Bengaluru: partners, FiLLiP, office documents and the LLP agreement. Speak to RegisterBox in New Thippasandra or Marathahalli.',
+  },
+  gst_registration: {
+    title: 'GST Registration in Bangalore | Documents & Help | RegisterBox',
+    description: 'GST registration assistance in Bengaluru. Check business eligibility, owned or rented address proof and the application process with our local team.',
+  },
+};
+
 export default function ServicePage({ slug }: { slug: string }) {
   const { session } = useApp();
   const service = publicServices.find(item => item.slug === slug)!;
@@ -42,7 +53,8 @@ export default function ServicePage({ slug }: { slug: string }) {
   const ui = servicePresentation[service.category];
   const answer = serviceAnswerContent[service.category];
   const [stage, setStage] = useState(0);
-  const review = service.category === 'trademark' ? { ...contentReview, date: '16 October 2026', isoDate: '2026-10-16' } : contentReview;
+  const localSearch = localSearchContent[service.category];
+  const review = localSearch ? { ...contentReview, date: '26 October 2026', isoDate: '2026-10-26' } : service.category === 'trademark' ? { ...contentReview, date: '16 October 2026', isoDate: '2026-10-16' } : contentReview;
   const path = `/services/${service.slug}`;
   const packages = servicePackagesForCategory(service.category);
   const startingPackage = packages.reduce<(typeof packages)[number] | undefined>((lowest, item) => !lowest || item.amountPaise < lowest.amountPaise ? item : lowest, undefined);
@@ -55,9 +67,9 @@ export default function ServicePage({ slug }: { slug: string }) {
   const isQuoted = /quotation|quote/.test(price);
   const whatsapp = `${contact.whatsapp}?text=${encodeURIComponent(`Hi RegisterBox, I need help with ${ui.title} in Bengaluru. ${readiness[stage].label}. My business type and area are: `)}`;
   const serviceSchema = {
-    '@type': 'Service', name: service.title, description: details.intro, url: `${siteUrl}${path}`,
+    '@type': 'Service', '@id': `${siteUrl}${path}#service`, name: service.title, description: details.intro, url: `${siteUrl}${path}`,
     provider: { '@id': `${siteUrl}/#organization` }, areaServed: { '@type': 'City', name: 'Bengaluru' },
-    dateModified: packages.length ? '2026-10-22' : review.isoDate,
+    dateModified: localSearch ? review.isoDate : packages.length ? '2026-10-22' : review.isoDate,
     ...(packages.length ? { offers: packages.map(item => ({
       '@type': 'Offer', '@id': `${siteUrl}${path}#package-${item.id}`, name: item.title,
       description: `${item.description} ${item.feeNote}`, price: item.amountPaise / 100,
@@ -73,7 +85,7 @@ export default function ServicePage({ slug }: { slug: string }) {
   ] };
   if (service.category === 'food') return <FssaiServicePage/>;
   return <div className={`rb-public-page rb-sx-page rb-answer-page rb-sx-${ui.tone}${packages.length ? ' rb-sx-priced' : ''}`}>
-    <Seo title={`${ui.title} in Bengaluru | RegisterBox`} description={`${ui.title} support in Bengaluru.${packages.length ? ` Packages ${price.toLowerCase()}. No GST added to the RegisterBox service fee.` : ' See what to prepare and how RegisterBox helps.'} New Thippasandra and Marathahalli.`} path={path} schema={[serviceSchema, breadcrumbs]}/>
+    <Seo title={localSearch?.title || `${ui.title} in Bengaluru | RegisterBox`} description={localSearch?.description || `${ui.title} support in Bengaluru.${packages.length ? ` Packages ${price.toLowerCase()}. No GST added to the RegisterBox service fee.` : ' See what to prepare and how RegisterBox helps.'} New Thippasandra and Marathahalli.`} path={path} schema={[serviceSchema, breadcrumbs, ...(localSearch ? [{ '@type': 'WebPage', '@id': `${siteUrl}${path}#webpage`, url: `${siteUrl}${path}`, name: localSearch.title, description: localSearch.description, dateModified: review.isoDate, about: { '@id': `${siteUrl}${path}#service` }, reviewedBy: { '@id': `${siteUrl}/#organization` } }] : [])]}/>
     <header className="rb-public-header rb-container"><WebBrand/><Link href="/services">All services <span aria-hidden="true">↗</span></Link></header>
     <main className="rb-container rb-sx-main">
       <nav className="rb-sx-breadcrumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href="/services">Services</Link><span>/</span><span>{ui.title}</span></nav>
@@ -83,12 +95,15 @@ export default function ServicePage({ slug }: { slug: string }) {
           <h1 id="service-title">{answer.question}</h1>
           {startingPackage && <div className="rb-sx-quick-price" aria-label="Service price and next step"><div className="rb-sx-quick-price-line"><span><small>{packages.length > 1 ? 'PACKAGES FROM' : 'REGISTERBOX SERVICE FEE'}</small><strong>{price.replace(/^From /, '')}</strong><small className="rb-sx-quick-billing">{startingPackage.billingLabel}</small></span><Link href={priceActionHref} asChild><a className="rb-button">{packages.length > 1 ? 'See packages' : registration ? 'Start application' : 'Choose package'} <ServiceIcon name="arrow"/></a></Link></div><p>{startingPackage.feeNote}</p><a href={contact.telephoneHref}>Questions? Call our team <span aria-hidden="true">↗</span></a></div>}
           <p className="rb-answer-direct">{answer.answer}</p>
+          {localSearch && <p className="rb-sx-audience">Speak to our Bengaluru team. <a href="#bengaluru-branches">See our New Thippasandra and Marathahalli branches</a>; call before visiting. Share private documents only through your secure application.</p>}
           <div className="rb-service-actions"><Link className="rb-button" href={startHref}>{actionLabel} <ServiceIcon name="arrow"/></Link><a className="rb-secondary-button" href={`tel:${contact.phone.replace(/[^+0-9]/g, '')}`}>Talk to our team</a></div>
           <p className="rb-sx-audience">{registration ? 'Complete your registration details and send them to RegisterBox. Your package and secure payment step follow submission.' : packages.length ? 'Choose your package, review your details and pay securely with Razorpay.' : session ? 'Continue directly to your selected service.' : 'One email sign-in, then straight to this service. Save and continue later.'}</p>
           {service.category === 'udyam' && <p className="rb-sx-audience">RegisterBox is an independent assistance provider. Official Udyam registration is free. You complete government identity verification and declarations yourself; never share an OTP. Existing Udyam or GST certificates are optional supporting records.</p>}
           <p className="rb-sx-audience">{ui.audience}</p>
           <ul className="rb-sx-benefits">{ui.benefits.map(item => <li key={item}><span><ServiceIcon name="check"/></span>{item}</li>)}</ul>
           <a className="rb-sx-doc-link" href="#documents">See what to prepare <span aria-hidden="true">↓</span></a>
+          {service.category === 'gst_registration' && <Link className="rb-sx-doc-link" href="/blog/gst-registration-documents-and-address-proof">Legal ownership and GST address-proof guide <span aria-hidden="true">↗</span></Link>}
+          {service.category === 'llp' && <Link className="rb-sx-doc-link" href="/blog/llp-registration-partner-agreement">LLP registration and partner-agreement guide <span aria-hidden="true">↗</span></Link>}
         </div>
         <aside className="rb-sx-start-card" aria-label="Your next step">
           <div className="rb-sx-card-visual"><div className="rb-sx-visual-ring"/><img src={`/images/${ui.icon}-v1-136.webp`} width="112" height="112" alt={`${ui.title} service illustration`} fetchPriority="high"/><span className="rb-sx-visual-label"><ServiceIcon name="spark"/> YOUR NEXT CHAPTER</span></div>

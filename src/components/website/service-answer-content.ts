@@ -13,13 +13,13 @@ export const serviceAnswerContent: Record<string, ServiceAnswerContent> = {
     recommendation: 'Settle ownership and funding plans before reserving a name. A company can suit share-based ownership and future investors, but the incorporation decision also brings continuing governance and filing work. Compare that commitment with an LLP or another structure first.',
   },
   llp: {
-    question: 'How do I register an LLP?',
-    answer: 'Agree the partners, contributions, profit sharing and registered office before preparing the MCA application. Incorporation is followed by the LLP agreement, applicable stamping and filing. An LLP is a separate legal entity with continuing annual filing and tax obligations.',
+    question: 'How do I register an LLP in Bangalore (Bengaluru)?',
+    answer: 'Agree the partners, contributions, profit sharing and Bengaluru registered office before preparing the MCA application. After incorporation, execute the LLP agreement, pay applicable State stamp duty and file the initial agreement information in LLP Form 3 within 30 days of incorporation. Annual filing and tax obligations continue after the LLPIN is issued.',
     recommendation: 'Agree how partners make decisions, join and leave before filing. An LLP can suit a closely held or professional business, but it does not offer share capital in the way a company does. Choose it for the ownership arrangement you need, rather than incorporation cost alone.',
   },
   gst_registration: {
-    question: 'How do I register my business for GST?',
-    answer: 'First check whether your actual business activity, sales and location require GST registration. Then prepare consistent business, authorised-person and premises records for the application. Registration is complete when the GST portal issues the certificate; sending details to RegisterBox is a preparation step.',
+    question: 'How do I get GST registration in Bangalore (Bengaluru)?',
+    answer: 'Check whether your business activity, supplies and Karnataka location require GST registration. Prepare the PAN, business and authorised-signatory records, then choose the correct address evidence for owned, rented or consent-based premises. Registration is complete when the GST portal issues the certificate; sending details to RegisterBox is a preparation step.',
     recommendation: 'Review the address evidence before starting the application. Resolving a mismatch in the lease, owner consent or business details early can avoid reworking the same records later. Check registration applicability as well as document readiness.',
   },
   udyam: {

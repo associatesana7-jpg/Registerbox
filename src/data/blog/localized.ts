@@ -10,7 +10,7 @@ import { blogArticles, type BlogArticle } from './index';
 import { blogHindiBySlug, type HindiBlogContent } from './hindi';
 
 export type BlogLocale = string;
-export type BlogTranslation = HindiBlogContent & { imageAlt?: string; searchQuestions?: string[] };
+export type BlogTranslation = HindiBlogContent & { imageAlt?: string; searchQuestions?: string[]; modifiedAt?: string; reviewedAt?: string };
 type Locale = { code: string; name: string; nativeName: string; direction: 'ltr' | 'rtl'; hreflang: string };
 type Bundle = { ui: Record<string, string>; articles: Record<string, BlogTranslation> };
 const automatic = generated.locales as Record<string, Bundle>;
@@ -69,6 +69,9 @@ export function localizedArticle(slug: string, locale: BlogLocale = 'en'): BlogA
   if (!completeTranslation(translation, original)) return undefined;
   return {
     ...original,
+    // A source-language edit is not a review of an unchanged translation.
+    modifiedAt: translation.modifiedAt,
+    reviewedAt: translation.reviewedAt,
     title: translation.title,
     description: translation.description,
     intro: translation.intro,

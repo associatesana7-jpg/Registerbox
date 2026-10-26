@@ -22,7 +22,7 @@ function searchTitle(title: string) {
   const boundary = clipped.lastIndexOf(' ');
   return `${(boundary >= 48 ? clipped.slice(0, boundary) : clipped).trimEnd()}…`;
 }
-export function Seo({ title, description, path, schema = [], image = '/images/registerbox-og.jpg', imageAlt = 'RegisterBox — Your business. Sorted.', type = 'website', publishedTime, language = 'en-IN', alternatePath, alternates }: { title: string; description: string; path: string; schema?: Record<string, unknown>[]; image?: string; imageAlt?: string; type?: 'website' | 'article'; publishedTime?: string; language?: string; alternatePath?: string; alternates?: { language: string; path: string }[] }) {
+export function Seo({ title, description, path, schema = [], image = '/images/registerbox-og.jpg', imageAlt = 'RegisterBox — Your business. Sorted.', type = 'website', publishedTime, modifiedTime, language = 'en-IN', alternatePath, alternates }: { title: string; description: string; path: string; schema?: Record<string, unknown>[]; image?: string; imageAlt?: string; type?: 'website' | 'article'; publishedTime?: string; modifiedTime?: string; language?: string; alternatePath?: string; alternates?: { language: string; path: string }[] }) {
   const url = `${siteUrl}${path}`;
   const imageUrl = `${siteUrl}${image}`;
   const titleForSearch = searchTitle(title);
@@ -38,7 +38,7 @@ export function Seo({ title, description, path, schema = [], image = '/images/re
     <meta property="og:title" content={titleForSearch}/><meta property="og:description" content={description}/><meta property="og:url" content={url}/>
     <meta property="og:image" content={imageUrl}/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content={type==='article'?'800':'630'}/><meta property="og:image:alt" content={imageAlt}/>
     {publishedTime&&<meta property="article:published_time" content={publishedTime}/>}
-    {publishedTime&&<meta property="article:modified_time" content={publishedTime}/>}
+    {(modifiedTime||publishedTime)&&<meta property="article:modified_time" content={modifiedTime||publishedTime}/>}
     <meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={titleForSearch}/><meta name="twitter:description" content={description}/><meta name="twitter:image" content={imageUrl}/>
   </Head><script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({'@context':'https://schema.org','@graph':[organization, ...(path === '/' || path === '/contact' || path.startsWith('/services/') ? branchSchema : []), ...schema]}).replace(/</g,'\\u003c')}}/></>;
 }

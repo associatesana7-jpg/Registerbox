@@ -10,15 +10,15 @@ const entries = [
   { path: '/blog/editorial-policy', alternates: [] },
   ...articles.flatMap(article => availableBlogLocales(article.slug).map(locale => ({
     path: blogPath(locale.code, article.slug), alternates: blogAlternates(article.slug),
+    lastmod: localizedArticle(article.slug, locale.code).modifiedAt,
   }))),
 ];
 const original = fs.readFileSync('public/sitemap.xml', 'utf8');
 const sitemap = original
   .replace(/\s*<url>\s*<loc>https:\/\/www\.registerbox\.in\/(?:[a-z]{2,3}(?:-[A-Za-z]+)?\/)?blog(?:\/[^<]*)?<\/loc>[\s\S]*?<\/url>/g, '')
   .replace(/<urlset\b[^>]*>/, '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">')
-  // The source catalogue records publication, not the last content edit.
-  // Omit unknown lastmod dates rather than refreshing them on every build.
-  .replace('</urlset>', entries.map(entry => `  <url><loc>${xml(site + entry.path)}</loc>${entry.alternates.map(alternate => `<xhtml:link rel="alternate" hreflang="${alternate.language}" href="${xml(site + alternate.path)}"/>`).join('')}</url>`).join('\n') + '\n</urlset>');
+  // Only actual content edits receive lastmod. Never date every page on each build.
+  .replace('</urlset>', entries.map(entry => `  <url><loc>${xml(site + entry.path)}</loc>${entry.lastmod ? `<lastmod>${xml(entry.lastmod)}</lastmod>` : ''}${entry.alternates.map(alternate => `<xhtml:link rel="alternate" hreflang="${alternate.language}" href="${xml(site + alternate.path)}"/>`).join('')}</url>`).join('\n') + '\n</urlset>');
 fs.writeFileSync('public/sitemap.xml', sitemap);
 
 // Only pages designed primarily for watching belong in the video sitemap.
@@ -50,6 +50,7 @@ const items = articles.flatMap(article => availableBlogLocales(article.slug).map
     content_text: translated.intro.join('\n\n'), language: locale.hreflang,
     image: `${site}/images/blog/${article.image}-1200.webp`,
     date_published: `${article.publishedAt || '2026-10-20'}T00:00:00+05:30`,
+    ...(translated.modifiedAt ? { date_modified: `${translated.modifiedAt}T00:00:00+05:30` } : {}),
     authors: [{ name: 'RegisterBox', url: `${site}/blog/editorial-policy` }], tags: [article.category] };
 }));
 fs.writeFileSync('public/blog-feed.json', JSON.stringify({ version: 'https://jsonfeed.org/version/1.1',

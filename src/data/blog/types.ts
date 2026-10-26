@@ -11,10 +11,12 @@ export type BlogArticle = {
   howToSection?: string;
   availabilityNote?: string;
   publishedAt?: string;
+  modifiedAt?: string;
+  reviewedAt?: string;
   image: 'formation' | 'food' | 'records' | 'gstr3b-process' | 'dir3-kyc' | 'esic-employer' | 'shop-registration' | 'fast-gst-registration' | 'ecommerce-gst-november-2026';
   imageAlt: string;
   intro: string[];
-  sections: { id: string; heading: string; paragraphs: string[]; bullets?: string[]; sourceIds?: string[] }[];
+  sections: { id: string; heading: string; paragraphs: string[]; bullets?: string[]; sourceIds?: string[]; relatedSlugs?: string[] }[];
   faqs: { question: string; answer: string }[];
   sources: { id: string; title: string; url: string }[];
   searchQuestions: string[];

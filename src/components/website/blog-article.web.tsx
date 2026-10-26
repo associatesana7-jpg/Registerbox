@@ -1,6 +1,6 @@
 import { Link, type Href } from 'expo-router';
 import Head from 'expo-router/head';
-import { blogArticleDate, blogImage, blogReadMinutes, type BlogArticle } from '@/data/blog';
+import { blogArticleDate, blogArticleModifiedDate, blogImage, blogReadMinutes, type BlogArticle } from '@/data/blog';
 import { blogAlternates, blogLocale, blogPath, blogUi, localizedArticle, type BlogLocale } from '@/data/blog/localized';
 import { BlogActions } from './blog-actions.web';
 import { BlogOffers } from './blog-offers.web';
@@ -25,15 +25,19 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
 
   const path = blogPath(locale, article.slug);
   const publishedAt = blogArticleDate(article);
+  const modifiedAt = blogArticleModifiedDate(article);
   const dateLabel = new Intl.DateTimeFormat(language.hreflang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${publishedAt}T00:00:00Z`));
+  const modifiedLabel = new Intl.DateTimeFormat(language.hreflang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${modifiedAt}T00:00:00Z`));
+  const reviewedLabel = new Intl.DateTimeFormat(language.hreflang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${article.reviewedAt || publishedAt}T00:00:00Z`));
   const related = article.relatedSlugs.map(slug => localizedArticle(slug, locale)).filter((item): item is BlogArticle => Boolean(item)).slice(0, 3);
   const video = blogVideos[article.slug];
   const watchPage = Boolean(video && video.watchPath === path);
+  const answerFirst = ['gstr-1-vs-gstr-3b', 'gst-registration-documents-and-address-proof', 'shop-establishment-registration-karnataka', 'shop-and-establishment-registration-process'].includes(slug);
   const schema: Record<string, unknown>[] = [
     {
       '@type': 'BlogPosting', '@id': `${siteUrl}${path}#article`, headline: article.title,
       description: article.description, image: [`${siteUrl}${blogImage(article)}`],
-      datePublished: publishedAt, dateModified: publishedAt, inLanguage: language.hreflang,
+      datePublished: publishedAt, dateModified: modifiedAt, inLanguage: language.hreflang,
       author: { '@type': 'Organization', name: 'RegisterBox', url: `${siteUrl}/blog/editorial-policy` },
       publisher: { '@id': `${siteUrl}/#organization` },
       mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}${path}` },
@@ -60,7 +64,7 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
   if (watchPage) schema.push({ '@type': 'WebPage', '@id': `${siteUrl}${path}`, name: article.title, url: `${siteUrl}${path}`, mainEntity: { '@id': `${siteUrl}${path}#video` } });
 
   return <div className="rbg-page" lang={language.code} dir={language.direction}>
-    <Seo title={article.slug === 'gst-registration-small-ecommerce-sellers-november-2026' && locale === 'en' ? 'GST for Small E-commerce Sellers: November 2026 | RegisterBox' : `${article.title} | RegisterBox`} description={article.description} path={path} alternates={blogAlternates(slug)} language={language.hreflang} schema={schema} image={blogImage(article)} imageAlt={article.imageAlt} type="article" publishedTime={publishedAt}/>
+    <Seo title={article.slug === 'gst-registration-small-ecommerce-sellers-november-2026' && locale === 'en' ? 'GST for Small E-commerce Sellers: November 2026 | RegisterBox' : `${article.title} | RegisterBox`} description={article.description} path={path} alternates={blogAlternates(slug)} language={language.hreflang} schema={schema} image={blogImage(article)} imageAlt={article.imageAlt} type="article" publishedTime={publishedAt} modifiedTime={modifiedAt}/>
     <BlogHeader locale={locale} slug={slug}/>
     <main id="blog-main" className="rbg-main">
       <nav aria-label={blogUi(locale, 'guidesNavigation')} className="rbg-breadcrumb"><Link href="/">{blogUi(locale, 'home')}</Link><span>/</span><Link href={blogPath(locale) as Href}>{blogUi(locale, 'guides')}</Link><span>/</span><span>{blogCategoryLabel(article.category, locale)}</span></nav>
@@ -70,10 +74,12 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
         <div className="rbg-kicker">{blogCategoryLabel(article.category, locale)}</div>
         <h1>{article.title}</h1><p className="rbg-deck">{article.description}</p>
         <p className="rbg-byline">{blogUi(locale, 'by')} <Link href={'/blog/editorial-policy' as Href}>RegisterBox</Link> <span>·</span> <time dateTime={publishedAt}>{dateLabel}</time> <span>·</span> {blogReadMinutes(article)} {blogUi(locale, 'readMinutes')}</p>
+        {modifiedAt !== publishedAt && <p className="rbg-byline">{blogUi(locale, 'updated')} <time dateTime={modifiedAt}>{modifiedLabel}</time></p>}
+        {answerFirst && <div className="rbg-answer rbg-quick-answer" id="quick-answer"><p>{article.intro[0]}</p><nav aria-label={blogUi(locale, 'onPage')} className="rbg-quick-links">{article.sections.slice(0, 3).map(section => <a key={section.id} href={`#${section.id}`}>{section.heading}</a>)}</nav></div>}
         {article.availabilityNote && <p className="rbg-availability" role="note"><strong>{blogUi(locale, 'available')}</strong> {article.availabilityNote}</p>}
         {!watchPage && <BlogActions article={article} compact locale={locale}/>}
       </header><BlogPricingLead article={article}/></div>
-      <div className="rbg-answer rbg-article-summary">{article.intro.map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div>
+      <div className="rbg-answer rbg-article-summary">{article.intro.slice(answerFirst ? 1 : 0).map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div>
       {!watchPage && <figure className="rbg-cover"><img src={blogImage(article)} srcSet={`${blogImage(article, true)} 640w, ${blogImage(article)} 1200w`} sizes="(max-width: 1000px) 100vw, 1100px" width="1200" height="800" fetchPriority="high" alt={article.imageAlt}/><figcaption>{blogUi(locale, 'illustration')}</figcaption></figure>}
       <div className="rbg-reading-layout">
         <aside className="rbg-toc"><h2>{blogUi(locale, 'inGuide')}</h2><nav aria-label={blogUi(locale, 'onPage')}>{video && <a href="#video-explainer">हिंदी वीडियो</a>}{article.sections.map(section => <a key={section.id} href={`#${section.id}`}>{section.heading}</a>)}<a href="#common-questions">{blogUi(locale, 'commonQuestions')}</a><a href="#sources">{blogUi(locale, 'officialSources')}</a></nav></aside>
@@ -82,6 +88,10 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
           {article.sections.map(section => <section id={section.id} key={section.id}>
             <h2>{section.heading}</h2>{section.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
             {section.bullets && <ul>{section.bullets.map(item => <li key={item}>{item}</li>)}</ul>}
+            {section.relatedSlugs?.map(target => {
+              const guide = localizedArticle(target, locale);
+              return guide ? <p className="rbg-context-link" key={target}><Link href={blogPath(locale, target) as Href}>{guide.title} →</Link></p> : null;
+            })}
             {section.sourceIds?.length ? <p className="rbg-citations">{blogUi(locale, 'sources')} {section.sourceIds.map(id => {
               const source = article.sources.find(item => item.id === id);
               return source ? <a key={id} href={source.url} target="_blank" rel="noopener noreferrer">{source.title} ↗</a> : null;
@@ -89,7 +99,7 @@ export default function BlogArticlePage({ slug, locale = 'en' }: { slug: string;
           </section>)}
           <section id="common-questions"><h2>{blogUi(locale, 'commonQuestions')}</h2>{article.faqs.map(faq => <div className="rbg-faq" key={faq.question}><h3>{faq.question}</h3><p>{faq.answer}</p></div>)}</section>
           <section id="sources" className="rbg-sources">
-            <h2>{blogUi(locale, 'furtherReading')}</h2><p>{blogUi(locale, 'sourcesChecked').replace('{date}', dateLabel)}</p>
+            <h2>{blogUi(locale, 'furtherReading')}</h2><p>{blogUi(locale, 'sourcesChecked').replace('{date}', reviewedLabel)}</p>
             <ul>{article.sources.map(source => <li key={source.id}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} ↗</a></li>)}</ul>
             <p>{blogUi(locale, 'correction')} <Link href="/contact">{blogUi(locale, 'tellUs')}</Link> {blogUi(locale, 'correctionDetails')}</p>
           </section>

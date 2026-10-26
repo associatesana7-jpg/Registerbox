@@ -5,6 +5,8 @@ export type HindiBlogContent = {
   sections: Record<string, { heading: string; paragraphs: string[]; bullets?: string[] }>;
   faqs: { question: string; answer: string }[];
   availabilityNote?: string;
+  modifiedAt?: string;
+  reviewedAt?: string;
 };
 
 export function hindiGuide(

@@ -350,12 +350,13 @@
     {
       "id": "https://www.registerbox.in/blog/shop-and-establishment-registration-process",
       "url": "https://www.registerbox.in/blog/shop-and-establishment-registration-process",
-      "title": "Karnataka shop and establishment registration: the online process, step by step",
-      "summary": "A practical e-Karmika application guide for Bengaluru and Karnataka: choose the right route, prepare Form A details, check uploads, pay and track the result.",
-      "content_text": "For a shop or commercial establishment in Karnataka, the official online registration route is the Labour Department’s e-Karmika portal. The practical sequence is to check applicability, prepare the establishment details, complete the application, upload the requested evidence, pay the applicable charge and save the acknowledgement. The authority reviews the application before issuing a certificate.\n\nThis is a Karnataka guide, including Bengaluru, not one national shop-licence process. Our separate Karnataka preparation guide covers the wider registration questions. Here, we focus on getting an online application ready without avoidable mistakes.",
+      "title": "Karnataka shop & establishment registration online",
+      "summary": "Apply through Karnataka e-Karmika: prepare Form A details and documents, check the assessed fee, save your receipt and track the registration certificate.",
+      "content_text": "To apply for shop and establishment registration in Karnataka, use the Labour Department’s e-Karmika portal. Check applicability, prepare Form A details and documents, complete the online application, pay the assessed fee and save the acknowledgement. The officer’s acceptance, not payment alone, leads to the registration certificate.\n\nThe steps below cover Bengaluru and the rest of Karnataka, not a single nationwide shop-licence process. Already registered online? Start with your existing e-Karmika account instead of a duplicate application. Our separate eligibility and certificate guide covers broader registration questions and later changes.",
       "language": "en-IN",
       "image": "https://www.registerbox.in/images/blog/shop-registration-1200.webp",
       "date_published": "2026-10-21T00:00:00+05:30",
+      "date_modified": "2026-10-26T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -806,12 +807,13 @@
     {
       "id": "https://www.registerbox.in/blog/gst-registration-documents-and-address-proof",
       "url": "https://www.registerbox.in/blog/gst-registration-documents-and-address-proof",
-      "title": "GST registration documents: getting your address proof right",
-      "summary": "A practical GST registration checklist for owned, rented and family premises, with ways to resolve name and address mismatches before you apply.",
-      "content_text": "For an ordinary GST registration, prepare the applicant’s PAN and business details, the relevant identity and constitution documents, signatory authority, and evidence for the actual business premises. The right address documents depend on whether you own, rent or use the property with permission. Start with that question before collecting a folder of unrelated proofs.\n\nA useful application tells one consistent story: who is applying, what the business does, where it operates and who can act for it. This guide explains how to organise that story and spot problems while there is still time to fix them.",
+      "title": "GST legal ownership document & address proof explained",
+      "summary": "What does legal ownership document mean in GST registration? Check the address proof for owned, rented and consent premises, with official CBIC guidance.",
+      "content_text": "A legal ownership document in GST registration is evidence of who owns the business premises. It supports the address declared in the application. If you rent or use someone else’s property, you also need the evidence for that arrangement; ownership proof and permission to occupy are not the same thing.\n\nStart by deciding whether the premises are owned, rented or used with the owner’s consent. Then prepare the applicant’s PAN-linked identity, business details and signatory authority. This checklist separates those documents so you can spot missing evidence before applying.",
       "language": "en-IN",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
       "date_published": "2026-10-20T00:00:00+05:30",
+      "date_modified": "2026-10-26T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -882,12 +884,13 @@
     {
       "id": "https://www.registerbox.in/blog/gstr-1-vs-gstr-3b",
       "url": "https://www.registerbox.in/blog/gstr-1-vs-gstr-3b",
-      "title": "GSTR-1 vs GSTR-3B: what each return does and what to check",
-      "summary": "Understand the difference between GSTR-1 and GSTR-3B, how to compare records and input credit, and what proves that filing is complete.",
-      "content_text": "GSTR-1 reports outward supplies, including the relevant sales and invoice details. GSTR-3B brings together summary liabilities, input tax credit and tax payment for the period. Filing one does not complete the other. Start by checking which forms and filing frequency apply to your GSTIN.\n\nThe practical question is whether your invoices, books, portal statements and payment records tell the same story. A total that looks reasonable can still contain the wrong customer GSTIN, a missing credit note or an unsupported input-credit claim.",
+      "title": "What is GSTR-3B? Meaning and difference from GSTR-1",
+      "summary": "GSTR-3B explained in plain English: summary GST liability, purchase credit, reverse charge, the difference from GSTR-1 and how to check filing status.",
+      "content_text": "GSTR-3B is a summary GST return for a tax period. It reports tax liabilities, eligible input tax credit and how the liability is paid. It is not a list of every sales or purchase invoice. GSTR-1 is the separate statement of outward supplies, with the applicable invoice details and summaries.\n\nIs GSTR-3B for sales or purchases? Both can affect it. Sales can create outward-tax liability. Purchases can affect eligible input tax credit, reversals or reverse-charge liability. Filing GSTR-1 does not file GSTR-3B; check which forms apply to your GSTIN and period.",
       "language": "en-IN",
       "image": "https://www.registerbox.in/images/blog/records-1200.webp",
       "date_published": "2026-10-20T00:00:00+05:30",
+      "date_modified": "2026-10-26T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -901,12 +904,13 @@
     {
       "id": "https://www.registerbox.in/hi/blog/gstr-1-vs-gstr-3b",
       "url": "https://www.registerbox.in/hi/blog/gstr-1-vs-gstr-3b",
-      "title": "GSTR-1 और GSTR-3B में क्या अंतर है?",
-      "summary": "बिक्री, टैक्स देयता, खरीद पर क्रेडिट, भुगतान और फाइलिंग की स्थिति कैसे मिलाएँ।",
-      "content_text": "GSTR-1 में बिक्री की जानकारी दी जाती है। GSTR-3B में उस अवधि की टैक्स देयता, पात्र इनपुट क्रेडिट और भुगतान की समीक्षा होती है। दोनों के आंकड़े मिलाना जरूरी है।",
+      "title": "GSTR-3B क्या है? GSTR-1 से अंतर समझें",
+      "summary": "आसान हिंदी में GSTR-3B का मतलब समझें। इसमें बिक्री का टैक्स, खरीद पर पात्र क्रेडिट और भुगतान कैसे आते हैं, और GSTR-1 से क्या अंतर है?",
+      "content_text": "GSTR-3B एक टैक्स अवधि का सारांश रिटर्न है। इसमें GST की देयता, पात्र इनपुट टैक्स क्रेडिट और भुगतान की जानकारी दी जाती है, हर बिल की अलग सूची नहीं। GSTR-1 बिक्री यानी बाहर की सप्लाई का विवरण है। दोनों लागू हों तो एक भरने से दूसरा अपने आप फाइल नहीं होता।",
       "language": "hi-IN",
       "image": "https://www.registerbox.in/images/blog/records-1200.webp",
       "date_published": "2026-10-20T00:00:00+05:30",
+      "date_modified": "2026-10-26T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
@@ -1338,12 +1342,13 @@
     {
       "id": "https://www.registerbox.in/blog/shop-establishment-registration-karnataka",
       "url": "https://www.registerbox.in/blog/shop-establishment-registration-karnataka",
-      "title": "Shop and establishment registration in Karnataka: prepare the right details",
-      "summary": "Understand what to check for a Karnataka shop or office, how to organise establishment records and why GST and other permissions are separate.",
-      "content_text": "Karnataka shop and establishment registration concerns the establishment and its applicable labour-law requirements. It is different from GST registration, a municipal trade permission or the incorporation of the owner’s company.\n\nBefore opening a shop, office or service location in Bengaluru, check whether the establishment falls within the current State requirements and whether an exemption applies. Then prepare information that matches the premises and the business actually operating there.",
+      "title": "Karnataka shop registration: login & certificate",
+      "summary": "Check Karnataka shop registration applicability, documents, e-Karmika login, certificate status and renewal. Find the official portal and scoped assistance.",
+      "content_text": "Karnataka shop and establishment registration concerns the establishment under State labour law. The Labour Department provides e-Karmika for online registration and later services. Check whether the requirements apply to your activity and premises; GST registration or company incorporation does not answer that question by itself.\n\nUse this guide for applicability, documents, an existing e-Karmika account, certificate checks and later changes in Karnataka, including Bengaluru. For a new application, our linked step-by-step online-process guide covers preparation through payment and the department’s decision.",
       "language": "en-IN",
       "image": "https://www.registerbox.in/images/blog/formation-1200.webp",
       "date_published": "2026-10-20T00:00:00+05:30",
+      "date_modified": "2026-10-26T00:00:00+05:30",
       "authors": [
         {
           "name": "RegisterBox",
