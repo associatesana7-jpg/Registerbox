@@ -70,6 +70,7 @@
     "build:tally:windows": "node scripts/build-tally-windows.mjs",
     "prepare:pdf": "node scripts/prepare-pdf-assets.mjs",
     "test:converter": "node --test scripts/test-file-converter.mjs scripts/test-converter-security.mjs",
+    "test:typing": "node --test scripts/test-indian-transliteration.mjs",
     "postinstall": "node scripts/prepare-pdf-assets.mjs"
   },
   "private": true
