@@ -8,6 +8,7 @@ import { contact, servicePath } from './content';
 import { servicePresentation } from './service-presentation';
 import { WebBrand } from './brand.web';
 import { BlogPreview } from './blog-preview.web';
+import { FreeToolsCallout } from './free-tools-callout.web';
 import './service-entry.css';
 import './price-home.css';
 import { BranchDetails, ContactActions } from './local-support.web';
@@ -60,6 +61,7 @@ export default function LandingPage() {
       <section className="rb-process" id="how-it-works"><div className="rb-container"><div className="rb-eyebrow">SMALL STEPS. REAL PROGRESS.</div><h2>From “where do I start?”<br/>to “I’ve got this.”</h2><div className="rb-process-grid">{[['01','Tell us your goal','Choose your service and sign in securely with an email code.'],['02','Make it your business','Answer relevant questions, choose a business profile and gather your documents.'],['03','Save, review, move forward','Keep a draft, review what’s missing and track the next steps in your workspace.']].map(([number,title,body])=><div key={number}><span className="rb-step-number">{number}</span><h3>{title}</h3><p>{body}</p></div>)}</div><p className="rb-process-note">Government submission and professional review are separate from saving an application draft.</p></div></section>
       <section className="rb-ai-section rb-container"><div className="rb-ai-icon">✦</div><div><div className="rb-eyebrow">MEET REGISTERBOX AI</div><h2>A little guidance goes a long way.</h2><p>Describe your idea in plain language. Get help understanding your options and finding a starting point.</p><small>AI guidance supports your decisions. Service eligibility and filing details still need review.</small></div><Link href={destination('/ai')} className="rb-button">Let’s talk business <span>↗</span></Link></section>
       <BlogPreview/>
+      <FreeToolsCallout/>
       <section className="rb-faq-section rb-container" id="business-registration-questions"><div><div className="rb-eyebrow">COSTS. CHOICES. NEXT STEPS.</div><h2>Business registration questions, answered.</h2><p>Read the answers here, then follow the service page for its checklist and full scope.</p><a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" className="rb-text-link">Chat on WhatsApp ↗</a></div><PublicAnswers answers={homeAnswers} idPrefix="business-answer"/></section>
       <div className="rb-container"><BranchDetails/></div>
       <section className="rb-bottom-cta rb-container"><div className="rb-eyebrow">YOUR NEXT CHAPTER STARTS HERE</div><h2>Big plans?<br/>Let’s make room for them<span>✦</span></h2><div><Link href={destination(servicePath('new'))} className="rb-button rb-button-white">Get started with RegisterBox ↗</Link><Link href="/contact" className="rb-cta-contact">Contact & branches ↗</Link></div><span className="rb-cta-orbit"/></section>
