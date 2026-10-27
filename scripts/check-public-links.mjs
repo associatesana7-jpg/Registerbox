@@ -52,7 +52,7 @@ function readPage(file) {
   return result;
 }
 function publicPath(pathname) {
-  return pathname === '/' || /^\/(?:blog|[a-z]{2,3}(?:-[A-Za-z]+)?\/blog|services)(?:\/|$)/.test(pathname) || /^\/(?:contact|policies|privacy|delete-account)\/?$/.test(pathname);
+  return pathname === '/' || /^\/(?:blog|[a-z]{2,3}(?:-[A-Za-z]+)?\/blog|services|watch)(?:\/|$)/.test(pathname) || /^\/(?:contact|policies|privacy|delete-account)\/?$/.test(pathname);
 }
 function auditLink(raw, base, context, { asset = false, navigation = false } = {}) {
   checkedLinks += 1;
@@ -119,6 +119,7 @@ for (const [url, file] of targets) {
   for (const tag of tags) {
     if ('href' in tag.attrs) auditLink(tag.attrs.href, url, `${url} <${tag.name}>`, { navigation: tag.name === 'a' });
     if ('src' in tag.attrs) auditLink(tag.attrs.src, url, `${url} <${tag.name} src>`, { asset: true });
+    if ('poster' in tag.attrs) auditLink(tag.attrs.poster, url, `${url} <${tag.name} poster>`, { asset: true });
     if (tag.attrs.srcset) {
       for (const candidate of tag.attrs.srcset.split(',')) auditLink(candidate.trim().split(/\s+/)[0], url, `${url} <${tag.name} srcset>`, { asset: true });
     }

@@ -1,0 +1,27 @@
+.rb-gst-watch-page{min-height:100vh;background:#fbfcfe;color:#132548}
+.rb-gst-watch-header{display:flex;justify-content:space-between;align-items:center;gap:24px;max-width:1200px;margin:auto;padding:28px 32px}
+.rb-gst-watch-header>a:last-child{display:flex;align-items:center;gap:10px;min-height:44px;color:#59677c;font-size:14px;text-decoration:none}
+.rb-gst-watch-header>a:last-child:hover{color:#2462ed}
+.rb-gst-watch-main{max-width:1024px;margin:0 auto;padding:26px 32px 80px}
+.rb-gst-watch-heading{text-align:center;max-width:720px;margin:0 auto 32px}
+.rb-gst-watch-heading>p{margin:0 0 12px;font-size:10px;line-height:1.6;font-weight:700;letter-spacing:.17em;color:#6c7d98}
+.rb-gst-watch-heading h1{margin:0 0 16px;font-size:clamp(36px,4.3vw,58px);line-height:1.06;font-weight:650;letter-spacing:-.055em;color:#132548}
+.rb-gst-watch-heading h1 br{display:none}
+.rb-gst-watch-heading>div{font-size:16px;line-height:1.65;color:#64738b}
+.rb-gst-watch-below{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:16px 0 48px;font-size:12px;line-height:1.6;color:#738098}
+.rb-gst-watch-example{margin:0}
+.rb-gst-watch-below>a{display:inline-flex;gap:8px;align-items:center;min-height:44px;flex-shrink:0;color:#2462ed;font-size:13px;font-weight:600;text-decoration:none}
+.rb-gst-watch-transcript{max-width:680px;margin:auto;padding-top:36px;border-top:1px solid #e3e8f0}
+.rb-gst-watch-transcript h2{margin:0 0 20px;color:#132548;font-size:28px;line-height:1.2;font-weight:600;letter-spacing:-.035em}
+.rb-gst-watch-transcript .rb-gst-walkthrough-copy{font-size:15px}
+.rb-gst-watch-transcript .rb-gst-walkthrough-steps{gap:24px;margin-top:28px}
+.rb-gst-watch-transcript .rb-gst-walkthrough-steps strong{font-size:16px}
+.rb-gst-watch-transcript .rb-gst-walkthrough-steps p{font-size:14px!important}
+.rb-gst-watch-footer{display:flex;justify-content:space-between;align-items:center;gap:24px;max-width:1200px;margin:auto;padding:24px 32px;border-top:1px solid #e3e8f0;color:#7c879a;font-size:12px;line-height:1.6}
+.rb-gst-watch-footer nav{display:flex;flex-wrap:wrap;gap:12px 24px}
+.rb-gst-watch-footer a{display:inline-flex;align-items:center;min-height:36px;color:#64738b;text-decoration:none}
+.rb-gst-watch-footer a:hover,.rb-gst-watch-below>a:hover{text-decoration:underline;text-underline-offset:4px}
+.rb-gst-watch-page a:focus-visible{outline:2px solid #2462ed;outline-offset:5px;border-radius:3px}
+.rb-gst-watch-skip{position:fixed;left:16px;top:12px;padding:12px 18px;background:#132548;color:#fff;z-index:100;transform:translateY(-200%);text-decoration:none;border-radius:8px}
+.rb-gst-watch-skip:focus{transform:translateY(0)}
+@media(max-width:600px){.rb-gst-watch-header{padding:18px 20px;gap:16px}.rb-gst-watch-header .rb-brand small{display:none}.rb-gst-watch-header>a:last-child{font-size:12px;max-width:108px;text-align:right}.rb-gst-watch-main{padding:28px 20px 54px}.rb-gst-watch-heading{margin-bottom:24px}.rb-gst-watch-heading h1{font-size:38px;line-height:1.08}.rb-gst-watch-heading h1 br{display:block}.rb-gst-watch-heading>div{font-size:14px;max-width:290px;margin:auto}.rb-gst-watch-below{align-items:flex-start;flex-direction:column;gap:4px;margin:14px 0 32px}.rb-gst-watch-transcript{padding-top:28px}.rb-gst-watch-transcript h2{font-size:25px}.rb-gst-watch-footer{padding:20px;align-items:flex-start;flex-direction:column;gap:6px}}
