@@ -2,6 +2,7 @@ import { ScrollViewStyleReset, useServerDocumentContext } from 'expo-router/html
 import type { PropsWithChildren } from 'react';
 
 const clarityBootstrap = `(function(c,l,a,r,i,t,y){
+  if(c.location.pathname === "/tools/pdf-converter" || c.location.pathname === "/tools/pdf-converter/") return;
   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);

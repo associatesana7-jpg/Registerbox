@@ -169,7 +169,7 @@ export function WebShell({ children }: PropsWithChildren) {
   if (pathname === '/privacy-operations' || pathname === '/control-center' || pathname.startsWith('/control-center/')) return <><Head><meta name="robots" content="noindex,nofollow"/></Head>{children}</>;
   const landing = pathname === '/' && !segments.includes('(tabs)' as never);
   const regionalBlog = blogLocales.some(locale => pathname === `/${locale.code}/blog` || pathname.startsWith(`/${locale.code}/blog/`));
-  const publicPage = landing || regionalBlog || pathname.startsWith('/watch/') || pathname === '/checkout' || pathname === '/blog' || pathname.startsWith('/blog/') || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/privacy' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
+  const publicPage = landing || pathname === '/tools/pdf-converter' || regionalBlog || pathname.startsWith('/watch/') || pathname === '/checkout' || pathname === '/blog' || pathname.startsWith('/blog/') || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/privacy' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
   const leadPromptPage = landing || regionalBlog || pathname === '/blog' || pathname.startsWith('/blog/') || pathname === '/contact' || pathname === '/services' || pathname.startsWith('/services/');
   if (publicPage) return <>{pathname.startsWith('/auth') && <Head><meta name="robots" content="noindex,nofollow"/></Head>}{leadPromptPage && <PublicLeadPrompt/>}{children}</>;
   const next = safeNext(typeof window !== 'undefined' ? window.location.pathname + window.location.search : pathname);

@@ -1,0 +1,11 @@
+.rb-free-tools{margin-block:32px 0}
+.rb-free-tools-inner{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:26px;padding:34px;border:1px solid #e1e8f5;border-radius:16px;background:#f5f7fc}
+.rb-free-tools-icon{display:grid;place-items:center;width:64px;height:76px;flex-shrink:0;color:#2462ed;border:1px solid #dbe5fb;border-radius:14px;background:#fff}
+.rb-free-tools-kicker{display:block;margin-bottom:10px;color:#2462ed;font-size:10px;line-height:1.4;font-weight:750;letter-spacing:1.7px}
+.rb-website .rb-free-tools h2{margin:0;font-size:28px;line-height:1.2;letter-spacing:-1px}
+.rb-free-tools p{max-width:570px;margin:13px 0 0;color:#66728a;font-size:13px;line-height:1.8}
+.rb-website .rb-free-tools-link{display:inline-flex;align-items:center;justify-content:center;gap:20px;min-height:48px;padding:13px 18px;border:1px solid #2462ed;border-radius:8px;background:#2462ed;color:#fff;font-size:12px;line-height:1.5;font-weight:650;text-align:center;transition:none}
+.rb-website .rb-free-tools-link:hover{border-color:#184ed0;background:#184ed0}
+.rb-free-tools-link span{font-size:17px;line-height:1}
+@media(max-width:1000px){.rb-free-tools-inner{grid-template-columns:56px minmax(0,1fr);gap:20px;padding:28px}.rb-free-tools-icon{width:56px;height:68px}.rb-free-tools-link{grid-column:2;justify-self:start}.rb-website .rb-free-tools h2{font-size:27px}}
+@media(max-width:600px){.rb-free-tools{margin-top:24px}.rb-free-tools-inner{grid-template-columns:1fr;gap:20px;padding:24px;border-radius:12px}.rb-free-tools-icon{width:48px;height:54px;border-radius:10px}.rb-free-tools-icon svg{width:27px;height:34px}.rb-free-tools-kicker{font-size:9px;margin-bottom:11px}.rb-website .rb-free-tools h2{font-size:28px;max-width:290px;letter-spacing:-.9px}.rb-free-tools p{font-size:12px;margin-top:12px}.rb-free-tools-link{grid-column:1;justify-self:stretch}.rb-website .rb-free-tools-link{min-height:48px;font-size:12px;padding:13px 14px}}

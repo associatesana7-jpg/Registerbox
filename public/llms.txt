@@ -8,6 +8,13 @@ Business registration preparation and compliance workspaces in India. Based in B
 
 Application drafts are not government submissions. Confirm scope and fees with the team.
 
+## Free public tools
+
+- [Free PDF converter](https://www.registerbox.in/tools/pdf-converter): A browser tool for files up to 5 MB combined (5,000,000 bytes). No login, conversion fee or watermark. Convert JPG/PNG/WebP images, Excel XLSX/CSV, Word DOCX, PowerPoint PPTX, TXT/Markdown/RTF and OpenDocument ODT/ODP/ODS to PDF. Export PDF to PNG images, XLSX, DOCX, PPTX or TXT. The page includes an 11-conversion support table, instructions, privacy information and processing limits. Reviewed 27 October 2026.
+- File contents are processed on the user's device and are not uploaded to RegisterBox or a conversion service. Users must download results before leaving or refreshing the page.
+- PDF to Word, Excel and text requires existing selectable text; there is no OCR. PDF to PowerPoint produces slide images rather than editable slide elements. Office and spreadsheet layouts are approximations; advanced formatting, charts and media may be simplified or absent. PDFs generated from source files contain image pages.
+- PDF inputs support up to 50 pages; images support up to 20 source files. Additional browser, image, spreadsheet and archive limits apply. Legacy DOC/PPT/XLS, password-protected files, macros and active or externally linked Office content are unsupported. See the tool's visible format guide and FAQ for current details; it is not a universal or pixel-perfect document converter.
+
 ## Questions answered on public pages
 
 Read these pages without an account. Their question headings, checklists and FAQ answers are included in the initial HTML and visible without expanding an accordion. RegisterBox recommendations are distinguished from official requirements.
