@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "name": "CMU Pronouncing Dictionary pronunciation aliases",
+  "sourceRepository": "https://github.com/cmusphinx/cmudict",
+  "revision": "74790861f652b15e4ac49015a90074ad62a27690",
+  "sourceUrl": "https://raw.githubusercontent.com/cmusphinx/cmudict/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict",
+  "sourceSha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22",
+  "licenseUrl": "https://raw.githubusercontent.com/cmusphinx/cmudict/74790861f652b15e4ac49015a90074ad62a27690/LICENSE",
+  "licenseSha256": "bd4ce8e44170a5f9f481310ca85c51de3c4f851a65e679b40e603b143bd3542a",
+  "license": "CMUdict permissive BSD-style license; exact conditions are in CMUDICT-LICENSE.txt",
+  "attribution": "Copyright (C) 1993-2015 Carnegie Mellon University. All rights reserved.",
+  "derivation": "All ASCII alphabetic words up to 40 characters; ARPAbet segment phones mapped with the same table for every word; stress omitted; at most two distinct aliases per word; unchanged aliases omitted.",
+  "phones": {
+    "AA": "aa",
+    "AE": "a",
+    "AH": "a",
+    "AO": "o",
+    "AW": "au",
+    "AY": "aay",
+    "B": "b",
+    "CH": "ch",
+    "D": "d",
+    "DH": "d",
+    "EH": "e",
+    "ER": "ar",
+    "EY": "e",
+    "F": "f",
+    "G": "g",
+    "HH": "h",
+    "IH": "i",
+    "IY": "ee",
+    "JH": "j",
+    "K": "k",
+    "L": "l",
+    "M": "m",
+    "N": "n",
+    "NG": "ng",
+    "OW": "o",
+    "OY": "oy",
+    "P": "p",
+    "R": "r",
+    "S": "s",
+    "SH": "sh",
+    "T": "t",
+    "TH": "th",
+    "UH": "u",
+    "UW": "oo",
+    "V": "v",
+    "W": "w",
+    "Y": "y",
+    "Z": "z",
+    "ZH": "zh"
+  },
+  "entries": 110764,
+  "pronunciations": 117669,
+  "artifact": {
+    "path": "english-pronunciations.json",
+    "bytes": 2634043,
+    "sha256": "df4422b9129115fa2b7b74d2b07f34827e69d1a88e3e4743f35a63e70b0a0aac"
+  },
+  "compressedArtifact": {
+    "path": "english-pronunciations.json.gz",
+    "encoding": "gzip",
+    "bytes": 688207,
+    "sha256": "f207183db388707f4406ce65bbb5f31945345f4e967026258203891fed9f138e"
+  },
+  "phonemeFeatures": {
+    "description": "Word-level union of original ARPAbet phonemes across all eligible source pronunciations. DH does not set the D bit. This preserves phoneme distinctions for a uniform candidate-fidelity preference.",
+    "bitmask": {
+      "T": 1,
+      "D": 2,
+      "Z": 4
+    },
+    "entries": 68683,
+    "artifact": {
+      "path": "english-phoneme-features.json",
+      "bytes": 884909,
+      "sha256": "4768f49003543e3263cb412d225d4639c6bf133e4e4399b943e1ee2a1d6bbd09"
+    },
+    "compressedArtifact": {
+      "path": "english-phoneme-features.json.gz",
+      "encoding": "gzip",
+      "bytes": 224284,
+      "sha256": "94cb27ff5139ea7fe406d543c42cd08bdde684d997c61cd19f52130dcc5e969c"
+    }
+  },
+  "limits": "Pronunciation alternatives represent US English dictionary entries and may differ from Indian English usage. They are candidate inputs, not certified spellings, translations or contextual grammar correction."
+}

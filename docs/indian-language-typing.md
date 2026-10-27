@@ -1,41 +1,31 @@
 # Indian language typing
 
-Public routes: `/tools` and `/tools/indian-language-typing`. Both are available without an account, payment or public lead form. The site header links to the tools hub, and the homepage cards and footer expose the individual tools.
+The public `/tools/indian-language-typing` editor is linked from `/tools`, the site header, homepage and footer. No account or payment is required.
 
-## Typing behavior
+## Prediction and input styles
 
-The English-letter source is kept beside an editable Unicode result. Live mode converts every input change. Word mode leaves the unfinished last word in Roman letters until a space or punctuation; Passage mode converts on request. The original source stays available when the user changes languages. Manual result corrections remain until a new conversion replaces them. English preview (Ctrl/Command+G) previews the entire source without changing scripts.
+The initial release used Sanscript letter rules. Those rules did not recognize ordinary English spellings such as `tea`, `my` and `name`. Smart typing now uses a browser worker running AI4Bharat IndicXlit, beam search, language-specific word frequencies and CMUdict pronunciation aliases. The default is smart typing; while its automatic first-load download is preparing, unknown words remain literal rather than displaying approximate rules as successful predictions. Word suggestions stay enabled for all supported languages. There is no enable/disable switch.
 
-Local alternatives offer common spellings and bounded phonetic variations. They are not a remote predictive dictionary. The on-screen keyboard includes vowels, consonants, dependent vowel signs, other signs and numbers. Controls include native numbers, text size and font, simple/focus views, emoji, counters, undo/redo, copy, clear, TXT/DOCX/PNG export and print/browser Save as PDF. Email and WhatsApp open only after explicit user action and do not send a message automatically.
+Twenty choices have a matching predictive language/script model: Assamese, Bengali, Bodo, Konkani (Devanagari), Gujarati, Hindi, Kannada, Kashmiri (Perso-Arabic), Maithili (Devanagari), Malayalam, Manipuri (Meitei Mayek), Marathi, Nepali, Odia, Punjabi (Gurmukhi), Sanskrit, Sindhi (Arabic), Tamil, Telugu and Urdu. Dogri, Santali, Bhojpuri, Chhattisgarhi, Haryanvi, Magahi, Rajasthani and Tulu remain explicitly labeled **basic sound mapping**. They are not silently assigned another language's predictive model.
 
-The input limit is 20,000 UTF-16 characters. History is bounded to 60 edits. Image export is bounded to 180 wrapped lines and 12,000 pixels high. Long sharing text is directed to file download or clipboard instead of an oversized URL.
+Auto input style uses a conservative English-marker heuristic for phrases. Users can explicitly choose **Indian words in English letters** or **English words by sound**. This resolves cases such as Hindi `main` (मैं or मेन) where the same Roman spelling can express different intended sounds. Neither profile translates meanings or checks grammar. Model predictions cannot guarantee intended spelling; ranked alternatives remain available.
 
-## Language and script coverage
+Candidates appear near the source caret and in the persistent suggestion row. Arrow keys choose a candidate; Enter inserts it, Escape closes the popup, and Alt+1 through Alt+5 insert a numbered candidate. Selection records the chosen spelling for that source-word occurrence and updates only the result. The original English source remains unchanged. Unrelated source edits shift saved choices; editing the chosen word invalidates its saved choice. Native keyboard characters and emoji insert only into the editable result. Existing native text, URLs, email addresses, fixed acronyms, punctuation and spacing stay unchanged.
 
-There are 28 labeled language choices: the 22 scheduled Indian languages plus Bhojpuri, Chhattisgarhi, Haryanvi, Magahi, Rajasthani and Tulu. Choices that share a script are not separate language models. Kashmiri and Sindhi use Devanagari here, Konkani uses Devanagari, Punjabi uses Gurmukhi, Tulu uses Kannada, Manipuri uses Meitei Mayek, and Santali uses Ol Chiki. Other script variants are not offered.
+Live mode debounces inference off the main thread. On-space mode keeps the unfinished last word Roman. Whole-passage mode converts only on request. New source input, language/style changes, manual result edits, Clear and Undo cancel old conversions; both an abort signal and a document version prevent late responses from repainting newer text. IME composition is not converted mid-composition.
 
-Urdu, Kashmiri, Sindhi, Manipuri and Santali are visibly labeled experimental. This is sound-to-script conversion, not meaning translation, grammar checking, or a claim of native-reviewed dictionary accuracy. Fonts and shaping depend on the user's system. Important documents need spelling review by a fluent reader.
+## Assets, privacy and security
 
-## Privacy and security
+Typed words are processed entirely on the device. Only same-origin static model/runtime/lexicon requests are needed. No typed text is put in request URLs, bodies, telemetry, server drafts or persistent browser storage. The model/runtime download is about 63 MB, plus small compressed dictionaries, so the page shows automatic preparation progress. HTTP caching can reuse static assets; there is no persistent draft.
 
-No transliteration request leaves the browser. There is no upload endpoint, text API, server draft or local persistent draft. Text is rendered through controlled textareas, React text, canvas `fillText`, and DOCX text runs. User text is never inserted as HTML or evaluated. URLs, email addresses and already-native text remain ordinary text.
+The MIT model archive and individual model files are checksum-pinned in `scripts/prepare-typing-assets.mjs`. The archive is parsed using a strict three-file allowlist, without executing its package JavaScript or installing its native Node runtime. ONNX Runtime Web is version-pinned. Compressed language frequency lexicons and CMUdict data retain source, license and derivation manifests; their generators are development utilities, not runtime services. Raw generated lexicon JSON and model/runtime assets are ignored; the build regenerates the latter from the pinned archive.
 
-The typing workspace carries Clarity masking for client navigation from other pages. Direct visits to all public tools skip Clarity initialization. The exact routes are public in the web shell and carry tool security headers. Email and WhatsApp explicitly pass text to the user-selected app when the corresponding button is clicked.
+Input is bounded to 20,000 UTF-16 characters; predictions accept up to 40 ASCII letters per word. Overlong or unsupported runs remain literal. In-memory caches hold at most 600 word/profile entries and history holds 60 edits. Work is serialized in a Web Worker with cancellation between inference steps. Model or dictionary failure is surfaced; it cannot silently switch a smart result to approximate rule output.
 
-The engine uses an exact vendored MIT-licensed Sanscript 1.3.3 runtime and included script tables. The unused npm build-time TOML parser is not installed. See `src/vendor/sanscript/README.md` for upstream provenance, registry integrity and checksums. Local spelling helpers and Ol Chiki/Urdu adaptations live outside the unchanged vendor file.
+User text is rendered through controlled textareas, React text, canvas `fillText` and DOCX text runs, never HTML evaluation. Clarity is skipped on direct tool visits and masked on client navigation. The existing tool security headers remain in force. Email and WhatsApp pass text to the selected app only after the user clicks their button.
 
-## Search discovery
+## Verification and limits
 
-The first static response includes instructions, all language/script labels, examples, privacy/limitations and visible FAQs. It includes canonical metadata and WebApplication/BreadcrumbList/FAQPage structured data. The tools hub, sitemap and llms.txt link to the typing page. These make it discoverable; they do not guarantee indexing or ranking.
+`npm run test:typing`, `npx expo lint`, `npx tsc --noEmit` and a static web export are required. `docs/typing-quality-cases.json` separates user-confirmed regressions, developer probes and editor-flow checks. The corpus is a release smoke test, not a native-reviewed accuracy benchmark. A small passing sample does not prove perfect language support.
 
-## Verification
-
-```sh
-npm run test:typing
-npx expo lint
-npx tsc --noEmit
-npx expo export --platform web --output-dir /private/tmp/registerbox-typing-web
-python3 scripts/check-public-seo.py /private/tmp/registerbox-typing-web
-```
-
-Browser QA must check live typing, word/passage modes, all language examples, source/result edits and caret behavior, language switching with undo, native numbers, keyboard insertion, copy/downloads, print output, mobile layout, direct public access and navigation from the homepage. Engine tests include every advertised example, address preservation, input bounds, prototype-like words, adversarial punctuation, keyboard groups, script adaptations and the vendor checksum.
+Browser QA covers the reported Kannada and Hindi phrases, ranked suggestions, keyboard selection, chosen-spelling retention, caret editing, mode boundaries, stale-source/language responses, manual edits, IME, model-load failure, no-login access and mobile overflow. The page has crawlable instructions, support labels, FAQs, canonical metadata and WebApplication/BreadcrumbList/FAQPage structured data. These aid discovery without promising rankings.

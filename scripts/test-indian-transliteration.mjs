@@ -39,8 +39,8 @@ test('28 distinct language choices include all 22 scheduled languages with expli
     assert.ok(language, `${id} is available`);
     assert.ok(language.lang && language.scriptLabel && language.nativeName);
   }
-  assert.equal(getTypingLanguage('ks').lang, 'ks-Deva');
-  assert.equal(getTypingLanguage('sd').lang, 'sd-Deva');
+  assert.equal(getTypingLanguage('ks').lang, 'ks-Arab');
+  assert.equal(getTypingLanguage('sd').lang, 'sd-Arab');
   assert.equal(getTypingLanguage('ur').direction, 'rtl');
   assert.equal(getTypingLanguage('unknown').id, 'kn');
 });

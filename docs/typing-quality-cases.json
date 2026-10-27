@@ -1,0 +1,645 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Regression probes for predictive transliteration, not a claim of linguistic certification or a substitute for a held-out benchmark.",
+  "normalization": "Compare NFC-normalized Unicode. Keep meaningful distinctions; do not delete vowel marks, viramas, nukta or joiners to make a test pass.",
+  "evaluation": {
+    "top1": "The first candidate equals at least one expected spelling.",
+    "top5": "At least one expected spelling occurs among the first five unique candidates.",
+    "userConfirmedBlockers": "Every user-confirmed blocker must pass top1 and the whole editor flow. Native vocabulary and names also need measurement; fixing only the reported phrase is insufficient.",
+    "developerProbes": "These common-word expectations are review probes. They have not been certified by native speakers. Record failures and inspect alternatives rather than claiming a percentage for an entire language.",
+    "accuracyClaim": "Do not describe this small probe set as model accuracy, a blind test or perfection. Use an untouched published test split and native-speaker review before publishing comparative accuracy claims.",
+    "candidateRequirements": "Ranked, non-empty, duplicate-free Unicode strings; raw Roman input remains a selectable alternative. Selecting a choice must preserve that exact word on subsequent edits."
+  },
+  "sources": [
+    {
+      "kind": "user-confirmed",
+      "detail": "The user explicitly requested Kannada tea day -> ಟೀ ಡೇ, English sounds rather than translation."
+    },
+    {
+      "kind": "reference-behavior",
+      "url": "https://kannada.indiatyping.com/",
+      "detail": "The supplied screenshot shows tea with a ranked candidate list whose first choice is ಟೀ. This establishes interaction behavior, not a supported production API contract."
+    },
+    {
+      "kind": "model-documentation",
+      "url": "https://github.com/AI4Bharat/IndicXlit",
+      "detail": "The upstream model documents uneven top-1 performance across languages and named entities. Word prediction cannot guarantee the writer's intended spelling."
+    },
+    {
+      "kind": "future-held-out-evaluation",
+      "url": "https://huggingface.co/datasets/ai4bharat/Aksharantar",
+      "detail": "The official dataset has separate test material and source/annotation information. Use its untouched test split with attribution; do not add a test-derived dictionary then report the same split as independent evaluation."
+    }
+  ],
+  "wordCases": [
+    {
+      "id": "kn-tea",
+      "language": "kn",
+      "roman": "tea",
+      "expected": [
+        "ಟೀ"
+      ],
+      "category": "loanword",
+      "review": "user-confirmed",
+      "requiredRank": 1
+    },
+    {
+      "id": "kn-day",
+      "language": "kn",
+      "roman": "day",
+      "expected": [
+        "ಡೇ"
+      ],
+      "category": "loanword",
+      "review": "user-confirmed",
+      "requiredRank": 1
+    },
+    {
+      "id": "kn-namaskara",
+      "language": "kn",
+      "roman": "namaskara",
+      "expected": [
+        "ನಮಸ್ಕಾರ"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "kn-kannada",
+      "language": "kn",
+      "roman": "kannada",
+      "expected": [
+        "ಕನ್ನಡ"
+      ],
+      "category": "language-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "kn-bengaluru",
+      "language": "kn",
+      "roman": "bengaluru",
+      "expected": [
+        "ಬೆಂಗಳೂರು"
+      ],
+      "category": "place-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "kn-nanna",
+      "language": "kn",
+      "roman": "nanna",
+      "expected": [
+        "ನನ್ನ"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "kn-hesaru",
+      "language": "kn",
+      "roman": "hesaru",
+      "expected": [
+        "ಹೆಸರು"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "kn-tumba-reference",
+      "language": "kn",
+      "roman": "tumba",
+      "expected": [
+        "ತುಂಬಾ"
+      ],
+      "category": "native-word",
+      "review": "reference-behavior-2026-10-27",
+      "requiredRank": 1
+    },
+    {
+      "id": "kn-vyavasaayada-reference",
+      "language": "kn",
+      "roman": "vyavasaayada",
+      "expected": [
+        "ವ್ಯವಸಾಯದ"
+      ],
+      "category": "native-word",
+      "review": "reference-behavior-2026-10-27",
+      "requiredRank": 1
+    },
+    {
+      "id": "kn-maatadona-reference",
+      "language": "kn",
+      "roman": "maatadona",
+      "expected": [
+        "ಮಾತಾಡೋಣ"
+      ],
+      "category": "native-word",
+      "review": "reference-behavior-2026-10-27",
+      "requiredRank": 1
+    },
+    {
+      "id": "hi-namaste",
+      "language": "hi",
+      "roman": "namaste",
+      "expected": [
+        "नमस्ते"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "hi-mera",
+      "language": "hi",
+      "roman": "mera",
+      "expected": [
+        "मेरा"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "hi-naam",
+      "language": "hi",
+      "roman": "naam",
+      "expected": [
+        "नाम"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "hi-hai",
+      "language": "hi",
+      "roman": "hai",
+      "expected": [
+        "है"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "hi-school",
+      "language": "hi",
+      "roman": "school",
+      "expected": [
+        "स्कूल"
+      ],
+      "category": "loanword",
+      "review": "developer-probe"
+    },
+    {
+      "id": "hi-bank",
+      "language": "hi",
+      "roman": "bank",
+      "expected": [
+        "बैंक"
+      ],
+      "category": "loanword",
+      "review": "developer-probe"
+    },
+    {
+      "id": "hi-dilli",
+      "language": "hi",
+      "roman": "dilli",
+      "expected": [
+        "दिल्ली"
+      ],
+      "category": "place-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "ta-vanakkam",
+      "language": "ta",
+      "roman": "vanakkam",
+      "expected": [
+        "வணக்கம்"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "ta-tamil",
+      "language": "ta",
+      "roman": "tamil",
+      "expected": [
+        "தமிழ்"
+      ],
+      "category": "language-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "ta-chennai",
+      "language": "ta",
+      "roman": "chennai",
+      "expected": [
+        "சென்னை"
+      ],
+      "category": "place-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "ta-amma",
+      "language": "ta",
+      "roman": "amma",
+      "expected": [
+        "அம்மா"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "ta-appa",
+      "language": "ta",
+      "roman": "appa",
+      "expected": [
+        "அப்பா"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "ta-tea",
+      "language": "ta",
+      "roman": "tea",
+      "expected": [
+        "டீ"
+      ],
+      "category": "loanword",
+      "review": "developer-probe"
+    },
+    {
+      "id": "te-namaskaram",
+      "language": "te",
+      "roman": "namaskaram",
+      "expected": [
+        "నమస్కారం"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "te-telugu",
+      "language": "te",
+      "roman": "telugu",
+      "expected": [
+        "తెలుగు"
+      ],
+      "category": "language-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "te-amma",
+      "language": "te",
+      "roman": "amma",
+      "expected": [
+        "అమ్మ"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "te-tea",
+      "language": "te",
+      "roman": "tea",
+      "expected": [
+        "టీ"
+      ],
+      "category": "loanword",
+      "review": "developer-probe"
+    },
+    {
+      "id": "te-day",
+      "language": "te",
+      "roman": "day",
+      "expected": [
+        "డే"
+      ],
+      "category": "loanword",
+      "review": "developer-probe"
+    },
+    {
+      "id": "bn-bangla",
+      "language": "bn",
+      "roman": "bangla",
+      "expected": [
+        "বাংলা"
+      ],
+      "category": "language-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "bn-kolkata",
+      "language": "bn",
+      "roman": "kolkata",
+      "expected": [
+        "কলকাতা"
+      ],
+      "category": "place-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "bn-ami",
+      "language": "bn",
+      "roman": "ami",
+      "expected": [
+        "আমি"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "bn-namaskar",
+      "language": "bn",
+      "roman": "namaskar",
+      "expected": [
+        "নমস্কার"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "bn-tea",
+      "language": "bn",
+      "roman": "tea",
+      "expected": [
+        "টি"
+      ],
+      "category": "loanword",
+      "review": "developer-probe"
+    },
+    {
+      "id": "mr-namaskar",
+      "language": "mr",
+      "roman": "namaskar",
+      "expected": [
+        "नमस्कार"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "mr-marathi",
+      "language": "mr",
+      "roman": "marathi",
+      "expected": [
+        "मराठी"
+      ],
+      "category": "language-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "mr-mumbai",
+      "language": "mr",
+      "roman": "mumbai",
+      "expected": [
+        "मुंबई"
+      ],
+      "category": "place-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "mr-pune",
+      "language": "mr",
+      "roman": "pune",
+      "expected": [
+        "पुणे"
+      ],
+      "category": "place-name",
+      "review": "developer-probe"
+    },
+    {
+      "id": "mr-aai",
+      "language": "mr",
+      "roman": "aai",
+      "expected": [
+        "आई"
+      ],
+      "category": "native-word",
+      "review": "developer-probe"
+    },
+    {
+      "id": "mr-tea",
+      "language": "mr",
+      "roman": "tea",
+      "expected": [
+        "टी"
+      ],
+      "category": "loanword",
+      "review": "developer-probe"
+    },
+    {
+      "id": "hi-hey",
+      "language": "hi",
+      "roman": "hey",
+      "expected": [
+        "हे"
+      ],
+      "category": "loanword",
+      "review": "developer-inferred-from-user-confirmed-phonetic-intent"
+    },
+    {
+      "id": "hi-my",
+      "language": "hi",
+      "roman": "my",
+      "expected": [
+        "माय"
+      ],
+      "category": "loanword",
+      "review": "developer-inferred-from-user-confirmed-phonetic-intent"
+    },
+    {
+      "id": "hi-name",
+      "language": "hi",
+      "roman": "name",
+      "expected": [
+        "नेम"
+      ],
+      "category": "loanword",
+      "review": "developer-inferred-from-user-confirmed-phonetic-intent"
+    },
+    {
+      "id": "hi-is",
+      "language": "hi",
+      "roman": "is",
+      "expected": [
+        "इज़",
+        "इज"
+      ],
+      "category": "loanword",
+      "review": "developer-inferred-from-user-confirmed-phonetic-intent"
+    },
+    {
+      "id": "hi-nirmal",
+      "language": "hi",
+      "roman": "nirmal",
+      "expected": [
+        "निर्मल"
+      ],
+      "category": "personal-name",
+      "review": "developer-probe"
+    }
+  ],
+  "phraseCases": [
+    {
+      "id": "reported-phrase",
+      "language": "kn",
+      "source": "tea day",
+      "expected": "ಟೀ ಡೇ",
+      "review": "user-confirmed",
+      "required": true
+    },
+    {
+      "id": "punctuation",
+      "language": "kn",
+      "source": "tea, day!",
+      "expected": "ಟೀ, ಡೇ!",
+      "review": "user-confirmed-words",
+      "required": true
+    },
+    {
+      "id": "multiline-spacing",
+      "language": "kn",
+      "source": "tea  day\ntea\tday",
+      "expected": "ಟೀ  ಡೇ\nಟೀ\tಡೇ",
+      "review": "user-confirmed-words",
+      "required": true
+    },
+    {
+      "id": "protected-native",
+      "language": "kn",
+      "source": "tea ಕನ್ನಡ day 🙂",
+      "expected": "ಟೀ ಕನ್ನಡ ಡೇ 🙂",
+      "review": "user-confirmed-words",
+      "required": true
+    },
+    {
+      "id": "protected-addresses",
+      "language": "kn",
+      "source": "tea https://example.com/tea?day=1 user+tea@example.com example.in/tea day",
+      "expected": "ಟೀ https://example.com/tea?day=1 user+tea@example.com example.in/tea ಡೇ",
+      "review": "user-confirmed-words",
+      "required": true
+    },
+    {
+      "id": "protected-acronyms",
+      "language": "kn",
+      "source": "tea PDF GST UPI day",
+      "expected": "ಟೀ PDF GST UPI ಡೇ",
+      "review": "user-confirmed-words",
+      "required": true
+    },
+    {
+      "id": "hi-english-sounds-introduction",
+      "language": "hi",
+      "source": "hey my name is nirmal",
+      "expected": "हे माय नेम इज़ निर्मल",
+      "alternatives": [
+        "हे माय नेम इज निर्मल"
+      ],
+      "review": "developer-inferred-from-user-confirmed-phonetic-intent",
+      "required": true,
+      "inputStyle": "english"
+    },
+    {
+      "id": "hi-indian-words-introduction",
+      "language": "hi",
+      "source": "mera naam nirmal hai",
+      "expected": "मेरा नाम निर्मल है",
+      "review": "developer-probe",
+      "required": true,
+      "inputStyle": "indian"
+    }
+  ],
+  "interactionCases": [
+    {
+      "id": "live-candidates",
+      "steps": "In Kannada smart typing, type tea slowly without a space.",
+      "expect": "The result and the first candidate become ಟೀ after prediction completes; candidates appear while the source word is active. No translation to ಚಹಾ is substituted."
+    },
+    {
+      "id": "accept-alternative",
+      "steps": "Type a word with several candidates, select a non-first candidate, then type a space and another word.",
+      "expect": "The chosen spelling survives re-render and later prediction. The selection applies to the intended source span, not the whole passage."
+    },
+    {
+      "id": "keyboard-candidates",
+      "steps": "Keep source input focused. Use ArrowDown/ArrowUp and Enter to choose a candidate, and Escape to dismiss it.",
+      "expect": "Candidate focus and selection are announced accessibly. Caret position and text remain intact. Ordinary editing keys keep their expected behavior when no candidate list is open."
+    },
+    {
+      "id": "middle-word",
+      "steps": "Type tea day, move the caret back inside tea, and select its alternative.",
+      "expect": "Only tea is replaced. day and all following spaces remain intact. Subsequent candidate responses for day do not alter tea."
+    },
+    {
+      "id": "stale-source",
+      "steps": "Delay prediction for tea; immediately replace it with day. Resolve the day response first and then the old tea response.",
+      "expect": "The source stays day, result stays ಡೇ, and the old tea response cannot repaint the result or candidates."
+    },
+    {
+      "id": "stale-language",
+      "steps": "Delay a Kannada response, switch to Hindi, and resolve the older Kannada response afterward.",
+      "expect": "No Kannada candidate or output appears under the Hindi language label. Cache keys include both language and normalized word."
+    },
+    {
+      "id": "clear-during-load",
+      "steps": "Type while the model loads and press Clear or Undo before it completes.",
+      "expect": "Late model responses do not restore cleared text or overwrite the restored history entry."
+    },
+    {
+      "id": "result-manual-edit",
+      "steps": "Delay conversion; edit the result manually before it resolves.",
+      "expect": "A late automatic response does not silently overwrite the user's result edit. Explicit Convert text may replace it with a clear editing state."
+    },
+    {
+      "id": "word-timing",
+      "steps": "Choose On space, type tea and then a space.",
+      "expect": "The unfinished source word stays Roman until committed; a trailing space commits ಟೀ and preserves the space. Suggestions may still be offered before commit."
+    },
+    {
+      "id": "passage-timing",
+      "steps": "Choose Whole passage, paste tea day, then press Convert text.",
+      "expect": "The result changes only on explicit conversion and becomes ಟೀ ಡೇ. Candidate selection remains coherent with the pending passage."
+    },
+    {
+      "id": "english-preview",
+      "steps": "Enable English preview during an in-flight native conversion.",
+      "expect": "The result exactly matches the source; delayed native output cannot override English preview."
+    },
+    {
+      "id": "composition",
+      "steps": "Use an operating-system native IME and finish composition in the source textarea.",
+      "expect": "Preedit text is not repeatedly converted or damaged; completed native text is preserved."
+    },
+    {
+      "id": "unsupported-language",
+      "steps": "Choose every language without a matching predictive model, including script variants that do not match the model.",
+      "expect": "The interface clearly labels basic sound mapping; it does not silently use another language's predictions or imply full predictive spelling support."
+    },
+    {
+      "id": "model-failure",
+      "steps": "Block the model or WebAssembly download; reload and type tea day.",
+      "expect": "A visible, actionable load error appears. The interface cannot label approximate basic mapping as a successful smart result. Retry is possible."
+    },
+    {
+      "id": "slow-mobile",
+      "steps": "Load with a slow connection and type on a narrow mobile viewport.",
+      "expect": "The download/progress state is visible, the editor remains responsive, and candidates remain reachable without horizontal page overflow."
+    },
+    {
+      "id": "privacy",
+      "steps": "Inspect all requests while typing, selecting candidates and switching languages.",
+      "expect": "Typed text appears in no request URL, request body, telemetry or remote prediction endpoint; only same-origin static engine/model asset requests are needed."
+    },
+    {
+      "id": "pasted-html",
+      "steps": "Paste literal <script>alert(1)</script> and an HTML-looking candidate string into editable text.",
+      "expect": "Content remains text; it cannot create elements, execute code or alter the page."
+    },
+    {
+      "id": "input-bounds",
+      "steps": "Paste 20,000 characters, a 200-character unbroken Roman token, and many repeated tokens.",
+      "expect": "Limits remain explicit, work stays bounded off the main UI thread, repeated words reuse predictions, and unsupported overlong words are preserved rather than dropped."
+    }
+  ]
+}
