@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "source": "https://github.com/AI4Bharat/IndicXlit/releases/download/v1.0/word_prob_dicts.zip",
+  "sourceRepository": "https://github.com/AI4Bharat/IndicXlit",
+  "license": "MIT; exact notice in INDICXLIT-LICENSE.txt",
+  "derivation": "Retain the 50,000 largest native-word frequency probabilities per language (all entries when fewer). Uniform heap selection over every source entry; no test-set or example-specific additions. Probabilities rounded to 8 significant digits. UTF-8 JSON with deterministic gzip mtime=0.",
+  "generator": "scripts/generate-typing-lexicons.py",
+  "languages": [
+    {
+      "language": "as",
+      "sourceEntries": 618561,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 5478554,
+        "uncompressedBytes": 49715552,
+        "offset": 636065523,
+        "crc32": "a827c801"
+      },
+      "json": {
+        "bytes": 1885977,
+        "sha256": "67051fc2feed2e1152731f6e82c2875e08b790b7ff3e2251b63c510172bc7df2"
+      },
+      "gzip": {
+        "bytes": 337260,
+        "sha256": "1270f4ac3bea10ef2d359808b7e51403470f07f22bb43e568c97521e43ea410b"
+      }
+    },
+    {
+      "language": "bn",
+      "sourceEntries": 4511963,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 45529651,
+        "uncompressedBytes": 403487845,
+        "offset": 43568609,
+        "crc32": "68de78de"
+      },
+      "json": {
+        "bytes": 1881606,
+        "sha256": "998f0c64260f60062eb540715abcfd53114c12a829acc0122f9021ebbb9d9195"
+      },
+      "gzip": {
+        "bytes": 405411,
+        "sha256": "ba50f0e829057f5d697754391854f8d84516bb429157627a39cac1c19cb877ff"
+      }
+    },
+    {
+      "language": "brx",
+      "sourceEntries": 44492,
+      "retainedEntries": 44492,
+      "sourceEntry": {
+        "compressedBytes": 339025,
+        "uncompressedBytes": 3493262,
+        "offset": 43229487,
+        "crc32": "79042299"
+      },
+      "json": {
+        "bytes": 1810644,
+        "sha256": "163b024b4338857c51a38cd966007fe1ee8d79042fdabcbec5d9d5229a7ab6c0"
+      },
+      "gzip": {
+        "bytes": 216738,
+        "sha256": "3c14a84a8ec55d44a56c0d20772fda7af3ab6f42aa7d4b7670793ac7ea23901e"
+      }
+    },
+    {
+      "language": "gom",
+      "sourceEntries": 1073359,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 9453188,
+        "uncompressedBytes": 90250078,
+        "offset": 131321433,
+        "crc32": "9d5ad4be"
+      },
+      "json": {
+        "bytes": 1828583,
+        "sha256": "bbdc1e78f8b4f8981ccdff55392f8c8bd8c40e6e526aa2bfc294835e807b30ff"
+      },
+      "gzip": {
+        "bytes": 312393,
+        "sha256": "3acc78fc7f27dfa6700177ab2fa42a1e24d67e44343d701f7abb72364d270547"
+      }
+    },
+    {
+      "language": "gu",
+      "sourceEntries": 4486404,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 42279421,
+        "uncompressedBytes": 377635836,
+        "offset": 533788698,
+        "crc32": "70e6f117"
+      },
+      "json": {
+        "bytes": 1831893,
+        "sha256": "154c4dde4f19b0f82a2d4bf9ae24171427859a457da4d4300eb350839ada7038"
+      },
+      "gzip": {
+        "bytes": 395338,
+        "sha256": "5bd4b66b19d795510f051a6a5813f86910dcbcdc72f430ed111e6659e7d4cf8b"
+      }
+    },
+    {
+      "language": "hi",
+      "sourceEntries": 4221222,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 42255573,
+        "uncompressedBytes": 358118856,
+        "offset": 491422039,
+        "crc32": "d0b1c019"
+      },
+      "json": {
+        "bytes": 1763627,
+        "sha256": "1728636a9886300da8e0d6b619c1d7edaefd462dcbc413289b7d87eab94073db"
+      },
+      "gzip": {
+        "bytes": 409235,
+        "sha256": "46bd18814ba601c1670febcec95b35bb12d4e639f4234768ae6af30a0c316ec4"
+      }
+    },
+    {
+      "language": "kn",
+      "sourceEntries": 10214279,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 114183601,
+        "uncompressedBytes": 1045504407,
+        "offset": 249764778,
+        "crc32": "debd8480"
+      },
+      "json": {
+        "bytes": 2103532,
+        "sha256": "cfd1017f5d2e5d31023bcaa76d7ebda093708d46c65f63adfe992c1535b80a82"
+      },
+      "gzip": {
+        "bytes": 429409,
+        "sha256": "84760656e058462a4537d1f0580790cc47f92ea0632ded0055f054f496d1d49e"
+      }
+    },
+    {
+      "language": "ks",
+      "sourceEntries": 159931,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 1181227,
+        "uncompressedBytes": 11293534,
+        "offset": 634884200,
+        "crc32": "bfa0bf05"
+      },
+      "json": {
+        "bytes": 1395366,
+        "sha256": "5f4a7924108dd3492bc7e627b9f05209537a70453a781cb7c9b844b1a7eedc2a"
+      },
+      "gzip": {
+        "bytes": 251687,
+        "sha256": "bde7206c35204001e03de3255b7e31e200528f86e2eadd134e81ea58c7bd69e1"
+      }
+    },
+    {
+      "language": "mai",
+      "sourceEntries": 448052,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 3509866,
+        "uncompressedBytes": 33351951,
+        "offset": 246254815,
+        "crc32": "ddbf0745"
+      },
+      "json": {
+        "bytes": 1705538,
+        "sha256": "7757e882d58269f9082c1fdd4329d9ab95c8ea384749f30905ce8455566fefeb"
+      },
+      "gzip": {
+        "bytes": 286704,
+        "sha256": "36825021edc40a1a9f55fc170a03a44a609daa3557ffb45f6cf9ce23b48c82ac"
+      }
+    },
+    {
+      "language": "ml",
+      "sourceEntries": 16247537,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 208946673,
+        "uncompressedBytes": 1994425364,
+        "offset": 641544173,
+        "crc32": "a8100cfe"
+      },
+      "json": {
+        "bytes": 2266684,
+        "sha256": "3877a7e7c6852b71798363f982218171e4b428e73114c7f0c900213158660c7a"
+      },
+      "gzip": {
+        "bytes": 448168,
+        "sha256": "1c5e214c015517f93e7027fed50627b1c57f9b5b1b0bba94233145bda6ab9961"
+      }
+    },
+    {
+      "language": "mni",
+      "sourceEntries": 18565,
+      "retainedEntries": 18565,
+      "sourceEntry": {
+        "compressedBytes": 110893,
+        "uncompressedBytes": 1199157,
+        "offset": 533677708,
+        "crc32": "55eeecae"
+      },
+      "json": {
+        "bytes": 622009,
+        "sha256": "931fc4c7213477e89164328914adb5688a8b7055e434fd59b51085dd2610c55b"
+      },
+      "gzip": {
+        "bytes": 78112,
+        "sha256": "a022959071032845692e1b2bae1776c550199c9d53225d1c00d5f03ac8bff24e"
+      }
+    },
+    {
+      "language": "mr",
+      "sourceEntries": 4715479,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 47544059,
+        "uncompressedBytes": 427280406,
+        "offset": 576068215,
+        "crc32": "17b38a29"
+      },
+      "json": {
+        "bytes": 1927533,
+        "sha256": "804afece079ac8699eae17f5dfade36ba238dc464a09fcc0f8a5b3a849eb183c"
+      },
+      "gzip": {
+        "bytes": 400690,
+        "sha256": "9a961bd036392de5f6a191842ac45a449f294db818cd83066283106a5e7d076f"
+      }
+    },
+    {
+      "language": "ne",
+      "sourceEntries": 4295181,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 42222981,
+        "uncompressedBytes": 382237259,
+        "offset": 89098356,
+        "crc32": "e6430efc"
+      },
+      "json": {
+        "bytes": 1944508,
+        "sha256": "c55d4d91d298df737fd7686455b5feeb09d939a54636d372e8ce7801ace6fa2a"
+      },
+      "gzip": {
+        "bytes": 404939,
+        "sha256": "8c2c6b882fc30cb44de495dd4dbd1c1d37af7dd1bccd1a13e5ec613b787f7227"
+      }
+    },
+    {
+      "language": "or",
+      "sourceEntries": 1224616,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 11271734,
+        "uncompressedBytes": 102397467,
+        "offset": 623612370,
+        "crc32": "9eba69b4"
+      },
+      "json": {
+        "bytes": 1919824,
+        "sha256": "d1fd41369befd32d2fd9ee820697507e1ec313f5d9411e0ff15fad9186a68db8"
+      },
+      "gzip": {
+        "bytes": 362145,
+        "sha256": "358e8a8026ebd284613d9038a97a44bc7a5b978871e54ebddd2d1c1576757032"
+      }
+    },
+    {
+      "language": "pa",
+      "sourceEntries": 2229680,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 19217237,
+        "uncompressedBytes": 169771810,
+        "offset": 24012154,
+        "crc32": "59e6e862"
+      },
+      "json": {
+        "bytes": 1692692,
+        "sha256": "1c7b8d7a96d8920b2648c1646b975373a11e8426df2e24f5e142ec40e450e7f3"
+      },
+      "gzip": {
+        "bytes": 368377,
+        "sha256": "0fad1d2c9ec35bcf4f69349953bb8b4c4c63703d974a49843c56e3cda11d1168"
+      }
+    },
+    {
+      "language": "sa",
+      "sourceEntries": 2727094,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 30143844,
+        "uncompressedBytes": 298744072,
+        "offset": 363948475,
+        "crc32": "38a075f1"
+      },
+      "json": {
+        "bytes": 1893368,
+        "sha256": "abd0e364b7e53578700a57dee916e200d1498e54dedd3f16c1de57ff1850abb8"
+      },
+      "gzip": {
+        "bytes": 304030,
+        "sha256": "b1e266af4dd5f8c1bbd75afc0460981df89db4b59ab772b5ce2390e597549f0c"
+      }
+    },
+    {
+      "language": "sd",
+      "sourceEntries": 136477,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 933903,
+        "uncompressedBytes": 9061711,
+        "offset": 245320816,
+        "crc32": "6798ceb3"
+      },
+      "json": {
+        "bytes": 1367950,
+        "sha256": "6909cc9c38033f810041da594733fd4f9926dc30c7fd6d6ebea53902ca34d727"
+      },
+      "gzip": {
+        "bytes": 237797,
+        "sha256": "2beb5dad7403d287b4dfe38b2ed2ffe1c1558216f1daa2eba9346fd3d6b2bbd2"
+      }
+    },
+    {
+      "language": "ta",
+      "sourceEntries": 9483041,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 104546002,
+        "uncompressedBytes": 1044620827,
+        "offset": 140774718,
+        "crc32": "f4997529"
+      },
+      "json": {
+        "bytes": 2217858,
+        "sha256": "cf79635f2ebfa03246f23b220865e73ed6989be08cb9cb1cf271b9bca947abfe"
+      },
+      "gzip": {
+        "bytes": 406282,
+        "sha256": "d9a0662a8b082fecc029b4c776bf9fc348d162c5816b462c868cf018d4afa703"
+      }
+    },
+    {
+      "language": "te",
+      "sourceEntries": 7771348,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 84164136,
+        "uncompressedBytes": 761940466,
+        "offset": 394092415,
+        "crc32": "9663f793"
+      },
+      "json": {
+        "bytes": 2060510,
+        "sha256": "a0e386832aa9f1b0bf1acb61d8b103d6f36f3716cd9e4b8e48778d107bb31526"
+      },
+      "gzip": {
+        "bytes": 426492,
+        "sha256": "b787e3d37d36d815461ec3190ed8bda409f59df4cce4ac33f45a12fe276db747"
+      }
+    },
+    {
+      "language": "ur",
+      "sourceEntries": 1663865,
+      "retainedEntries": 50000,
+      "sourceEntry": {
+        "compressedBytes": 13165296,
+        "uncompressedBytes": 126242089,
+        "offset": 478256647,
+        "crc32": "3e786f46"
+      },
+      "json": {
+        "bytes": 1365096,
+        "sha256": "e16dc1e66fbf8628b67b938b70466328c175078a11db77bc1ee61e5a8209910b"
+      },
+      "gzip": {
+        "bytes": 325208,
+        "sha256": "63586c6cc5667667fee86b2cf3a274dc52a7ecf65631c9956cf8801b14c23220"
+      }
+    }
+  ]
+}

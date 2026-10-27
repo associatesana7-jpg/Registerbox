@@ -33,6 +33,7 @@
     "fast-xml-parser": "^5.11.2",
     "fflate": "^0.8.3",
     "html2canvas": "^1.4.1",
+    "onnxruntime-web": "1.31.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.4.299",
     "pptxgenjs": "^4.0.1",
@@ -64,14 +65,15 @@
     "lint": "expo lint",
     "blog:translate": "node scripts/translate-blog.mjs",
     "blog:discover": "node scripts/build-blog-discovery.mjs",
-    "build:web": "node scripts/prepare-pdf-assets.mjs && node scripts/prepare-blog-build.mjs && expo export --platform web",
+    "build:web": "node scripts/prepare-pdf-assets.mjs && node scripts/prepare-typing-assets.mjs && node scripts/prepare-blog-build.mjs && expo export --platform web",
     "tally:connector": "node scripts/tally-connector.mjs",
     "test:tally": "node --test scripts/test-tally.mjs scripts/test-tally-desktop.mjs",
     "build:tally:windows": "node scripts/build-tally-windows.mjs",
     "prepare:pdf": "node scripts/prepare-pdf-assets.mjs",
     "test:converter": "node --test scripts/test-file-converter.mjs scripts/test-converter-security.mjs",
-    "test:typing": "node --test scripts/test-indian-transliteration.mjs",
-    "postinstall": "node scripts/prepare-pdf-assets.mjs"
+    "test:typing": "node --test scripts/test-indian-transliteration.mjs scripts/test-predictive-typing.mjs",
+    "postinstall": "node scripts/prepare-pdf-assets.mjs",
+    "prepare:typing": "node scripts/prepare-typing-assets.mjs"
   },
   "private": true
 }

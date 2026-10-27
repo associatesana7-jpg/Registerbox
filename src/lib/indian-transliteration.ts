@@ -6,6 +6,7 @@ export type { TypingLanguage } from '../data/typing-languages.ts';
 
 export const MAX_TYPING_CHARACTERS = 20_000;
 export type TransliterationOptions = { nativeDigits?: boolean; englishMode?: boolean };
+export type RomanTypingWord = { word: string; start: number; end: number };
 export type KeyboardKey = { roman: string; text: string };
 export type TypingKeyboard = {
   vowels: KeyboardKey[];
@@ -37,6 +38,8 @@ const COMMON_WORDS: Record<string, Record<string, readonly string[]>> = {
   ta: { vanakkam: ['வணக்கம்'], tamil: ['தமிழ்'] },
   te: { namaste: ['నమస్తే'], namaskaram: ['నమస్కారం'], telugu: ['తెలుగు'] },
   ml: { namaste: ['നമസ്തേ'], namaskaram: ['നമസ്കാരം'], malayalam: ['മലയാളം'] },
+  ks: { salaam: ['سلام'] },
+  sd: { salaam: ['سلام'] },
   ur: { salaam: ['سلام'], salam: ['سلام'], shukriya: ['شکریہ'], urdu: ['اردو'], namaste: ['نمستے'] },
 };
 
@@ -164,6 +167,23 @@ function protectedAddressRanges(text: string): TextRange[] {
   return merged;
 }
 
+/** Roman words eligible for prediction, excluding addresses and fixed acronyms. */
+export function getRomanTypingWords(text: string): RomanTypingWord[] {
+  checkLength(text);
+  const protectedRanges = protectedAddressRanges(text);
+  const words: RomanTypingWord[] = [];
+  let rangeIndex = 0;
+  for (const match of text.matchAll(/~?[A-Za-z]+(?:\^[A-Za-z]+)?/g)) {
+    const start = match.index;
+    const end = start + match[0].length;
+    while (protectedRanges[rangeIndex] && protectedRanges[rangeIndex].end <= start) rangeIndex++;
+    const range = protectedRanges[rangeIndex];
+    if (range && range.start < end) continue;
+    if (!KEEP_ACRONYMS.has(match[0])) words.push({ word: match[0], start, end });
+  }
+  return words;
+}
+
 /** Converts a Roman word using local phonetic rules; no network or HTML parser. */
 export function transliterateWord(word: string, languageId: string, options: TransliterationOptions = {}): string {
   return transliterateText(word, languageId, options);
@@ -173,21 +193,21 @@ export function transliterateWord(word: string, languageId: string, options: Tra
  * Convert only Roman typing spans. Existing native text, punctuation, line
  * breaks, web addresses and email addresses remain ordinary, unchanged text.
  */
-export function transliterateText(text: string, languageId: string, options: TransliterationOptions = {}): string {
+export function transliterateText(text: string, languageId: string, options: TransliterationOptions = {}, wordConverter?: (word: string, start: number) => string): string {
   checkLength(text);
   if (options.englishMode || !text) return text;
   const language = getTypingLanguage(languageId);
-  const convert = (passage: string) => passage.replace(/~?[A-Za-z]+(?:\^[A-Za-z]+)?|[0-9]+/g, span => {
+  const convert = (passage: string, base: number) => passage.replace(/~?[A-Za-z]+(?:\^[A-Za-z]+)?|[0-9]+/g, (span, offset: number) => {
     if (/^[0-9]+$/.test(span)) return options.nativeDigits ? convertDigits(span, language) : span;
-    return convertRomanWord(span, language, true);
+    return KEEP_ACRONYMS.has(span) ? span : wordConverter ? wordConverter(span, base + offset) : convertRomanWord(span, language, true);
   });
   let output = '';
   let position = 0;
   for (const range of protectedAddressRanges(text)) {
-    output += convert(text.slice(position, range.start)) + text.slice(range.start, range.end);
+    output += convert(text.slice(position, range.start), position) + text.slice(range.start, range.end);
     position = range.end;
   }
-  return output + convert(text.slice(position));
+  return output + convert(text.slice(position), position);
 }
 
 /** Local spelling alternatives. They are choices to review, not AI predictions. */
@@ -238,6 +258,10 @@ export function getKeyboard(languageId: string): TypingKeyboard {
   const vowelMarks = makeKeys(['vowel_marks']);
   const consonants = makeKeys(['consonants', 'extra_consonants'], true);
   const signs = makeKeys(['yogavaahas', 'virama', 'candra']);
+  const arabicExtras = language.id === 'sd' ? 'ٻڀٿٽٺڄڇڌڏڊڍڙڦڻڱڳڪگ' : language.id === 'ks' ? 'ٹڈڑژٲۆۄۈؠ' : '';
+  for (const text of arabicExtras) {
+    if (!seen.has(text)) { consonants.push({ text, roman: '' }); seen.add(text); }
+  }
   // Modern Malayalam chillu letters are explicit Unicode letters, not the
   // older consonant + virama + joiner sequences.
   if (language.script === 'malayalam') {
