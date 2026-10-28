@@ -169,7 +169,7 @@ export function WebShell({ children }: PropsWithChildren) {
   if (pathname === '/privacy-operations' || pathname === '/control-center' || pathname.startsWith('/control-center/')) return <><Head><meta name="robots" content="noindex,nofollow"/></Head>{children}</>;
   const landing = pathname === '/' && !segments.includes('(tabs)' as never);
   const regionalBlog = blogLocales.some(locale => pathname === `/${locale.code}/blog` || pathname.startsWith(`/${locale.code}/blog/`));
-  const publicTool = pathname === '/tools' || pathname === '/tools/pdf-converter' || pathname === '/tools/indian-language-typing';
+  const publicTool = pathname === '/tools' || pathname === '/tools/pdf-converter' || pathname === '/tools/indian-language-typing' || ['/tools/business-licence-checker', '/tools/business-licence-checker/hi', '/tools/business-licence-checker/kn'].includes(pathname);
   const publicPage = landing || publicTool || regionalBlog || pathname.startsWith('/watch/') || pathname === '/checkout' || pathname === '/blog' || pathname.startsWith('/blog/') || pathname.startsWith('/auth') || pathname === '/contact' || pathname === '/privacy' || pathname === '/policies' || pathname === '/delete-account' || pathname === '/services' || pathname.startsWith('/services/');
   const leadPromptPage = landing || publicTool || regionalBlog || pathname === '/blog' || pathname.startsWith('/blog/') || pathname === '/contact' || pathname === '/services' || pathname.startsWith('/services/');
   if (publicPage) return <>{pathname.startsWith('/auth') && <Head><meta name="robots" content="noindex,nofollow"/></Head>}{leadPromptPage && <PublicLeadPrompt/>}{children}</>;

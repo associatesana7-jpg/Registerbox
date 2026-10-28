@@ -73,7 +73,8 @@
     "test:converter": "node --test scripts/test-file-converter.mjs scripts/test-converter-security.mjs",
     "test:typing": "node --test scripts/test-indian-transliteration.mjs scripts/test-predictive-typing.mjs",
     "postinstall": "node scripts/prepare-pdf-assets.mjs",
-    "prepare:typing": "node scripts/prepare-typing-assets.mjs"
+    "prepare:typing": "node scripts/prepare-typing-assets.mjs",
+    "test:licences": "node --test scripts/test-business-licence-checker.mjs scripts/test-business-licence-input.mjs scripts/test-business-licence-services.mjs"
   },
   "private": true
 }

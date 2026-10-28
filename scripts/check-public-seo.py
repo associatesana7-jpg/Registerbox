@@ -48,6 +48,19 @@ for loc in ET.parse(root/'sitemap.xml').iter('{http://www.sitemaps.org/schemas/s
 for path in ['/auth','/auth/otp','/dashboard','/control-center','/documents']:
  page=Page();page.feed(file_for(path).read_text())
  if not any('noindex' in v for v in page.meta.get('robots',[])):errors.append(f'{path}: missing private noindex')
+# The public licence checker must remain discoverable without sign-in, in every
+# published language. Check exported pages rather than client-side navigation.
+licence_paths=['/tools/business-licence-checker','/tools/business-licence-checker/hi','/tools/business-licence-checker/kn']
+sitemap_paths={urlparse(loc.text).path for loc in ET.parse(root/'sitemap.xml').iter('{http://www.sitemaps.org/schemas/sitemap/0.9}loc')}
+for path in licence_paths:
+ if path not in sitemap_paths:errors.append(f'{path}: missing from sitemap')
+ if not file_for(path).exists():errors.append(f'{path}: missing public locale HTML')
+for path in ['/','/tools']:
+ page=Page();page.feed(file_for(path).read_text())
+ if licence_paths[0] not in page.links:errors.append(f'{path}: missing direct licence-checker link')
+hub=Page();hub.feed(file_for('/tools').read_text())
+tool_lists=[node for graph in hub.schema for node in graph.get('@graph',[]) if node.get('@type')=='ItemList']
+if not any(node.get('numberOfItems')==len(node.get('itemListElement',[])) and any(item.get('url')=='https://www.registerbox.in'+licence_paths[0] for item in node.get('itemListElement',[])) for node in tool_lists):errors.append('/tools: licence checker missing or inconsistent ItemList count')
 # Package offers must be visible in static HTML and agree with the public feed.
 feed=json.loads((root/'service-feed.json').read_text())
 if len(feed.get('services',[]))!=14:errors.append('service-feed: expected 14 paid packages')
@@ -67,7 +80,14 @@ for item in feed.get('services',[]):
  elif offer.get('price')!=item['price'] or offer.get('priceCurrency')!='INR':errors.append(f'{path}: offer price mismatch for {item["id"]}')
  if item['id'] not in page.ids and 'package-'+item['id'] not in page.ids:errors.append(f'{path}: package anchor missing for {item["id"]}')
  if item['category']=='food':
-  if not any(urlparse(href).path=='/onboarding/application' and parse_qs(urlparse(href).query).get('category')==['food'] for href in page.links):errors.append(f'{path}: food application entry missing')
+  def is_food_entry(href):
+   destination=urlparse(href)
+   if destination.path=='/auth':
+    next_path=parse_qs(destination.query).get('next',[])
+    if len(next_path)!=1:return False
+    destination=urlparse(next_path[0])
+   return not destination.scheme and not destination.netloc and destination.path=='/onboarding/application' and parse_qs(destination.query).get('category')==['food']
+  if not any(is_food_entry(href) for href in page.links):errors.append(f'{path}: food application entry missing')
  elif '/checkout?package='+item['id'] not in page.links:errors.append(f'{path}: checkout link missing for {item["id"]}')
  if item['price']<1:errors.append(f'{path}: paid package below minimum amount')
  if 'No GST' not in raw:errors.append(f'{path}: service fee GST disclosure missing')
@@ -75,6 +95,7 @@ if feed.get('free_service',{}).get('price')!=0:errors.append('service-feed: miss
 robots=(root/'robots.txt').read_text()
 if 'Sitemap: https://www.registerbox.in/sitemap.xml' not in robots:errors.append('robots: missing sitemap')
 if 'Disallow: /services' in robots:errors.append('robots: public service pages blocked')
+if 'Disallow: /tools' in robots:errors.append('robots: public tools blocked')
 assert (root/'images/registerbox-og.jpg').exists()
 print(f'Checked {count} public pages and 5 private routes.');print('\n'.join(errors) if errors else 'All SEO and internal-link checks pass.')
 sys.exit(bool(errors))

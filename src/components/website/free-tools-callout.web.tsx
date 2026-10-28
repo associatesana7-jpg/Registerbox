@@ -2,13 +2,14 @@ import { Link, type Href } from 'expo-router';
 import './free-tools-callout.css';
 
 const tools = [
+  { path: '/tools/business-licence-checker', name: 'Business licence checker', kicker: 'A CLEAR START FOR YOUR BUSINESS.', detail: 'Answer simple questions to find the registrations and permissions to check for your business in India. Available in English, Hindi and Kannada.', action: 'Check my business', icon: 'licence' },
   { path: '/tools/pdf-converter', name: 'Free PDF converter', kicker: 'FILES, READY TO SHARE', detail: 'Word, Excel, PowerPoint, images and more. Convert to and from PDF in your browser, up to 5 MB.', action: 'Open PDF converter', icon: 'pdf' },
   { path: '/tools/indian-language-typing', name: 'Indian language typing', kicker: 'ENGLISH KEYS. YOUR LANGUAGE.', detail: 'Type familiar words using English letters and write in Kannada, Hindi, Tamil and other supported Indian scripts.', action: 'Start typing', icon: 'language' },
 ] as const;
 
 export function FreeToolCards() {
   return <div className="rb-free-tool-grid">{tools.map(tool => <article className="rb-free-tool-card" key={tool.path}>
-    <div className="rb-free-tools-icon" aria-hidden="true">{tool.icon === 'pdf' ? <svg width="30" height="36" viewBox="0 0 36 42" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M22 3H8a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h20a3 3 0 0 0 3-3V12Z"/><path d="M22 3v9h9M10 21h16m-4-4 4 4-4 4M26 31H10m4-4-4 4 4 4"/></svg> : <span lang="kn">ಅ</span>}</div>
+    <div className="rb-free-tools-icon" aria-hidden="true">{tool.icon === 'pdf' ? <svg width="30" height="36" viewBox="0 0 36 42" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M22 3H8a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h20a3 3 0 0 0 3-3V12Z"/><path d="M22 3v9h9M10 21h16m-4-4 4 4-4 4M26 31H10m4-4-4 4 4 4"/></svg> : tool.icon === 'licence' ? <svg width="32" height="36" viewBox="0 0 36 42" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="5" width="26" height="33" rx="3"/><path d="M13 3h10v6H13zM11 17l2 2 4-4m3 3h5M11 26l2 2 4-4m3 3h5"/></svg> : <span lang="kn">ಅ</span>}</div>
     <span className="rb-free-tools-kicker">{tool.kicker}</span>
     <h3><Link href={tool.path as Href}>{tool.name}</Link></h3>
     <p>{tool.detail}</p>
