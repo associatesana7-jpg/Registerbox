@@ -74,7 +74,8 @@
     "test:typing": "node --test scripts/test-indian-transliteration.mjs scripts/test-predictive-typing.mjs",
     "postinstall": "node scripts/prepare-pdf-assets.mjs",
     "prepare:typing": "node scripts/prepare-typing-assets.mjs",
-    "test:licences": "node --test scripts/test-business-licence-checker.mjs scripts/test-business-licence-input.mjs scripts/test-business-licence-services.mjs"
+    "test:licences": "node --test scripts/test-business-licence-checker.mjs scripts/test-business-licence-input.mjs scripts/test-business-licence-services.mjs",
+    "test:tax-tools": "node --test scripts/test-public-gst-tools.mjs scripts/test-income-tax-calculator.mjs scripts/test-tds-calculator.mjs scripts/test-gst-late-fee-calculator.mjs scripts/test-gst-rate-finder.mjs"
   },
   "private": true
 }

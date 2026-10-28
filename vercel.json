@@ -46,6 +46,15 @@
   "trailingSlash": false,
   "headers": [
     {
+      "source": "/tools/:taxTool(gst-calculator|gst-invoice-generator|hsn-sac-gst-rate-finder|income-tax-regime-calculator|tds-calculator|gstin-validator|gst-late-fee-calculator)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "no-referrer" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        { "key": "Content-Security-Policy", "value": "base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'none'" }
+      ]
+    },
+    {
       "source": "/:path*",
       "headers": [{ "key": "Referrer-Policy", "value": "strict-origin" }]
     },
