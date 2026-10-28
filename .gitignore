@@ -66,3 +66,6 @@ public/vendor/typing/
 # Keep only compressed, pinned language lexicons in Git
 public/vendor/typing-lexicons/*.json
 !public/vendor/typing-lexicons/*manifest.json
+
+# Pinned local OCR runtime regenerated at build time
+public/vendor/ca-ocr/

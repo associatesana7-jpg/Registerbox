@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import { Buffer } from 'node:buffer';
-import { existsSync, readFileSync } from 'node:fs';
-import test from 'node:test';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import test, { after } from 'node:test';
+import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import readExcelFile from 'read-excel-file/universal';
@@ -43,9 +47,17 @@ globalThis.window = {
 globalThis.pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs');
 
 const engineUrl = new URL('../src/lib/file-converter.web.ts', import.meta.url);
-// data: modules have no package directory. Resolve the installed dependencies
-// while preserving the engine source and all behavior under test.
+// File URLs can represent real ESM cycles. Cache each target before walking its
+// imports so lazy OCR -> spreadsheet-reader -> converter imports share one module
+// instance instead of recursively constructing ever-larger data URLs.
+const moduleDirectory = mkdtempSync(join(tmpdir(), 'registerbox-converter-tests-'));
+const moduleUrls = new Map();
+after(() => rmSync(moduleDirectory, { recursive: true, force: true }));
 function webModuleUrl(sourceUrl) {
+  const cached = moduleUrls.get(sourceUrl.href);
+  if (cached) return cached;
+  const targetUrl = pathToFileURL(join(moduleDirectory, `${moduleUrls.size}.mjs`));
+  moduleUrls.set(sourceUrl.href, targetUrl.href);
   const javascript = ts.transpileModule(readFileSync(sourceUrl, 'utf8'), {
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
   }).outputText.replace(/\bimport\.meta\.url\b/g, JSON.stringify(sourceUrl.href)).replace(/((?:from\s*|import\(\s*)['"])([^'"]+)(['"])/g, (_match, prefix, name, suffix) => {
@@ -58,7 +70,8 @@ function webModuleUrl(sourceUrl) {
     return `${prefix}${target}${suffix}`;
   });
   const labeled = `${javascript}\n//# sourceURL=${sourceUrl.pathname.replace(/\.ts$/, '.test-harness.js')}\n`;
-  return `data:text/javascript;base64,${Buffer.from(labeled).toString('base64')}`;
+  writeFileSync(targetUrl, labeled);
+  return targetUrl.href;
 }
 const converter = await import(webModuleUrl(engineUrl));
 const officeModule = () => import(webModuleUrl(new URL('../src/lib/office-converter.web.ts', import.meta.url)));
@@ -217,6 +230,69 @@ test('compressed image headers are checked before enormous rasters can be decode
   await assert.rejects(converter.convertFiles([file('huge.png', png)], 'images-pdf'), /24|megapixel|resize/i);
 });
 
+// Opt in with REGISTERBOX_OCR_NODE_MODULES=/path/to/node_modules containing
+// tesseract.js 6.0.1. This keeps a CPU-heavy real OCR acceptance test available
+// without adding an OCR dependency to the application or ordinary test install.
+test('real printed image becomes an Excel table with all 18 expected cell values', {
+  skip: !process.env.REGISTERBOX_OCR_NODE_MODULES,
+  timeout: 180_000,
+}, async () => {
+  const requireOcr = createRequire(join(process.env.REGISTERBOX_OCR_NODE_MODULES, '__test_entry__.cjs'));
+  assert.equal(requireOcr('tesseract.js/package.json').version, '6.0.1');
+  // Tesseract detects its host when required. Load its Node worker adapter before
+  // restoring the canvas-only browser shim used by the production web modules.
+  const browserDocument = globalThis.document;
+  let createWorker;
+  try { delete globalThis.document; ({ createWorker } = requireOcr('tesseract.js')); }
+  finally { globalThis.document = browserDocument; }
+  const expected = [['Item', 'Quantity', 'Amount'], ['Paper', '3', '150.00'], ['Pen', '12', '240.00'], ['Stapler', '2', '180.00'], ['Book', '5', '500.00'], ['Folder', '8', '320.00']];
+  const canvas = createCanvas(1000, 500), context = canvas.getContext('2d');
+  const xs = [30, 440, 650, 970], ys = [30, 100, 170, 240, 310, 380, 450];
+  context.fillStyle = '#fff'; context.fillRect(0, 0, 1000, 500);
+  context.strokeStyle = '#000'; context.lineWidth = 1;
+  for (const x of xs) { context.beginPath(); context.moveTo(x, 30); context.lineTo(x, 450); context.stroke(); }
+  for (const y of ys) { context.beginPath(); context.moveTo(30, y); context.lineTo(970, y); context.stroke(); }
+  context.fillStyle = '#111'; context.font = '26px sans-serif';
+  for (let row = 0; row < expected.length; row++) for (let col = 0; col < 3; col++) context.fillText(expected[row][col], xs[col] + 18, ys[row] + 43);
+  const previousBitmap = globalThis.createImageBitmap, previousOcr = window.Tesseract;
+  globalThis.createImageBitmap = async blob => {
+    const image = new CanvasImage(); image.src = Buffer.from(await blob.arrayBuffer()); await image.decode(); image.close = () => {};
+    return image;
+  };
+  window.Tesseract = {
+    async createWorker(language, mode, options) {
+      assert.equal(language, 'eng'); assert.equal(mode, 1);
+      assert.equal(options.workerPath, '/vendor/ca-ocr/worker.min.js');
+      assert.equal(options.corePath, '/vendor/ca-ocr');
+      assert.equal(options.langPath, '/vendor/ca-ocr');
+      // Native canvas is the only bridge: the production recognizer chooses its
+      // real parameters and consumes the actual pinned engine's OCR blocks.
+      const worker = await createWorker(language, mode, { langPath: new URL('../public/vendor/ca-ocr/', import.meta.url).pathname, cacheMethod: 'none', gzip: true, logger: options.logger });
+      return {
+        setParameters: parameters => worker.setParameters(parameters),
+        recognize: (image, recognizeOptions, output) => worker.recognize(image.toBuffer('image/png'), recognizeOptions, output),
+        terminate: () => worker.terminate(),
+      };
+    },
+  };
+  try {
+    const progress = [];
+    const result = await converter.convertFiles([file('clear-table.png', canvas.toBuffer('image/png'), 'image/png')], 'image-excel', message => progress.push(message));
+    const sheets = await readExcelFile(result.blob);
+    assert.deepEqual(sheets[0].data, expected);
+    assert.equal(sheets[1].sheet, 'OCR text');
+    assert.deepEqual(result.tablePreview[0].rows, expected);
+    assert.equal(result.tablePreview[0].columns, 3);
+    assert.equal(result.tablePreview[0].totalRows, 6);
+    assert.ok(progress.some(message => /Reading text/.test(message)));
+    assert.match(result.filename, /-extracted\.xlsx$/);
+  } finally {
+    if (previousBitmap === undefined) delete globalThis.createImageBitmap; else globalThis.createImageBitmap = previousBitmap;
+    if (previousOcr === undefined) delete window.Tesseract; else window.Tesseract = previousOcr;
+    canvas.width = 0; canvas.height = 0;
+  }
+});
+
 test('CSV with Unicode creates a readable PDF without losing rows to pagination', async () => {
   const rows = ['Name,Amount', 'தமிழ்,236', ...Array.from({ length: 75 }, (_, i) => `Paper ${i + 1},118`)];
   const result = await converter.convertFiles([file('sales.csv', rows.join('\n'), 'text/csv')], 'excel-pdf');
@@ -241,6 +317,39 @@ test('real XLSX data converts to PDF, and a text PDF exports an actual readable 
   assert.deepEqual(sheets[0].data, [
     ['Description', 'Amount'], ['Office paper 1', '236.00'], ['Stapler', '118.00'],
   ]);
+});
+
+test('ruled 20-column PDF exports all 20 records to aligned Excel cells with a preview', async () => {
+  const pdf = await PDFDocument.create(), font = await pdf.embedFont(StandardFonts.Helvetica), page = pdf.addPage([1600, 900]);
+  const xs = Array.from({ length: 21 }, (_, i) => 40 + i * 75), ys = Array.from({ length: 22 }, (_, i) => 850 - i * 35);
+  for (const x of xs) page.drawLine({ start: { x, y: ys.at(-1) }, end: { x, y: ys[0] }, thickness: .5 });
+  for (const y of ys) page.drawLine({ start: { x: xs[0], y }, end: { x: xs.at(-1), y }, thickness: .5 });
+  const expected = [Array.from({ length: 20 }, (_, c) => `Column ${c + 1}`)];
+  for (let c = 0; c < 20; c++) page.drawText(expected[0][c], { x: xs[c] + 12, y: ys[0] - 20, size: 9, font });
+  for (let r = 1; r <= 20; r++) {
+    const row = Array.from({ length: 20 }, (_, c) => c === 0 ? `INV-${String(r).padStart(4, '0')}` : c === 5 && r === 7 ? '' : `${r * 100 + c}.00`);
+    expected.push(row);
+    for (let c = 0; c < 20; c++) if (row[c]) page.drawText(row[c], { x: xs[c + 1] - 5 - font.widthOfTextAtSize(row[c], 9), y: ys[r] - 20, size: 9, font });
+  }
+  const result = await converter.convertFiles([file('grid.pdf', await pdf.save(), 'application/pdf')], 'pdf-excel');
+  const sheets = await readExcelFile(result.blob);
+  assert.deepEqual(sheets[0].data.map(row => row.map(value => value ?? '')), expected);
+  assert.equal(result.tablePreview[0].columns, 20);
+  assert.equal(result.tablePreview[0].totalRows, 21);
+  assert.match(result.summary, /21 rows × 20 columns/);
+  assert.ok(result.warnings.some(warning => warning.includes('borders')));
+});
+
+// Optional local acceptance check. No user file is added to the repository.
+if (process.env.REGISTERBOX_SAMPLE_PDF) test('supplied 20-record PDF survives the actual converter and XLSX reader', async () => {
+  const bytes = readFileSync(process.env.REGISTERBOX_SAMPLE_PDF);
+  const result = await converter.convertFiles([file('sample.pdf', bytes, 'application/pdf')], 'pdf-excel');
+  const sheets = await readExcelFile(result.blob), rows = sheets[0].data;
+  assert.equal(rows.length, 21); assert.equal(rows[0].length, 20);
+  assert.equal(rows[0][0], 'Invoice ID'); assert.equal(rows[0][19], 'Status');
+  for (let r = 1; r <= 20; r++) assert.equal(rows[r][0], `INV-${String(r).padStart(4, '0')}`);
+  assert.equal(rows[20][15], '5,361.90'); assert.equal(rows[1][15], '2,301.00');
+  if (process.env.REGISTERBOX_SAMPLE_XLSX) writeFileSync(process.env.REGISTERBOX_SAMPLE_XLSX, await asBytes(result.blob));
 });
 
 test('workbooks ignore unused ranges, preserve distant real data, and bound filled rows and expanded bytes', async () => {

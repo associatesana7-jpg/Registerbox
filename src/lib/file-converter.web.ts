@@ -1,4 +1,5 @@
 /** Local-only conversion. File contents never leave the browser. */
+import { extractRuledPdfTables, pdfRulesFromOperators } from './pdf-table-layout';
 export const MAX_CONVERSION_BYTES = 5_000_000;
 
 export const CONVERSION_LIMITS = {
@@ -22,12 +23,13 @@ export const CONVERSION_LIMITS = {
 } as const;
 
 export type OfficeConversionMode = 'word-pdf' | 'powerpoint-pdf' | 'text-pdf' | 'opendocument-pdf';
-export type ConversionMode = 'images-pdf' | 'excel-pdf' | 'pdf-images' | 'pdf-excel' | OfficeConversionMode | 'pdf-word' | 'pdf-powerpoint' | 'pdf-text';
+export type ConversionMode = 'images-pdf' | 'image-excel' | 'excel-pdf' | 'pdf-images' | 'pdf-excel' | OfficeConversionMode | 'pdf-word' | 'pdf-powerpoint' | 'pdf-text';
 export type ConversionResult = {
   blob: Blob;
   filename: string;
   summary: string;
   warnings?: string[];
+  tablePreview?: { sheet: string; rows: string[][]; totalRows: number; columns: number }[];
 };
 type Progress = (message: string) => void;
 type Table = { name: string; rows: string[][] };
@@ -49,13 +51,13 @@ function outputName(name: string, suffix: string) {
 }
 
 export function validateConversionFiles(files: readonly File[], mode: ConversionMode): void {
-  if (!['images-pdf', 'excel-pdf', 'pdf-images', 'pdf-excel', 'word-pdf', 'powerpoint-pdf', 'text-pdf', 'opendocument-pdf', 'pdf-word', 'pdf-powerpoint', 'pdf-text'].includes(mode)) {
+  if (!['images-pdf', 'image-excel', 'excel-pdf', 'pdf-images', 'pdf-excel', 'word-pdf', 'powerpoint-pdf', 'text-pdf', 'opendocument-pdf', 'pdf-word', 'pdf-powerpoint', 'pdf-text'].includes(mode)) {
     throw new Error('Choose a supported conversion.');
   }
   if (!files.length) throw new Error('Add a file to convert.');
   if (mode !== 'images-pdf' && files.length !== 1) throw new Error('Choose one file for this conversion.');
   if (files.length > CONVERSION_LIMITS.imageFiles) throw new Error('Choose up to 20 images at a time.');
-  const allowed = mode === 'images-pdf' ? ['png', 'jpg', 'jpeg', 'webp']
+  const allowed = mode === 'images-pdf' || mode === 'image-excel' ? ['png', 'jpg', 'jpeg', 'webp']
     : mode === 'excel-pdf' ? ['xlsx', 'csv']
     : mode === 'word-pdf' ? ['docx']
     : mode === 'powerpoint-pdf' ? ['pptx']
@@ -70,7 +72,7 @@ export function validateConversionFiles(files: readonly File[], mode: Conversion
         : mode === 'powerpoint-pdf' ? 'Choose a .pptx file. Older .ppt files must first be saved as .pptx.'
         : mode === 'text-pdf' ? 'Choose a .txt, .md or .rtf file.'
         : mode === 'opendocument-pdf' ? 'Choose an .odt, .odp or .ods OpenDocument file.'
-        : `Choose ${mode === 'images-pdf' ? 'PNG, JPG or WebP images' : 'a PDF file'}.`;
+        : `Choose ${mode === 'images-pdf' || mode === 'image-excel' ? 'PNG, JPG or WebP images' : 'a PDF file'}.`;
       throw new Error(message);
     }
     total += file.size;
@@ -285,7 +287,7 @@ async function imagesToPdf(files: readonly File[], progress: Progress): Promise<
   };
 }
 
-async function readWorkbook(file: File): Promise<Table[]> {
+export async function readWorkbook(file: File): Promise<Table[]> {
   if (extension(file.name) === 'csv') {
     const bytes = new Uint8Array(await file.arrayBuffer());
     let text: string;
@@ -660,27 +662,48 @@ async function pdfToImages(file: File, progress: Progress): Promise<ConversionRe
 
 async function pdfToExcel(file: File, progress: Progress): Promise<ConversionResult> {
   return withPdf(file, async (pdf) => {
-    const sheets: { sheet: string; data: { type: StringConstructor; value: string }[][]; columns: { width: number }[] }[] = [];
-    const scanned: number[] = [];
-    let totalCells = 0;
-    let textCharacters = 0;
-    let textPages = 0;
-    for (let index = 1; index <= pdf.numPages; index++) {
-      progress(`Extracting text from page ${index} of ${pdf.numPages}…`);
-      const page = await pdf.getPage(index);
-      let rows: string[][];
-      try {
-        const text = await page.getTextContent();
-        rows = extractPdfTableRows(text.items.filter((item): item is import('pdfjs-dist/types/src/display/api').TextItem => 'str' in item));
-      } finally { page.cleanup(); }
-      if (rows.length) textPages++;
-      else { scanned.push(index); rows = [['No selectable text on this page. Scanned/image pages need OCR, which this tool does not provide.']]; }
+    type Sheet = { sheet: string; data: { type: StringConstructor; value: string; wrap: boolean; fontWeight?: 'bold'; backgroundColor?: string }[][]; columns: { width: number }[] };
+    const sheets: Sheet[] = [], scanned: number[] = [], preview: NonNullable<ConversionResult['tablePreview']> = [];
+    let totalCells = 0, textCharacters = 0, textPages = 0, ruledTables = 0, inferredPages = 0;
+    const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    function addSheet(name: string, rows: string[][], table: boolean) {
+      if (!rows.length || !rows.some(row => row.some(value => value.trim()))) throw new Error('No usable text rows were found. This PDF needs OCR or a different extraction method; an empty workbook has not been created.');
+      const columnCount = Math.max(...rows.map(row => row.length));
       totalCells += rows.reduce((sum, row) => sum + row.length, 0);
       if (totalCells > CONVERSION_LIMITS.pdfTextCells) throw new Error('This PDF contains over 20,000 extracted cells. Split it into smaller files.');
       for (const row of rows) for (const cell of row) textCharacters += cell.length;
       if (textCharacters > CONVERSION_LIMITS.extractedTextCharacters) throw new Error('This PDF contains over 2 million text characters. Split it into smaller files.');
-      const columnCount = Math.max(...rows.map((row) => row.length));
-      sheets.push({ sheet: `Page ${index}`, data: rows.map((row) => row.map((value) => ({ type: String, value }))), columns: Array.from({ length: columnCount }, () => ({ width: 24 })) });
+      checkTableSize(rows);
+      sheets.push({ sheet: name, data: rows.map((row, r) => row.map(value => ({ type: String, value, wrap: true, ...(table && r === 0 ? { fontWeight: 'bold' as const, backgroundColor: '#EAF1FF' } : {}) }))), columns: Array.from({ length: columnCount }, (_, c) => ({ width: Math.min(44, Math.max(10, ...rows.map(row => Math.min(42, row[c]?.length || 0) + 2))) })) });
+      if (table) preview.push({ sheet: name, rows: rows.slice(0, 6), totalRows: rows.length, columns: columnCount });
+    }
+    for (let index = 1; index <= pdf.numPages; index++) {
+      progress(`Reading table structure on page ${index} of ${pdf.numPages}…`);
+      const page = await pdf.getPage(index);
+      try {
+        const text = await page.getTextContent();
+        const items = text.items.filter((item): item is import('pdfjs-dist/types/src/display/api').TextItem => 'str' in item);
+        let grids: ReturnType<typeof extractRuledPdfTables> = [];
+        // Text stays available when a page uses an unsupported or very complex drawing.
+        try { grids = extractRuledPdfTables(items, pdfRulesFromOperators(await page.getOperatorList(), pdfjs.OPS)); } catch { /* Use text-position extraction below. */ }
+        if (grids.length) {
+          textPages++;
+          grids.forEach((grid, t) => { addSheet(grids.length === 1 ? `Page ${index}` : `Page ${index} table ${t + 1}`, grid.rows, true); ruledTables++; });
+          const outside = items.filter(item => {
+            const x = item.transform[4] + item.width / 2, y = item.transform[5] + Math.abs(item.height) * .3;
+            return item.str.trim() && !grids.some(grid => {
+              const [left, bottom, right, top] = grid.bounds;
+              return x >= left - 1 && x <= right + 1 && y >= bottom - 1 && y <= top + 1 || grid.strippedSpreadsheetLabels && /^[A-Z]$/.test(item.str.trim()) && x >= left && x <= right && y > top && y < top + 45;
+            });
+          });
+          const notes = extractPdfTableRows(outside).map(row => [row.filter(Boolean).join(' ')]);
+          if (notes.length) addSheet(`Page ${index} notes`, notes, false);
+        } else {
+          const rows = extractPdfTableRows(items);
+          if (rows.length) { textPages++; inferredPages++; addSheet(`Page ${index}`, rows, true); }
+          else { scanned.push(index); addSheet(`Page ${index}`, [['No selectable text on this page. Scanned/image pages need OCR; no cell data was extracted.']], false); }
+        }
+      } finally { page.cleanup(); }
       await yieldToBrowser();
     }
     if (!textPages) throw new Error('This PDF contains no selectable text. It appears to be scanned or image-based. OCR is needed to convert it to Excel; use PDF to images here instead.');
@@ -688,10 +711,15 @@ async function pdfToExcel(file: File, progress: Progress): Promise<ConversionRes
     const { default: writeExcelFile } = await import('write-excel-file/browser');
     const blob = await writeExcelFile(sheets).toBlob();
     return {
-      blob: safeOutput(blob),
-      filename: outputName(file.name, '.xlsx'),
-      summary: `${textPages} page${textPages === 1 ? '' : 's'} of selectable text extracted into an Excel workbook.`,
-      warnings: ['Columns are estimated from text positions. Review the workbook before using it: tables, cell types, formulas and original formatting cannot be reliably restored. All values are stored as text.', ...(scanned.length ? [`Pages ${scanned.join(', ')} contain no selectable text and are marked in the workbook. OCR is not included.`] : [])],
+      blob: safeOutput(blob), filename: outputName(file.name, '.xlsx'),
+      summary: `${preview.length} extracted table/text sheet${preview.length === 1 ? '' : 's'}: ${preview.map(p => `${p.totalRows} rows × ${p.columns} columns`).join('; ')}. Review the preview before downloading.`,
+      tablePreview: preview,
+      warnings: [
+        ...(ruledTables ? ['Visible table borders were used to keep cells, blank values and wrapped text in their row and column. Text outside the tables is kept on separate notes sheets. Printed spreadsheet row/column labels are removed only when both are detected.'] : []),
+        ...(inferredPages ? [`${inferredPages} page${inferredPages === 1 ? '' : 's'} had no usable ruled grid; columns on those pages are estimated from text positions. Review them carefully.`] : []),
+        'Rows include any table header. PDF values are stored as text; original Excel formulas, cell types, merged cells and formatting cannot be recovered reliably.',
+        ...(scanned.length ? [`Pages ${scanned.join(', ')} contain no selectable text and are marked in the workbook. OCR is not included.`] : []),
+      ],
     };
   });
 }
@@ -811,6 +839,7 @@ export async function convertFiles(files: readonly File[], mode: ConversionMode,
   await yieldToBrowser();
   try {
     if (mode === 'images-pdf') return await imagesToPdf(files, progress);
+    if (mode === 'image-excel') return await (await import('./image-to-excel.web')).imageToExcel(files[0], progress);
     if (mode === 'excel-pdf') return await workbookToPdf(files[0], progress);
     if (mode === 'pdf-images') return await pdfToImages(files[0], progress);
     if (mode === 'pdf-excel') return await pdfToExcel(files[0], progress);

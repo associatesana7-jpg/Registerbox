@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { calculateGstLateFee, GST_LATE_FEE_REVIEWED, type GstLateFeeInput, type GstLateFeeResult } from '../../lib/gst-late-fee-calculator';
+import GstLateFeeHistory from './gst-late-fee-history.web';
+import GstLateFeeRange from './gst-late-fee-range.web';
 
 const rupees = (amount: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(amount);
-export default function GstLateFeeCalculator() {
+function SingleGstLateFeeCalculator() {
   const [returnType, setReturnType] = useState<GstLateFeeInput['returnType']>('GSTR-3B');
   const [frequency, setFrequency] = useState<GstLateFeeInput['frequency']>('monthly');
   const [period, setPeriod] = useState('');
@@ -45,4 +47,9 @@ export default function GstLateFeeCalculator() {
     </section>}
     <p className="tax-note">This free calculation runs on your device. No GSTIN, login, government API or payment is needed. Standard rules reviewed 28 October 2026; actual portal liability can differ when a special notification applies.</p>
   </div>;
+}
+
+export default function GstLateFeeCalculator() {
+  const [mode, setMode] = useState<'range' | 'history' | 'single'>('range');
+  return <><div className="gst-late-fee-mode" aria-label="Choose a late-fee calculation"><button type="button" aria-pressed={mode === 'range'} onClick={() => setMode('range')}>Calculate my missed months together</button><button type="button" aria-pressed={mode === 'history'} onClick={() => setMode('history')}>GST was cancelled / check filing history</button></div>{mode === 'range' ? <GstLateFeeRange/> : mode === 'history' ? <GstLateFeeHistory/> : <SingleGstLateFeeCalculator/>}<details className="tax-note" style={{marginTop:24}}><summary>Need a precise calculation for just one recent return?</summary><button type="button" className="tax-text-button" onClick={() => setMode('single')}>Open single-return calculator</button></details></>;
 }

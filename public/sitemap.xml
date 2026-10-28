@@ -23,11 +23,11 @@
   <url><loc>https://www.registerbox.in/services/digital-signature</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://www.registerbox.in/services/proprietorship</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://www.registerbox.in/services/free-nil-gst-filing</loc><lastmod>2026-10-25</lastmod></url>
-  <url><loc>https://www.registerbox.in/tools</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools</loc><lastmod>2026-10-29</lastmod></url>
   <url><loc>https://www.registerbox.in/tools/business-licence-checker</loc><lastmod>2026-10-28</lastmod><xhtml:link rel="alternate" hreflang="en-IN" href="https://www.registerbox.in/tools/business-licence-checker"/><xhtml:link rel="alternate" hreflang="hi-IN" href="https://www.registerbox.in/tools/business-licence-checker/hi"/><xhtml:link rel="alternate" hreflang="kn-IN" href="https://www.registerbox.in/tools/business-licence-checker/kn"/><xhtml:link rel="alternate" hreflang="x-default" href="https://www.registerbox.in/tools/business-licence-checker"/></url>
   <url><loc>https://www.registerbox.in/tools/business-licence-checker/hi</loc><lastmod>2026-10-28</lastmod><xhtml:link rel="alternate" hreflang="en-IN" href="https://www.registerbox.in/tools/business-licence-checker"/><xhtml:link rel="alternate" hreflang="hi-IN" href="https://www.registerbox.in/tools/business-licence-checker/hi"/><xhtml:link rel="alternate" hreflang="kn-IN" href="https://www.registerbox.in/tools/business-licence-checker/kn"/><xhtml:link rel="alternate" hreflang="x-default" href="https://www.registerbox.in/tools/business-licence-checker"/></url>
   <url><loc>https://www.registerbox.in/tools/business-licence-checker/kn</loc><lastmod>2026-10-28</lastmod><xhtml:link rel="alternate" hreflang="en-IN" href="https://www.registerbox.in/tools/business-licence-checker"/><xhtml:link rel="alternate" hreflang="hi-IN" href="https://www.registerbox.in/tools/business-licence-checker/hi"/><xhtml:link rel="alternate" hreflang="kn-IN" href="https://www.registerbox.in/tools/business-licence-checker/kn"/><xhtml:link rel="alternate" hreflang="x-default" href="https://www.registerbox.in/tools/business-licence-checker"/></url>
-  <url><loc>https://www.registerbox.in/tools/pdf-converter</loc><lastmod>2026-10-27</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/pdf-converter</loc><lastmod>2026-10-29</lastmod></url>
   <url><loc>https://www.registerbox.in/tools/indian-language-typing</loc><lastmod>2026-10-27</lastmod></url>
   <url><loc>https://www.registerbox.in/tools/gst-calculator</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://www.registerbox.in/tools/gst-invoice-generator</loc><lastmod>2026-10-28</lastmod></url>
@@ -35,7 +35,22 @@
   <url><loc>https://www.registerbox.in/tools/income-tax-regime-calculator</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://www.registerbox.in/tools/tds-calculator</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://www.registerbox.in/tools/gstin-validator</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://www.registerbox.in/tools/gst-late-fee-calculator</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/gst-late-fee-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/ca-tools</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/presumptive-tax-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/advance-tax-interest-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/itc-set-off-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/gstr-2b-reconciler</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/bank-statement-to-excel</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/invoice-to-excel</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/e-invoice-applicability-checker</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/e-way-bill-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/place-of-supply-finder</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/reverse-charge-checker</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/depreciation-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/mca-additional-fee-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/karnataka-professional-tax-calculator</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://www.registerbox.in/tools/financial-statements-generator</loc><lastmod>2026-10-29</lastmod></url>
   <url><loc>https://www.registerbox.in/blog</loc><xhtml:link rel="alternate" hreflang="en-IN" href="https://www.registerbox.in/blog"/><xhtml:link rel="alternate" hreflang="hi-IN" href="https://www.registerbox.in/hi/blog"/><xhtml:link rel="alternate" hreflang="kn-IN" href="https://www.registerbox.in/kn/blog"/><xhtml:link rel="alternate" hreflang="ta-IN" href="https://www.registerbox.in/ta/blog"/><xhtml:link rel="alternate" hreflang="x-default" href="https://www.registerbox.in/blog"/></url>
   <url><loc>https://www.registerbox.in/hi/blog</loc><xhtml:link rel="alternate" hreflang="en-IN" href="https://www.registerbox.in/blog"/><xhtml:link rel="alternate" hreflang="hi-IN" href="https://www.registerbox.in/hi/blog"/><xhtml:link rel="alternate" hreflang="kn-IN" href="https://www.registerbox.in/kn/blog"/><xhtml:link rel="alternate" hreflang="ta-IN" href="https://www.registerbox.in/ta/blog"/><xhtml:link rel="alternate" hreflang="x-default" href="https://www.registerbox.in/blog"/></url>
   <url><loc>https://www.registerbox.in/kn/blog</loc><xhtml:link rel="alternate" hreflang="en-IN" href="https://www.registerbox.in/blog"/><xhtml:link rel="alternate" hreflang="hi-IN" href="https://www.registerbox.in/hi/blog"/><xhtml:link rel="alternate" hreflang="kn-IN" href="https://www.registerbox.in/kn/blog"/><xhtml:link rel="alternate" hreflang="ta-IN" href="https://www.registerbox.in/ta/blog"/><xhtml:link rel="alternate" hreflang="x-default" href="https://www.registerbox.in/blog"/></url>

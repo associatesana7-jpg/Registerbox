@@ -1,11 +1,13 @@
 import { TAX_TOOLS } from '@/lib/tax-tool-content';
 import { Link, type Href } from 'expo-router';
 import './free-tools-callout.css';
+import './ca-tools.css';
 
 const originalTools = [
   { path: '/tools/business-licence-checker', name: 'Business licence checker', kicker: 'A CLEAR START FOR YOUR BUSINESS.', detail: 'Answer simple questions to find the registrations and permissions to check for your business in India. Available in English, Hindi and Kannada.', action: 'Check my business', icon: 'licence' },
   { path: '/tools/pdf-converter', name: 'Free PDF converter', kicker: 'FILES, READY TO SHARE', detail: 'Word, Excel, PowerPoint, images and more. Convert to and from PDF in your browser, up to 5 MB.', action: 'Open PDF converter', icon: 'pdf' },
   { path: '/tools/indian-language-typing', name: 'Indian language typing', kicker: 'ENGLISH KEYS. YOUR LANGUAGE.', detail: 'Type familiar words using English letters and write in Kannada, Hindi, Tamil and other supported Indian scripts.', action: 'Start typing', icon: 'language' },
+  { path: '/tools/ca-tools', name: 'Free CA tools', kicker: 'FOR CHARTERED ACCOUNTANTS & BUSINESSES', detail: 'Tax calculators, GST checks, GSTR-2B reconciliation, bank and invoice extraction, and draft financial statements. Together in one free collection.', action: 'Explore CA tools', icon: 'tax' },
 ] as const;
 
 const tools = [...originalTools, ...TAX_TOOLS.map(tool => ({ path: `/tools/${tool.id}`, name: tool.name, kicker: 'FREE · INDIA TAX & BUSINESS', detail: tool.intro, action: `Open ${tool.name.toLowerCase()}`, icon: 'tax' }))];
@@ -23,6 +25,6 @@ export function FreeToolCards({ limit }: { limit?: number }) {
 export function FreeToolsCallout() {
   return <section className="rb-free-tools rb-container" aria-labelledby="free-tools-title">
     <div className="rb-free-tools-heading"><div><span className="rb-free-tools-kicker">FREE TO USE. NO SIGN-UP.</span><h2 id="free-tools-title">Everyday tools. One less step.</h2></div><Link href={'/tools' as Href}>Explore free tools <span aria-hidden="true">↗</span></Link></div>
-    <FreeToolCards limit={3}/><nav className="rb-free-tax-links" aria-label="Free tax tools">{TAX_TOOLS.map(tool => <Link key={tool.id} href={`/tools/${tool.id}` as Href}>{tool.name} <span aria-hidden="true">↗</span></Link>)}</nav>
+    <FreeToolCards limit={3}/><div className="ca-hub-banner"><div><h2>Free tools for CA firms and accountants</h2><p>Calculate advance tax, check GST, reconcile GSTR-2B and prepare reviewable bank or invoice data.</p></div><Link href={'/tools/ca-tools' as Href}>Open CA tools <span aria-hidden="true">↗</span></Link></div><nav className="rb-free-tax-links" aria-label="Free tax tools">{TAX_TOOLS.map(tool => <Link key={tool.id} href={`/tools/${tool.id}` as Href}>{tool.name} <span aria-hidden="true">↗</span></Link>)}</nav>
   </section>;
 }
